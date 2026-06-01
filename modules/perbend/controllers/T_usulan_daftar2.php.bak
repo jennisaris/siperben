@@ -1,0 +1,1151 @@
+<?php
+//ini_set("display_errors", 1);
+//error_reporting(E_ALL);
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+/* Namespace alias. */
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require_once "T_alasan_penolakan.php";
+class T_usulan_daftar2 extends MX_Controller {
+  	var $prefix = 'app';
+  	var $table;
+
+	var $ar_jabatan;
+	
+	var $url_opener = '';
+	public function __construct() {
+		parent::__construct();
+		$controller = "perbend/t_usulan_daftar2";
+		$this->table  = $this->prefix."_t_usulan_pegawai";
+
+		$url_opener = explode('/', $_SERVER['HTTP_REFERER']);
+		$this->url_opener = end($url_opener);
+
+		if ($this->url_opener != 't_usulan_approval') $this->_setModal(true);
+
+   		$this->_setTitle('Pegawai');
+		$this->_setController($controller);
+		$this->_init('default');
+
+		$this->_addTable($this->table, 'iusulanid');
+		$this->_addField($this->table, 'id', 'idx', true, true);
+		$this->_addField($this->table, 'iusulanid', 'iusulan', false, true);
+		$this->_addField($this->table, 'ispelatihan', 'ispelatihan', false, true);
+		$this->_addField($this->table, 'ifrom', 'ifrom', false, true);
+		$this->_addField($this->table, 'ijabid2', 'Jabatan', true);
+		$this->_addField($this->table, 'cnip', 'NIP', true);
+		$this->_addField($this->table, 'vname', 'Nama Lengkap', true);
+		$this->_addField($this->table, 'cgolid', 'Pangkat, Golongan', false);
+		$this->_addField($this->table, 'ckduker', 'Satuan Kerja', false, true);
+		//$this->_addField($this->table, 'vgolnm', 'Pangkat/Gol.', false);
+		//$this->_addField($this->table, 'vpktnm', 'Pangkat/Gol.', false, true);
+		//$this->_addField($this->table, 'cjabid', 'Kode Jabatan.', false, true);
+		$this->_addField($this->table, 'ijabid', 'Kode Jabatan.', false, true);
+		$this->_addField($this->table, 'vjabnm', 'Nama Jabatan', false, true);
+		$this->_addField($this->table, 'cnosertifikat','No. Sertifikat', false);
+
+		//cek dl,apakah ada penggantian ?
+		$this->_addField($this->table, 'cnipold','Pejabat yang diganti', false);
+		$this->_addField($this->table, 'ijnsprubhnid','ijnsprubhnid', false, true, true);
+		
+		
+		$this->_addField($this->table, 'istatus', 'Status Verifikasi I', false, true);
+		$this->_addField($this->table, 'valasan', 'Alasan Penolakan I', false, true);
+		
+		//if ($this->url_opener !='t_usulan_verifikator' && $this->url_opener !='t_usulan_satker2') {
+			$this->_addField($this->table, 'istatus2', 'Status Verifikasi II', false, true);
+			$this->_addField($this->table, 'valasan2', 'Alasan Penolakan II', false, true);
+		//}
+
+		$this->_addField($this->table, 'status', 'Status Verifikasi', false, false, true);
+
+		$this->_addField($this->table, 'tcreated', 'Waktu dibuat', false, true);
+		$this->_addField($this->table, 'ccreatedby', 'Dibuat oleh', false, true);
+		$this->_addField($this->table, 'tupdated', 'Waktu ubah', false, true);
+		$this->_addField($this->table, 'cupdatedby', 'Diubah oleh', false, true);
+		$this->_addField($this->table, 'inoskid', 'inoskid', false, true);
+		$this->_addField($this->table, 'cnosk', 'cnosk', false, true);
+
+		$table2 = 'app_t_usulan';
+		$this->_addTable($table2);
+		$this->_addField($table2,'id','idxx',false,true);
+		$this->_addField($table2,'cnousul','No. Usul',false, true);
+		$this->_addField($table2,'dtglusul','Tgl. Usul',false,true);
+		$this->_addField($table2,'istatus','istatus',false,true);
+		$this->_addField($table2,'iunorid','iunorid',false,true);
+		$this->_addField($table2,'itipe','itipe',false,true);
+		$this->_addField($table2,'ijnsprubhnid','ijnsprubhnid',false,true);
+		
+		$this->_addRelation($this->table, $table2, array('iusulanid'=>'id'));
+		//$this->_add2SearchField($this->table, 'cnip');
+		//$this->_add2SearchField($this->table, 'vname');
+		//$this->_add2SearchField($this->table, 'ldeleted');
+
+		$table3 = 'kepeg_m_pegawai';
+		$this->_addTable($table3);
+		$this->_addField($table3, 'id', 'idyy', false, true);
+		$this->_addField($table3, 'cnip','NIP', false, true);
+		$this->_addField($table3, 'vname', 'Nama Lengkap', false, true);
+
+		$this->_addRelation($this->table, $table3, array('cnip'=>'cnip'));
+
+
+		if ($this->url_opener == 't_usulan_satker') {
+			$where = array('ldeleted'=>0, 'ijns'=>1);
+		} elseif($this->url_opener == 't_usulan_satker2') {
+			$where = array('ldeleted'=>0, 'ijns'=>2);
+		} else $where = array('ldeleted'=>0);
+		
+		$rows = $this->getall('', $this->prefix.'_m_jabatan', '*', $where);
+		foreach($rows as $r) {
+		  $ar_jabatan[$r->id] = $r->ckode;
+		}
+		
+		 if ( $this->getrow('', 'app_m_perubahan', 'cjabid2', array('id'=>trim($this->uri->segment(5))))->cjabid2 != '' ) {
+		   foreach(explode(',',  
+		   $this->getrow('', 'app_m_perubahan', 'cjabid2', array('id'=>trim($this->uri->segment(5))))->cjabid2) as $p ) {
+		     $this->ar_jabatan[$p] = $ar_jabatan[$p];
+		   }
+		 } else $this->ar_jabatan = $ar_jabatan;
+			
+		
+
+		$this->_changeType($this->table, 'ijabid2', 'combobox', 
+		$this->ar_jabatan);
+		
+		$this->_changeType($this->table, 'istatus', 'combobox', 
+		$this->session->sysparam->status_daftar_pegawai);
+
+
+		$this->_setAlign($this->table, 'ijabid2', 'center');
+		$this->_setAlign($this->table, 'istatus', 'center');
+		$this->_setAlign($this->table, 'istatus2', 'center');
+		$this->_setAlign($this->table, 'status', 'center');
+		
+		
+		$this->_add2SearchField($this->table, 'iusulanid', false, true, true);
+		$this->_add2SearchField($this->table, 'ispelatihan', false, true, true);
+		//$this->_add2SearchField($table2, 'cnousul');
+		//$this->_add2SearchField($table2, 'dtglusul');
+		$this->_add2SearchField($this->table, 'cnip');
+		$this->_add2SearchField($table3, 'vname');
+		
+
+  
+		if ($this->url_opener == 't_usulan_verifikator' || $this->url_opener == 't_usulan_satker2') {
+			$this->_add2ListField($this->table, 'cnip, vname, cgolid, cnosertifikat, ijabid2, cnipold, istatus');//, tupdated, cupdatedby');
+		} else if ($this->url_opener == 't_usulan_verifikator2') {
+			$this->_add2ListField($this->table, 'cnip, vname, cgolid, cnosertifikat, ijabid2, cnipold, istatus, istatus2');//, tupdated, cupdatedby');
+		} else {
+			$this->_add2ListField($this->table, "cnip, vname, cgolid, cnosertifikat, ijabid2, cnipold, status");//, tupdated, cupdatedby');
+		}
+		
+		$this->_setParams(array('ijnsprubhnid'=>trim($this->uri->segment(5))));
+
+		//clear session header_controller
+		$this->session->unset_userdata('header_controller');
+		$header_controller = array('header_controller' => 'perbend/t_usulan_satker');
+		$this->session->set_userdata($header_controller);
+	}
+	
+	function insertBox_app_t_usulan_pegawai_ijnsprubhnid($name, $params) {
+	  $params = (object)$params;
+	  $input = "<input type='hidden' 
+	  name='{$name}' id='{$name}' class='{$name}' 
+	  value='{$params->ijnsprubhnid}'/>";
+	  return $input;
+	}
+	
+	function updateBox_app_t_usulan_pegawai_ijnsprubhnid($name, $vslue, $datas, $params) {
+	  $params = (object)$params;
+	  $input = "<input type='hidden' 
+	  name='{$name}' id='{$name}' class='{$name}' 
+	  value='{$params->ijnsprubhnid}'/>";
+	  return $input;
+	}
+	
+	function listBox_app_t_usulan_pegawai_tupdated($value, $datas) {
+	  if ( $value != null ) {
+	    return date('d-m-Y H:i:s', strtotime($value));
+	  } else return date('d-m-Y H:i:s', strtotime($datas->app_t_usulan_pegawai_tcreated));
+	}
+	
+	function listBox_app_t_usulan_pegawai_cupdatedby($value, $datas) {
+	  if ( $value != null ) {
+		  $nama = $value;
+	    //$nama = $this->getrow($this->db, 'priv_t_user', 'realname', array('username'=>trim($value)))->realname;
+	   } else {
+		   $nama = $datas->app_t_usulan_pegawai_ccreatedby;
+	     //$nama = $this->getrow($this->db, 'priv_t_user', 'realname', array('username'=>trim($datas->app_t_usulan_pegawai_ccreatedby)))->realname;
+	   }
+	  
+	  //return $nama;
+	  return $nama;
+	}
+
+	public function after_insert_processor($id, $post) {
+		$new_post = array();
+		$new_post['tcreated']   = date('Y-m-d H:i:s');
+		$new_post['ccreatedby'] = $this->session->userdata['username'];
+
+		$this->db->where('id', $id);
+		$this->db->update($this->prefix.'_t_usulan_pegawai', $new_post);
+		
+		$this->update_no_sertifikat($post);
+	
+	}
+
+	public function after_update_processor($id, $post, $oldpost) {
+		$new_post = array();
+		$new_post['istatus'] = 0;
+		$new_post['valasan'] = NULL;
+		$new_post['istatus2'] = 0;
+		$new_post['valasan2'] = NULL;
+		$new_post['tupdated']   = date('Y-m-d H:i:s');
+		$new_post['cupdatedby'] = $this->session->userdata['username'];
+
+		$this->db->where('id', $id);
+		$this->db->update($this->prefix.'_t_usulan_pegawai', $new_post);
+		
+		$this->update_no_sertifikat($post);
+	}
+	
+	function update_no_sertifikat($post) {
+	  $no_sertifikat = $this->session->sysparam->nosertifikat;
+	  //print_r($post);
+	  //print_r($no_sertifikat);
+	  //exit;
+	  $ijabid2 = $post->app_t_usulan_pegawai_ijabid2;
+	  //echo 'ijabid2 : '.$ijabid2;
+	  //exit;
+	  if ( $ijabid2 !='' ) {
+	    //print_r($no_sertifikat);
+	    //echo $ijabid2;
+  	    $col_no_sert = $no_sertifikat[$ijabid2];
+  	    if ($col_no_sert != '' ) {
+      	    try {
+        	    $datas = [
+        	      $col_no_sert => $post->app_t_usulan_pegawai_cnosertifikat
+        	    ];
+        	    $where = [
+        	      'cnip'=>trim($post->app_t_usulan_pegawai_cnip)
+        	      //$col_no_sert => NULL
+        	    ];
+        	    
+        	    //print_r($datas);
+        	    //print_r($where);
+        	    $this->db->where($where);
+        	    $this->db->update('kepeg_m_pegawai', $datas);
+      	      /*$sql = $this->db->set($datas)->get_compiled_update('kepeg_m_pegawai');
+              echo $sql;exit;*/
+      	      //exit;
+      	    } catch (Exception $e) {
+      	      die($e);
+      	    }
+  	    }
+	   }
+	}
+
+	
+	  
+	
+	function listBox_ACTION($buttons, $datas) {
+	  	//unset($buttons['hapus']);
+	  	$buttons['ubah'] = "<span style='text-align: center;cursor:pointer;' onclick=\"edit('".base_url().$this->router->fetch_module()."/".$this->router->class."/edit/".$datas->app_t_usulan_pegawai_id."/".$datas->app_t_usulan_ijnsprubhnid."', '".strtolower($this->router->class)."');\" data-toggle='modal' data-target='#".strtolower($this->router->class)."_form-modal'>
+							<i class='glyphicon glyphicon-edit' title='Ubah'></i>
+						</span>";
+		$buttons['hapus'] = "<span style='text-align: center;cursor:pointer;' 
+						onclick=\"hapus('".base_url().$this->router->fetch_module()."/".$this->router->class."/delete/".$datas->app_t_usulan_pegawai_id."', 'Hapus Record Usulan Satker', '".strtolower($this->router->class)."', '".base_url().$this->router->fetch_module()."/".$this->router->class."/lists/".$this->session->{$this->table.'_page'}."', 'kriteria');\">
+					<i class='glyphicon glyphicon-trash' title='Hapus'></i>
+				</span>";
+						
+		//print_r($datas);exit;				
+		if ($datas->app_t_usulan_itipe == 0 ) {
+			if ( $datas->app_t_usulan_istatus > 0 && 
+				( $datas->app_t_usulan_pegawai_istatus != 2 && $datas->app_t_usulan_pegawai_istatus2 != 2) ) unset($buttons['ubah']);
+		
+			if ( $this->url_opener == 't_usulan_verifikator' ||  
+					$this->url_opener == 't_usulan_verifikator2' ) {
+
+					if ( $datas->app_t_usulan_istatus != 2 ) {
+						unset($buttons['ubah']);
+						//if ( trim($this->session->username) != trim($this->session->sysparam->superuser[0])) 
+						unset($buttons['hapus']);
+					}
+					$input = "<button type='button' class='button btn-default' 
+							onclick='ubahStatus({$datas->app_t_usulan_pegawai_id}, {$datas->app_t_usulan_pegawai_iusulanid}, {$datas->app_t_usulan_istatus}, 1);'>
+							<i class='fas fa-check'></i> Setujui</button>
+						<button type='button' class='button btn-default' 
+							onclick='ubahStatus({$datas->app_t_usulan_pegawai_id}, {$datas->app_t_usulan_pegawai_iusulanid}, {$datas->app_t_usulan_istatus}, 2);' 
+							data-toggle='modal' data-target='#t_alasan_penolakan_form-modal'>
+							<i class='fas fa-times'></i> Tolak</button>";
+		
+				$buttons['utilitas'] = '<div>'.$input.'</div>'; 
+			} else {
+				if ( $datas->app_t_usulan_pegawai_istatus == 2 || $datas->app_t_usulan_pegawai_istatus2 == 2 ) {
+					if ($this->url_opener != 't_usulan_satker2' && 
+						$this->url_opener != 't_usulan_satker') {
+						unset($buttons['ubah']);
+						//if ( trim($this->session->username) != trim($this->session->sysparam->superuser[0])) 
+						unset($buttons['hapus']);
+					} 
+				} else {
+					if ( $datas->app_t_usulan_istatus == 5 ) {
+						if ($this->url_opener != 't_usulan_satker2' && 
+							$this->url_opener != 't_usulan_satker') {
+							unset($buttons['ubah']);
+							//if ( trim($this->session->username) != trim($this->session->sysparam->superuser[0])) 
+							unset($buttons['hapus']);
+						}
+					}
+				}
+			}
+		} else {
+		  //unset($buttons['hapus']);
+		  //if ( !in_array($this->session->groupid, explode(",", $this->session->sysparam->all_group[0])) ) 
+		  if ( !$this->session->isadmin ) unset($buttons['ubah']);
+		}
+		
+	  	return $buttons;
+	}
+	
+	function app_t_usulan_pegawai_output(){
+	  $js ="<script type='text/javascript'>
+	        
+	        var url_opener = location.href.split('/');
+			    var url_opener_ = (url_opener[url_opener.length-1]).replace('#', '');
+			    var jns_sertifikat = ".json_encode($this->session->sysparam->nosertifikat[0]).";
+          var no_sertifikat = {};
+          //alert(no_sertifikat);
+          /*var no_sertifikat = {
+							  '2':'dua',
+							  '3':'tiga',
+							  '6':'enam',
+							  '4':'empat',
+							  '5':'lima'
+					};*/
+	      
+	       $(document).ready(function() {
+					var filter = $('#app_t_usulan_iunorid').val();
+					
+					//alert($('#{$this->table}_ijnsprubhnid').val());
+					//alert($('#{$this->table}_ijnsprubhnid').val());
+					
+					if ($('#{$this->table}_ijnsprubhnid').val() != 1 && $('#{$this->table}_ijnsprubhnid').val() != 9) {
+					   
+					   var url_ = '".base_url()."perbend/t_usulan_daftar2/getemployeeold';
+					   var kriteria = 'filter='+filter+'&filter2='+$('#{$this->table}_ijabid2').val();
+					   //alert(kriteria);
+					   var o = jQuery.parseJSON(getHTML3(url_, kriteria, 0));
+					   $('#{$this->table}_cnipold').val(o.nip);
+					   $('#{$this->table}_cnipold_txt').val(o.name);
+					} else {
+						$('#{$this->table}_cnipold_txt').attr('readonly', true);
+					}
+					
+					$('#{$this->table}_cnipold_txt').keyup(function() {
+						if ($(this).val().length == 0 ) {
+							$('#{$this->table}_cnipold').val('');
+						}
+					});
+					
+					$('#{$this->table}_cnip').typeahead({
+						source: function (query, result) {
+							$.ajax({
+								url: '".base_url()."kepegawaian/m_pegawai/getemployee',
+								data: 'query='+query+'&filter='+filter,
+								dataType: 'json',
+								type: 'POST',
+								beforeSend: function() {
+									// alert('sending data');
+									// do some loading options
+									if ( isloading==true ) $('#divLoading').addClass('show');
+									if ( !debug ) {
+										$('button').attr('disabled', true);
+										$('.btn_save').html(\"<i class='fas fa-cog fa-spin'> </i> Mohon Tunggu...\");
+									}
+								},
+								success: function (data) {
+									result($.map(data, function (item) {
+										return item;
+									}));
+								}
+							});
+						},
+						items: 20,
+						updater: function (item) {
+							$('#app_t_usulan_pegawai_vname').val(item.value);
+							$('#app_t_usulan_pegawai_vname').attr('readonly', true);
+
+							$('#app_t_usulan_pegawai_cgolid').val(item.golid);
+							$('#app_t_usulan_pegawai_cgolid_txt').val(item.pktnm);
+							$('#app_t_usulan_pegawai_cgolid_txt').attr('readonly', true);
+
+							$('#app_t_usulan_pegawai_ckduker').val(item.kduker);
+
+							$('#app_t_usulan_pegawai_ijabid').val(item.jabid);
+							$('#app_t_usulan_pegawai_vjabnm').val(item.jabnm);
+
+							$('#app_t_usulan_pegawai_ifrom').val(item.ifrom);
+							
+							no_sertifikat = {
+							  '2':item.cnobnt,
+							  '3':item.cnobnt,
+							  '6':item.cnobnt,
+							  '4':item.cnosnt,
+							  '5':item.cnopnt
+							}
+							
+							$('#app_t_usulan_pegawai_cnosertifikat').val(no_sertifikat[$('#app_t_usulan_pegawai_ijabid2').val()]);
+							/*if ( typeof(no_sertifikat[$('#app_t_usulan_pegawai_ijabid2').val()]) != 'undefined' 
+									&& no_sertifikat[$('#app_t_usulan_pegawai_ijabid2').val()] != '' ) 
+								$('#app_t_usulan_pegawai_cnosertifikat').prop('readonly', true);
+								else
+								$('#app_t_usulan_pegawai_cnosertifikat').prop('readonly', false);
+					    	*/ 
+							//if ( item.cnosnt != '' ) $('#app_t_usulan_pegawai_cgolid_txt').attr('readonly', true);
+							
+
+							$(\"#divLoading\").removeClass('show');
+							$('button').removeAttr('disabled');
+				    	$('.btn_save').html(\"<i class='fa fa-save' aria-hidden='true'> </i> Simpan {$this->title}\");
+
+							return  item.nip;
+						},
+					});
+					
+					$('#{$this->table}_ijabid2').change(function() {
+					  //alert($(this).val());
+					  //alert(no_sertifikat[$(this).val()]);
+					  $('#{$this->table}_cnosertifikat').val(no_sertifikat[$(this).val()]);
+					  /*if ( typeof(no_sertifikat[$(this).val()]) != 'undefined' 
+					  && no_sertifikat[$(this).val()] != '' ) 
+					    $('#app_t_usulan_pegawai_cnosertifikat').prop('readonly', true);
+					  else
+					    $('#app_t_usulan_pegawai_cnosertifikat').prop('readonly', false);
+					 */
+					 
+					 if ($('#{$this->table}_ijnsprubhnid').val() != 1 && $('#{$this->table}_ijnsprubhnid').val() != 9) {
+					   
+					   var url_ = '".base_url()."perbend/t_usulan_daftar2/getemployeeold';
+					   var kriteria = 'filter='+filter+'&filter2='+$(this).val();
+					   //alert(kriteria);
+					   var o = jQuery.parseJSON(getHTML3(url_, kriteria, 0));
+					   $('#{$this->table}_cnipold').val(o.nip);
+					   $('#{$this->table}_cnipold_txt').val(o.name);
+					 }
+					 
+					});
+
+					/*$('#{$this->table}_cnipold_txt').typeahead({
+						source: function (query, result) {
+							$.ajax({
+								url: '".base_url()."perbend/t_usulan_daftar2/getemployee',
+								data: 'query='+query+'&filter='+filter+'&filter2='+$(\"#app_t_usulan_pegawai_ijabid2\").val(),
+								dataType: 'json',
+								type: 'POST',
+								beforeSend: function() {
+									// alert('sending data');
+									// do some loading options
+									if ( isloading==true ) $('#divLoading').addClass('show');
+									if ( !debug ) {
+										$('button').attr('disabled', true);
+										$('.btn_save').html(\"<i class='fas fa-cog fa-spin'> </i> Mohon Tunggu...\");
+									}
+								},
+								success: function (data) {
+									result($.map(data, function (item) {
+										return item;
+									}));
+								}
+							});
+						},
+						items: 20,
+						updater: function (item) {
+							$('#app_t_usulan_pegawai_cnipold').val(item.nip);
+
+							$(\"#divLoading\").removeClass('show');
+							$('button').removeAttr('disabled');
+				    	$('.btn_save').html(\"<i class='fa fa-save' aria-hidden='true'> </i> Simpan\");
+
+							return  item.value+' ['+item.nip+']';
+						},
+					});*/
+
+					$('#{$this->table}_cnipold_txt').typeahead({
+						source: function (query, result) {
+							$.ajax({
+								url: '".base_url()."kepegawaian/m_pegawai/getemployee',
+								data: 'query='+query+'&filter='+filter,
+								dataType: 'json',
+								type: 'POST',
+								beforeSend: function() {
+									// alert('sending data');
+									// do some loading options
+									if ( isloading==true ) $('#divLoading').addClass('show');
+									if ( !debug ) {
+										$('button').attr('disabled', true);
+										$('.btn_save').html(\"<i class='fas fa-cog fa-spin'> </i> Mohon Tunggu...\");
+									}
+								},
+								success: function (data) {
+									result($.map(data, function (item) {
+										return item;
+									}));
+								}
+							});
+						},
+						items: 20,
+						updater: function (item) {
+							$('#app_t_usulan_pegawai_cnipold').val(item.nip);
+
+							$(\"#divLoading\").removeClass('show');
+							$('button').removeAttr('disabled');
+				    		$('.btn_save').html(\"<i class='fa fa-save' aria-hidden='true'> </i> Simpan\");
+
+							return  item.value+' ['+item.nip+']';
+						},
+					});
+				});
+
+				function ubahStatus(id, usulanid, status, event) {
+				  //alert(status);
+					var jwb = confirm('Verifikasi Daftar Pegawai. Anda yakin ?');
+					if ( jwb ) {
+						if ( event != 2 ) {
+							$.post('".base_url()."perbend/t_usulan_daftar2/ubahstatus/'+id+'/'+usulanid+'/'+status+'/'+event, {}, function(data) {
+								var o = jQuery.parseJSON(data);
+								if ( o.status == true ) {
+									bootbox_alert('', '', 'Verifikasi daftar pegawai berhasil', true);
+									reload_grid('".base_url()."perbend/t_usulan_daftar2/lists', 't_usulan_daftar2');
+									if ( o.total == 0 ) {
+									  reload_grid('".base_url()."perbend/'+url_opener_+'/lists', url_opener_);
+									  $('#'+url_opener_+'-panel-default-form').hide();
+									  
+									  setTimeout(location.reload(true), 2000);
+									}
+								} else {
+									bootbox_alert('', '', 'Ubah Gagal!', true);
+								}
+							});
+						} else {
+							edit('".base_url()."perbend/t_alasan_penolakan/edit/'+id+'/'+url_opener_, 't_usulan_daftar2');	
+						}
+					}
+				}
+	      </script>";
+
+	  return $js;
+	}
+
+	function updateBox_app_t_usulan_pegawai_cnipold($name, $value, $datas) {
+		//print_r($datas);
+		//echo 'value : '.$value;
+
+		$input = "<input type='hidden' 
+			  name='{$name}' id='{$name}' 
+			  class='form-control {$name}' 
+			  value='{$value}'/>";
+
+    if ( $value != NULL) $nama_txt = $this->getrow('', 'kepeg_m_pegawai', 'vname', array('cnip'=>trim($value)))->vname." [".$value."]";
+    else $nama_txt = '';
+
+	  $input .= "<input type='text' 
+			  placeholder='Masukkan NIP/Nama Pegawai'
+			  name='{$name}_txt' id='{$name}_txt' 
+			  class='form-control {$name}_txt' 
+			  value='{$nama_txt}'/>";
+			  
+	   return $input;
+  }
+
+	function insertBox_app_t_usulan_pegawai_cnipold($name) {
+	  	$input = "<input type='hidden' 
+	            name='{$name}' id='{$name}' 
+	            class='form-control {$name}' 
+	            value=''/>";
+
+		$input .= "<input type='text' 
+	            placeholder='Masukkan NIP/Nama Pegawai'
+	            name='{$name}_txt' id='{$name}_txt' 
+	            class='form-control {$name}_txt' 
+	            value=''/>";
+	            
+	 	return $input;
+	}
+
+	function listBox_app_t_usulan_pegawai_cnipold($value, $datas) {
+		if ( $value != NULL) $nama_txt = $this->getrow('', 'kepeg_m_pegawai', 'vname', array('cnip'=>trim($value)))->vname." [".$value."]";
+		return $nama_txt;
+	}
+	
+	function updateBox_app_t_usulan_pegawai_vname($name, $value, $datas) {
+		$readonly = 'readonly';
+	  	$input = "<input {$readonly} type='text' 
+	            placeholder='Masukkan nama lengkap'
+	            name='{$name}' id='{$name}' 
+	            class='form-control {$name}' 
+	            value='{$value}'/>";
+	            
+	 return $input;
+	}
+
+	function listBox_app_t_usulan_pegawai_cgolid($value, $datas) {
+		$name_txt = $this->getrow('', 'kepeg_m_golongan', 'concat(pangkat,\', \', nama) as nama_pangkat', array('id'=>$value))->nama_pangkat;
+		return $name_txt;
+	}
+	
+	function insertBox_app_t_usulan_pegawai_cgolid($name) {
+	  return $this->updateBox_app_t_usulan_pegawai_cgolid($name, '', '');
+	}
+
+	function updateBox_app_t_usulan_pegawai_cgolid($name, $value, $datas) {
+		$readonly = 'readonly';
+	  	$input = "<input type='hidden' 
+	            placeholder='Masukkan Golongan'
+	            name='{$name}' id='{$name}' 
+	            class='form-control {$name}' 
+	            value='{$value}'/>";
+
+		$name_txt = $this->getrow('', 'kepeg_m_golongan', 'concat(pangkat,\', \', nama) as nama_pangkat', array('id'=>$value))->nama_pangkat;
+		$input .= "<input {$readonly} type='text' 
+			placeholder='Masukkan Golongan'
+			name='{$name}_txt' id='{$name}_txt' 
+			class='form-control {$name}_txt' 
+			value='{$name_txt}'/>";
+	            
+	 return $input;
+	}
+
+	function viewBox_app_t_usulan_pegawai_cgolid($name, $value, $datas) {
+		$name_txt = $this->getrow('', 'kepeg_m_golongan', 'concat(pangkat,\', \', nama) as nama_pangkat', array('id'=>$value))->nama_pangkat;
+		$html = "<p class='form-control-static {$name}'>".$name_txt."</p>";
+		return $html;
+	  }
+	
+	function insertBox_app_t_usulan_pegawai_vname($name) {
+	  return $this->updateBox_app_t_usulan_pegawai_vname($name, '', '');
+	}
+	
+	function insertCheck_app_t_usulan_pegawai_ijabid2($value, $post) {
+		//print_r($_POST);exit;
+		$post = (object)$_POST;
+		$data['status']  = true;
+		
+		$iunorid = $this->getrow('', 'app_t_usulan', 'iunorid',['id'=>$post->app_t_usulan_pegawai_iusulanid])->iunorid;
+
+		$ar_jabatan_unik =  $this->session->sysparam->kode_jabatan_unik;
+		if ( array_key_exists($value, $ar_jabatan_unik) ) {
+		  
+			$sql = "SELECT * FROM app_t_usulan_pegawai WHERE ijabid2 = {$value} and iusulanid={$post->app_t_usulan_pegawai_iusulanid} 
+					and istatus2 != 2 and ispelatihan=0";
+			$row = $this->db->query($sql)->row();
+			if ( $row ) {
+				$data['status']  = false;
+				$data['msg'] = "Jabatan ".$this->getrow('', 'app_m_jabatan', 'ckode', array('id'=>$value))->ckode." sudah digunakan. Cek kembali isian anda.";
+			} else {
+				//kondisikan lagi
+				//untuk 
+				$sql = "SELECT a.cnousul, a.dtglusul, b.* FROM app_t_usulan a, app_t_usulan_pegawai b 
+					WHERE a.id = b.iusulanid and b.ijabid2 = {$value} and b.iusulanid!={$post->app_t_usulan_pegawai_iusulanid} 
+					and b.istatus2 != 2 and b.ispelatihan=0 and b.itipe = 0 and a.iunorid='{$iunorid}' and a.istatus !=7";
+				//echo $sql;exit;
+				$row = $this->db->query($sql)->row();
+				if ( $row ) {
+					$data['status']  = false;
+					$data['msg'] = "Ada pengajuan jabatan ".$this->getrow('', 'app_m_jabatan', 'ckode', array('id'=>$value))->ckode." dengan no. usulan 
+									{$row->cnousul}, tgl. {$row->dtglusul} yang belum proses SK. Cek kembali isian anda.";
+				} else {
+				  //echo 'ok';
+				  //print_r($post->app_t_usulan_pegawai_ijnsprubhnid);
+				  return $this->check_nip_old($post);
+				}
+			}
+		} else {
+		  //cekncek nip old
+		  return $this->check_nip_old($post);
+		}
+		
+		//print_r($data);exit;
+
+		return $data;
+	}
+	
+	function check_nip_old($post) {
+	  //print_r($post);exit;
+	  $data['status'] = true;
+	  if ( $this->getrow('', 'app_m_perubahan', 'cjabid2', array('id'=>trim($post->app_t_usulan_pegawai_ijnsprubhnid)))->cjabid2 != '' 
+				   && empty($post->app_t_usulan_pegawai_cnipold)) {
+				    //echo 'ada....';
+				    $data['status'] = false;
+				    $data['msg'] = "Lengkapi kolom pejabat yang digantikan.";
+				    $data['obj'] = 'app_t_usulan_pegawai_cnipold';
+				   }
+		//exit;
+	  return $data;
+	}
+
+	function updateCheck_app_t_usulan_pegawai_ijabid2($value, $post, $id) {
+		$post = (object)$_POST;
+		//print_r($post);exit;
+		$iunorid = $this->getrow('', 'app_t_usulan', 'iunorid',['id'=>$post->app_t_usulan_pegawai_iusulanid])->iunorid;
+		
+		$data['status']  = true;
+
+		$ar_jabatan_unik =  $this->session->sysparam->kode_jabatan_unik;
+		if ( array_key_exists($value, $ar_jabatan_unik) ) {
+			$sql = "SELECT * FROM app_t_usulan_pegawai WHERE ijabid2 = {$value} and iusulanid={$post->app_t_usulan_pegawai_iusulanid} 
+					and id != {$id} and istatus != 2 and ispelatihan=0";
+			$row = $this->db->query($sql)->row();
+			if ( $row ) {
+				$data['status']  = false;
+				$data['msg'] = "Jabatan ".$this->getrow('', 'app_m_jabatan', 'ckode', array('id'=>$value))->ckode." sudah digunakan. Cek kembali isian anda.";
+			} else {
+			  //kondisikan lagi
+				//untuk 
+				$sql = "SELECT a.cnousul, a.dtglusul, b.* FROM app_t_usulan a, app_t_usulan_pegawai b 
+					WHERE a.id = b.iusulanid and b.ijabid2 = {$value} and b.iusulanid!={$post->app_t_usulan_pegawai_iusulanid} 
+					and b.istatus2 != 2 and b.ispelatihan=0 and b.itipe=0 and a.iunorid = '{$iunorid}' and a.istatus !=7";
+				$row = $this->db->query($sql)->row();
+				if ( $row ) {
+					$data['status']  = false;
+					$data['msg'] = "Ada pengajuan jabatan ".$this->getrow('', 'app_m_jabatan', 'ckode', array('id'=>$value))->ckode." dengan no. usulan 
+									{$row->cnousul}, tgl. {$row->dtglusul} yang belum proses SK. Cek kembali isian anda.";
+				} else {
+				  return $this->check_nip_old($post);
+				}
+			}
+		} else {
+		  return $this->check_nip_old($post);
+		}
+		return $data;
+	}
+
+	function listBox_app_t_usulan_pegawai_istatus($value, $datas) {
+		$status_daftar_pegawai = $this->session->sysparam->status_daftar_pegawai;
+		
+		$valasan = $datas->app_t_usulan_pegawai_valasan;
+    /*if ($this->url_opener =='t_usulan_verifikator2') {
+      $value = $datas->app_t_usulan_pegawai_istatus2;
+      $valasan = $datas->app_t_usulan_pegawai_valasan2;
+    }*/
+		
+		$alasan = ($value == 2 ? $valasan : '');
+		
+		$input = "<div>
+						<span style='cursor:pointer;' title = '{$alasan}' class='".($value == 0 ? 'label label-primary' : ($value == 1 ? 'label label-success' : 'label label-danger'))."'>".$status_daftar_pegawai[$value]."</span>
+						<br/><i>".(trim($alasan) != '' ? ' ('.$alasan.')' : '')."</i>
+					   </div>";
+
+		return $input;
+	}
+
+	function insertBox_app_t_usulan_pegawai_status($name) {
+		return "<p class='form-control-static {$name}' title=''>-</p>";	}
+
+	function updateBox_app_t_usulan_pegawai_status($name, $value, $datas) {
+		return "<p class='form-control-static {$name}' title=''>-</p>";
+	}
+
+	function viewBox_app_t_usulan_pegawai_status($name, $value, $datas) {
+		$status_daftar_pegawai = $this->session->sysparam->status_daftar_pegawai;
+		if ( $datas->app_t_usulan_pegawai_istatus2 != 0 ) {
+			$status = $datas->app_t_usulan_pegawai_istatus2;
+			$nm_status = $status_daftar_pegawai[$status].' Tahap II';
+			$alasan = $datas->app_t_usulan_pegawai_valasan2;
+		} else {
+			$status = $datas->app_t_usulan_pegawai_istatus;
+			if ( $status == 0 ) $added = "";
+			else $added = ' Tahap I';
+			$nm_status = $status_daftar_pegawai[$status].$added;
+			$alasan = $datas->app_t_usulan_pegawai_valasan;
+		}
+
+		$html = "<p class='form-control-static {$name}' title='{$alasan}'>";
+		$html .= "<span style='cursor:pointer;' title = '{$alasan}' class='".($status == 0 ? 'label label-primary' : ($status == 1 ? 'label label-success' : 'label label-danger'))."'>".$nm_status."</span>";
+		$html .="</p>";
+		return $html;
+	}
+
+	function listBox_app_t_usulan_pegawai_status($value, $datas) {
+		$status_daftar_pegawai = $this->session->sysparam->status_daftar_pegawai;
+		if ( $datas->app_t_usulan_pegawai_istatus2 != 0 ) {
+			$status = $datas->app_t_usulan_pegawai_istatus2;
+			$nm_status = $status_daftar_pegawai[$status].' Tahap II';
+			$alasan = $datas->app_t_usulan_pegawai_valasan2;
+		} else {
+			$status = $datas->app_t_usulan_pegawai_istatus;
+			if ( $status == 0 ) $added = "";
+			else $added = ' Tahap I';
+			$nm_status = $status_daftar_pegawai[$status].$added;
+			$alasan = $datas->app_t_usulan_pegawai_valasan;
+		}
+
+		$input = "<div>
+						<span style='cursor:pointer;' title = '{$alasan}' class='".($status == 0 ? 'label label-primary' : ($status == 1 ? 'label label-success' : 'label label-danger'))."'>".$nm_status."</span>
+						<br/><i>".(trim($alasan) != '' ? ' ('.$alasan.')' : '')."</i>
+					   </div>";
+
+		return $input;
+	}
+	
+	function listBox_app_t_usulan_pegawai_istatus2($value, $datas) {
+		$status_daftar_pegawai = $this->session->sysparam->status_daftar_pegawai;
+		
+		//$valasan = $datas->app_t_usulan_pegawai_valasan;
+    //if ($this->url_opener =='t_usulan_verifikator2') {
+      //$value = $datas->app_t_usulan_pegawai_istatus2;
+      $valasan = $datas->app_t_usulan_pegawai_valasan2;
+    //}
+		
+		$alasan = ($value == 2 ? $valasan : '');
+		
+		$input = "<div>
+						<span style='cursor:pointer;' title = '{$alasan}' class='".($value == 0 ? 'label label-primary' : ($value == 1 ? 'label label-success' : 'label label-danger'))."'>".$status_daftar_pegawai[$value]."</span>
+						<br/><i>".(trim($alasan) != '' ? ' ('.$alasan.')' : '')."</i>
+					   </div>";
+
+		return $input;
+	}
+	
+	function ubahstatus($id, $usulanid, $status, $event){
+	  
+		if ($this->url_opener =='t_usulan_verifikator2') {
+			$istatus = 'istatus2';
+			$valasan = 'valasan2';
+			$nextapproval = 2;
+			
+		} else {
+			$istatus = 'istatus';
+			$valasan = 'valasan';
+			$nextapproval = 1;
+			
+		}
+
+	   	$new_data = array();
+	   	$new_data[$istatus] = $event;
+		$new_data[$valasan] = '';
+		$new_data['tupdated'] = date('Y-m-d H:i:s');
+		$new_data['cupdatedby'] = trim($this->session->username);
+
+		$data = array();
+		try {
+				$this->db->where(array('id'=>$id));
+				$this->db->update($this->table, $new_data);
+				
+				//echo $this->db->last_query();exit;
+				$data['status'] = true;
+		}catch(Exception $e) {
+				$data['status'] = false;
+		}
+
+			//get jenis
+			$usulans = $this->getrow('', 'app_t_usulan', 'cnousul, iunorid, ijns', array('id'=>$usulanid));
+			$ijns = $usulans->ijns;
+			$cnousul = $usulans->cnousul;
+			$iunorid = $usulans->iunorid;
+			
+			$post = [
+			'cnousul'=>$cnousul,
+			'usulanid'=> $usulanid
+			];
+			
+			$total = $this->getrow('', 'app_t_usulan_pegawai', 'count(*) as total', array('iusulanid'=>$usulanid, $istatus=>0, 'ispelatihan'=>0))->total;
+			
+			$totalall = $this->getrow('', 'app_t_usulan_pegawai', 'count(*) as total', array('iusulanid'=>$usulanid, 'ispelatihan'=>0))->total;
+			$total1 = $this->getrow('', 'app_t_usulan_pegawai', 'count(*) as total', array('iusulanid'=>$usulanid, $istatus=>1, 'ispelatihan'=>0))->total;
+			$total2 = $this->getrow('', 'app_t_usulan_pegawai', 'count(*) as total', array('iusulanid'=>$usulanid, $istatus=>2, 'ispelatihan'=>0))->total;
+			
+			$tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[$nextapproval]->url."'>disini</a>";
+			$pesan = str_replace("__tautan__", $tautan, $this->session->sysparam->group_verifikator[$nextapproval]->msg);
+
+		//echo 'est : '.$total.', '.$total1.', '.$total2.', '.$totalall.', '.$ijns;
+		//exit;
+		
+		if ( $total == 0 ) {
+				if ($ijns == 1) {
+					$status++;
+					if ( ($total1 + $total2) == $totalall ) {
+						
+						//ini_set('display_errors', 1);
+						//error_reporting(E_ALL);
+						$this->send_email($nextapproval, '', $pesan, $post, TRUE);
+						
+						
+						$tos = [
+						0=>(object)['unorid'=>$iunorid, 'email'=>$this->getrow('', 'priv_t_user', 'email', ['username'=>trim($iunorid)])->email]
+						];
+						//print_r($tos);
+						//exit;
+						$tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[99]->url."?q=".$cnousul."'>disini</a>";
+							
+						$tahap = $this->session->sysparam->status_usulan[$status];
+						$pesan = str_replace("__tautan__", $tautan, $this->session->sysparam->group_verifikator[99]->msg);
+						$pesan = str_replace("__tahap__", $tahap, $pesan);
+						$this->send_email(99, $tos, $pesan, $post);
+						
+						//update status app_notification
+						$where = ['usulanid'=>$usulanid, 'groupid'=>$this->session->sysparam->group_verifikator[($nextapproval-1)]->id];
+						$datas = ['isread'=>1, 'updated'=>date('Y-m-d H:i:s'), 'updatedby'=>trim($this->session->username)];
+						$this->db->where($where);
+						$this->db->update('app_notification', $datas);
+						
+						/*$sql = $this->db->set($datas)->get_compiled_update('app_notification');
+						echo $sql;exit;*/
+					
+					} else {
+						$tos = [
+							0=>(object)['unorid'=>$iunorid, 'email'=>$this->getrow('', 'priv_t_user', 'email', ['username'=>trim($iunorid)])->email]
+						];
+						//print_r($tos);
+						//exit;
+						$tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[99]->url."?q=".$cnousul."'>disini</a>";
+							
+						$tahap = $this->session->sysparam->status_usulan[$status+4];
+						$pesan = str_replace("__tautan__", $tautan, $this->session->sysparam->group_verifikator[99]->msg);
+						$pesan = str_replace("__tahap__", $tahap, $pesan);
+						$this->send_email(99, $tos, $pesan, $post);
+					}
+				} else {
+					$status += 3;
+				}
+				
+				$new_data = array();
+				$new_data['istatus'] = $status;
+				$new_data['tupdated'] = date('Y-m-d H:i:s');
+				$new_data['cupdatedby'] = trim($this->session->username);
+	
+				$this->db->where(array('id'=>$usulanid));
+				$this->db->update('app_t_usulan', $new_data);
+				//echo $this->db->last_query();exit;
+				
+				$data['total'] = $total;
+		}
+
+		echo json_encode($data);
+	}
+
+	
+	function getTotalStatus0($usulanid) {
+		if ($this->url_opener =='t_usulan_verifikator2') $istatus = 'istatus2';
+		else $istatus = 'istatus';
+
+	  	echo $this->getrow('', 'app_t_usulan_pegawai', 'count(*) as total', array('iusulanid'=>$usulanid, $istatus=>0, 'ispelatihan'=>0))->total;
+	}
+	
+	public function manipulate_url_save($save) {
+		unset($save);
+		//function save(url, table_id, default_txt_confirm='', _ismodal=false, _modals='form-modal', _islochref=false, 
+		//_isneedrefresh=true, _isneededit=false, _isOldFashion=false, _msg='Simpan berhasil.', table_id2) {
+		$save['method'] = "save('".base_url()."perbend/t_usulan_daftar2', 't_usulan_daftar2', 'Simpan pegawai yang diusulkan. Anda yakin?', true, 'form-modal', false, true, false)";
+		return $save;
+	}
+	
+	function manipulate_list_button($buttons) {
+    $buttons['add'] = "<button type='button' id='btn_new' class='btn btn-primary' data-toggle='modal' data-target='#".strtolower($this->router->class)."_form-modal'
+						onclick='edit(\"".base_url().$this->router->fetch_module()."/".$this->router->class."/edit/0/\"+$(\"#t_usulan_satker_form-edit #app_t_usulan_ijnsprubhnid\").val(), \"".strtolower($this->router->class)."\");'>
+						<i class='glyphicon glyphicon-plus'></i>&nbsp;Tambah {$this->title}
+					</button>";
+			
+		if ($this->session->_isview) unset($buttons['add']);		
+		
+					
+		return $buttons;
+	}
+	
+	function before_insert_processor($post) {
+	  $usulans = $this->db->query("SELECT iunorid, itipe  
+	  FROM app_t_usulan where id = 
+	  {$post->app_t_usulan_pegawai_iusulanid}")
+	  ->row();
+	  
+	  $iunorid = $usulans->iunorid;
+	  $itipe = $usulans->itipe;
+	  
+	  $post->app_t_usulan_pegawai_ckduker = $iunorid;
+	  if ($itipe == 1) {
+	    $usulan_pegawais = $this->db->query("SELECT inoskid, cnosk  
+	      FROM app_t_usulan_pegawai where iusulanid ={$post->app_t_usulan_pegawai_iusulanid} 
+	      and inoskid IS NOT NULL and cnosk IS NOT NULL limit 1")->row();
+	    $post->app_t_usulan_pegawai_istatus = 1;
+	    $post->app_t_usulan_pegawai_istatus2 = 1;
+	    $post->app_t_usulan_pegawai_inoskid = $usulan_pegawais->inoskid;
+	    $post->app_t_usulan_pegawai_cnosk = $usulan_pegawais->cnosk;
+	    $post->app_t_usulan_pegawai_itipe = $itipe;
+	    $post->app_t_usulan_pegawai_ckduker = $iunorid;
+	  }
+	  
+	  return $post;
+	}
+	
+	function before_update_processor($id, $post) {
+	  return $this->before_insert_processor($post);
+	}
+	
+	function getemployeeold() {
+		//print_r($_POST);exit;
+		$data = array();
+		$row_array = array();
+
+		$filter   = $this->input->post('filter');
+		$filter2   = $this->input->post('filter2');
+		
+		$add_filter = "";
+		if ( $filter != '' ) 
+		$add_filter = " and (
+		( select kode_satker from kepeg_m_unor where kode = c.ckduker) = '{$filter}' 
+		or c.ckduker = '{$filter}') ";
+		if ( $filter2 != '' ) $add_filter2 = " and c.ijabid2 = '{$filter2}' ";
+
+		$sql = "SELECT c.cnip as nip, a.vname as nama
+		    from kepeg_m_pegawai a, app_t_usulan_pegawai c 
+  			where a.cnip = c.cnip and c.inoskid != 0 and c.inoskid IS NOT NULL and c.isnonaktif = 0 {$add_filter} {$add_filter2}";
+		//echo $sql;exit;
+		$line = $this->db->query($sql)->row();
+		$data['name']  = ucwords(trim(strtolower($line->nama)));
+		$data['nip']   = trim($line->nip);
+		echo json_encode($data);
+	}
+
+	function getemployee() {
+		//print_r($_POST);exit;
+		$data = array();
+		$row_array = array();
+
+		$kriteria = $this->input->post('query');
+		$filter   = $this->input->post('filter');
+		$filter2   = $this->input->post('filter2');
+		
+		$add_filter = "";
+		if ( $filter != '' ) 
+		$add_filter = " and (
+		( select kode_satker from kepeg_m_unor where kode = c.ckduker) = '{$filter}' 
+		or c.ckduker = '{$filter}') ";
+		if ( $filter2 != '' ) $add_filter2 = " and c.ijabid2 = '{$filter2}' ";
+
+		$sql = "SELECT c.cnip as nip, a.vname as nama
+		    from kepeg_m_pegawai a, app_t_usulan_pegawai c 
+  			where a.cnip = c.cnip and (a.vname like '%".$kriteria."%'
+  			OR c.cnip like '%".$kriteria."%') {$add_filter} {$add_filter2}
+  			ORDER BY a.vname ASC";// and b.\"EXPIRED_DATE\" IS NULL
+		
+
+		//echo $sql;exit;
+		$query = $this->db->query($sql);
+		if ( $query ) {
+		  //print_r($query->result_array());
+				foreach($query->result_array() as $line) {
+					$row_array['name']  = trim($line['nip'])." - ".ucwords(trim(strtolower($line['nama'])))." - ".trim($line['nama_pangkat'])." - ".ucwords(trim(strtolower($line['nama_jabatan'])));
+					$row_array['value'] = ucwords(trim(strtolower($line['nama'])));
+					$row_array['nip']   = trim($line['nip']);
+					
+					array_push($data, $row_array);
+			  }
+		}
+		echo json_encode($data);
+	}
+	
+		function send_email($next=0, $tos='', $pesan='', $post,$isnotif=FALSE) {
+		  $post = (object)$post;
+  		if ($tos=='') {
+  		  $groupid = $this->session->sysparam->group_verifikator[$next]->id;
+    		$sql = "SELECT email, username from priv_t_user where igroupid like '%{$groupid}%'";
+    		//echo $sql;
+    		$tos = $this->db->query($sql)->result();
+  		}
+  		
+  		if ($isnotif==TRUE) {
+          $pesan = $this->session->sysparam->group_verifikator[$next]->desc;
+          $tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[$next]->url."'>{$pesan}</a>";
+          $notifs=[
+                //'username'=>$t2->username,
+                'url'=>base_url().$this->session->sysparam->group_verifikator[$next]->url,
+                'usulanid'=>$post->usulanid,
+                'groupid'=>$groupid,
+                'msg' => $pesan,
+                'created'=> date('Y-m-d H:i:s'),
+                'createdby'=>trim($this->session->username)
+          ];
+          $this->db->insert('app_notification', $notifs);
+          /*$sql = $this->db->set($notifs)->get_compiled_insert('app_notification');
+            echo $sql;exit;*/
+      }
+  		
+  		//PHPMailer
+  	  $mail = new PHPMailer(true);
+  	  //print_r($mail);
+  	  //exit;
+  	  
+  	  /*echo $this->session->sysparam->smtphost[0];
+  	  echo $this->session->sysparam->smtpauth[0];
+  	  echo $this->session->sysparam->smtpsecure[0];
+  	  echo $this->session->sysparam->smtpuser[0];
+  	  echo $this->session->sysparam->smtppasswd[0];
+  	  echo $this->session->sysparam->smtpport[0];
+  	  exit;*/
+  	  
+  	  /* Open the try/catch block. */
+      try {
+         /* SMTP parameters. */
+         $mail->isSMTP();
+         $mail->Host = $this->session->sysparam->smtphost[0];
+         $mail->SMTPAuth = $this->session->sysparam->smtpauth[0];
+         $mail->SMTPSecure = $this->session->sysparam->smtpsecure[0];
+         $mail->Username = $this->session->sysparam->smtpuser[0];
+         $mail->Password = $this->session->sysparam->smtppasswd[0];
+         $mail->Port = $this->session->sysparam->smtpport[0];
+     
+         /* Set the mail sender. */
+         $mail->setFrom($this->session->sysparam->smtpuser[0], 'POSTMASTER');
+      
+         /* Add a recipient. */
+         foreach($tos as $t1=>$t2) {
+           $mail->addAddress($t2->email, $t2->email);
+         }
+      
+         /* Set the subject. */
+         $mail->Subject = $this->session->sysparam->group_verifikator[$next]->subject;
+      
+         /* Set the mail message body. */
+         $mail->isHTML(TRUE);
+         
+         if ($pesan == '' ) {
+           $tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[$next]->url."?q=".$post->cnousul."'>disini</a>";
+           
+           $pesan = str_replace("__tautan__", $tautan, $this->session->sysparam->group_verifikator[$next]->msg);
+         }
+         
+         $mail->Body = $pesan;
+         //if ($next==99) {
+           //print_r($mail);
+           //exit;
+         //}
+         /* Finally send the mail. */
+         $mail->send();
+         $status = true;
+         // 'Email Terkirim';
+      }
+      catch (Exception $e)
+      {
+         /* PHPMailer exception. */
+         $status = false;
+         $pesan = $e->errorMessage();
+      }
+      catch (\Exception $e)
+      {
+         /* PHP exception (note the backslash to select the global namespace Exception class). */
+         $status = false;
+         $pesan = $e->getMessage();
+      }
+  	  
+  	  $datas = [
+  	       'status' => $status,
+  	       'msg' => $pesan
+  	     ];
+  	     
+  	  //return $datas;
+  	  //print_r($datas);exit;
+    }
+}

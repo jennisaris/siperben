@@ -1,0 +1,140 @@
+th {
+	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif,fontAwesome;
+	font-size:14px;
+	text-align:center!important;
+	vertical-align:middle!important;
+}
+
+td {
+	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif,fontAwesome;
+	font-size:14px;
+}
+
+label,input,select,ul,li,textarea{
+	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif,fontAwesome!important;
+	font-size:14px!important;
+}
+
+input{
+	height:30px!important;
+}
+
+.datepicker{
+	width:100px;
+}
+
+div.ui-dialog {position:fixed!important;}
+
+.pre {
+	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif,fontAwesome!important;
+	background-color:#FFFFFF!important;
+	border:0px;
+	font-family:Helvetica;
+	font-size:14px;
+}
+
+button {
+	font-size:14px!important;
+}
+
+.pagination {
+	margin-bottom:0px!important;
+	margin-top:0px!important;
+	text-align:center!important;;
+}
+
+.ui-dialog-title {
+	font-size:14px!important;
+}
+
+#divLoading
+{
+    display : none;
+}
+#divLoading.show
+{
+    display : block;
+    position : fixed;
+    z-index: 100;
+    background-image : url('../../assets/images/loading-2.gif');
+    background-color:#000000;
+    opacity : 0.4;
+    background-repeat : no-repeat;
+    background-position : center;
+    left : 0;
+    bottom : 0;
+    right : 0;
+    top : 0;
+}
+#loadinggif.show
+{
+    left : 50%;
+    top : 50%;
+    position : absolute;
+    z-index : 101;
+    width : 32px;
+    height : 32px;
+    margin-left : -16px;
+    margin-top : -16px;
+}
+
+.rcorners {
+    border-radius: 5px;
+    margin: 2px 2px 2px 2px !important;
+    width: 50%;
+    height: auto;
+    text-align:justify:
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-seri,fontAwesome;
+    font-size:small;
+}
+.kekanan {
+	margin-left:45%!important;
+	margin-bottom:-17px!important;
+	margin-right:0.2%!important;
+	width:54.8%;
+}
+.kekiri {
+	margin-left:0.2%!important;
+	margin-bottom:-17px!important;
+	width:55%;
+}
+
+.ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {
+	color:#000000;
+}
+/*.rcorners pre {
+	background-color:lightblue;
+}
+*/
+
+.icon-state-success {
+	color:#36c6d3;
+}
+.icon-state-warning {
+	color:#36c6d3;
+}
+.breadcrumb {
+	text-align:left!important;
+	background-color:#FFFFFF;
+}
+
+.breadcrumb > li + li::before {
+	color :#237DDA!important;
+	content: "»"!important;
+	font-size:18px!important;
+}
+
+.ajax_pagination {
+	float:right;
+	margin-top:14px;
+	font-size:14px;
+}
+
+.skin-blue .treeview-menu > li.active > a, .skin-blue .treeview-menu > li > a:hover, .treeview-menu > li > a {
+	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif,fontAwesome!important;
+	font-size:14px!important;
+}
+
+.treeview-menu {
+	top:41px!important;
+}

@@ -1,0 +1,349 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+//require_once('Ews.php');
+require_once "modules/perbend/controllers/M_unor.php";
+class Index extends MX_Controller {
+	
+	var $limit=10;
+	//var $cews; 
+	public function __construct() {
+		parent::__construct();
+		$controller = "dashboard/index";
+		
+		$this->_addTable('app_m_informasi');
+	}
+	
+	public function index() {
+	  
+	  //$this->cews = new Ews;
+		
+		$data = array();
+		
+		if ($this->session->superuser) {
+		  $data = $this->get_total_perbendaharaan();
+		} else {
+		  $orgs =[];
+		  foreach($this->session->orgs as $k=>$v) {
+		    $orgs[] = $k;
+		  }
+		  $data = $this->get_total_perbendaharaan('', $orgs);
+		}
+		
+		$results['result'] = $this->getdatacharts();
+		$data['charts'] = $this->load->view('d/chart', $results, true);
+		
+		$this->template->display('d/index', $data, TRUE);
+	}
+	
+	function getdatacharts() {
+	  	$kodeunitutamas = $this->session->kodeunitutamas;
+  		$m_unor = new M_unor;
+  		
+  		$datas[0] = ['Unit Utama'];
+  		$jabs = $this->db->query("SELECT id, ckode from app_m_jabatan where id in (1,2,3,6) order by iurut asc")->result();
+  		foreach($jabs as $j) {
+  		  array_push($datas[0], $j->ckode);
+  		}
+  		
+  		$i=1;
+  		foreach($kodeunitutamas as $kode) {
+				$orgs =[trim($kode->kode_satker)];
+				$m_unor->getRekursifUnit(trim($kode->kode_satker), $orgs);
+				
+				$orgsx =[];
+        foreach($orgs as $k=>$v) {
+        	$orgsx[] = $k;
+        }
+        $orgs = $orgsx;
+        
+        //print_r($orgs);
+        //exit;
+				$totals = $this->get_total_perbendaharaan('', $orgs);
+				
+				//print_r($totals['data']);
+				foreach($totals['data'] as $key=>$val) {
+					if ($val['kode'] == 'KPA') $totalkpa = $val['total'];
+					if ($val['kode'] == 'BP') $totalbp = $val['total'];
+				  	if ($val['kode'] == 'BPn') $totalbpn = $val['total'];
+				  	if ($val['kode'] == 'BPP') $totalbpp = $val['total'];
+				}
+			
+				//exit;
+				//foreach
+				
+				$datas[] = [trim($kode->abbrv), (int)$totalkpa, (int)$totalbp, (int)$totalbpn,(int)$totalbpp];
+				
+				$i++;
+  		}
+  		
+  		return json_encode($datas);
+	}
+	
+	private function get_total_perbendaharaan($ijabid2='', $kd_satker='') {
+	  /*$data = [
+	     'total_2' => 0, 
+	     'total_3' => 0,
+	     'total_6' => 0 
+	   ];*/
+
+	    $groupids = explode(',', $this->session->groupid);
+		$ada = 0;
+		if (sizeOf($groupids) > 0 ) {
+			foreach($groupids as $g) {
+				if ( in_array($g, explode(",", $this->session->sysparam->group_superuser[0])) ) $ada++;
+				if ( in_array($g, explode(",", $this->session->sysparam->all_group[0])) ) $ada++;
+			}
+		} else {
+			if ( in_array($this->session->groupid, explode(",", $this->session->sysparam->all_group[0])) ) $ada++;
+		}
+	   
+	   $bgcolor = [
+	     'bg-aqua',
+	     'bg-green',
+	     'bg-yellow',
+	     'bg-orange',
+	     'bg-red',
+	     'bg-navy',
+	     'bg-purple'
+	   ];
+	   $cs = [
+	     '',
+	     ($ada > 0 ? 'laporan1' : ''),
+	     ($ada > 0 ? 'laporan1' : ''),
+	     ($ada > 0 ? 'laporan2' : ''),
+	     ($ada > 0 ? 'laporan3' : ''),
+	     ($ada > 0 ? 'laporan1' : ''),
+	     ($ada > 0 ? 'laporan4' : ''),
+	   ];
+	   
+	   $jabs = $this->getall('', 'app_m_jabatan', 'id, ckode as kode, vname as name', array('ldeleted'=>0), '', array('iurut'=>'asc'));
+	   
+	   $jabid2 = [];
+	   foreach($jabs as $j) {
+	     $data[$j->id] = [
+	         'kode' => $j->kode,
+	         'nama' => $j->nama,
+	         'total' => 0
+	     ];
+	     
+	     $jabid2[] = $j->id;
+	   }
+	   
+	   $jabid2 = implode(",", $jabid2);
+	  
+	  if ($ijabid2 != '') {
+	    $ijabid2_ = "'".implode("','", $ijabid2)."'";
+	    $q_ijabid2 = " ijabid2 in (".$ijabid2_.")";
+	  } else $q_ijabid2 = "  ijabid2 in ({$jabid2}) ";
+	  
+	  if ($kd_satker !='') {
+	    $kd_satker_ = "'".implode("','", $kd_satker)."'";
+	    $q_kd_satker = " and ckduker in (".$kd_satker_.")";
+	  } else $q_kd_satker = "";
+	  
+	  $sql = "Select ijabid2, count(cnip) as total 
+              From app_t_usulan_pegawai 
+              where {$q_ijabid2} ";
+    if ($q_kd_satker !='') $sql.= $q_kd_satker;
+	/*$sql .= " and case 
+		when ijabid2 not in (4,5,6,7) then inoskid IS NOT NULL and inoskid !=0 and isnonaktif = 0
+		else isnonaktif = 0 and istatus != 0 and istatus2 != 0
+		end and (select count(*) from app_m_unor where kode = ckduker and deleted=0) > 0 ";*/
+		
+	if ( empty($kd_satker_) ) {
+		$sql .= " and case 
+			when ijabid2 not in (4,5,6,7) then inoskid IS NOT NULL and inoskid !=0 and isnonaktif = 0
+			else isnonaktif = 0 and istatus != 0 and istatus2 != 0
+			end and (select count(*) from app_m_unor where kode = ckduker and deleted=0) > 0 ";
+	} else {
+		$sql .= " and case 
+			when ijabid2 not in (4,5,6,7) then inoskid IS NOT NULL and inoskid !=0 and isnonaktif = 0
+			else isnonaktif = 0 and istatus != 0 and istatus2 != 0
+			end and (select count(*) from app_m_unor where kode in (".$kd_satker_.") and deleted=0) > 0 ";
+	}
+    //$sql .= " and inoskid IS NOT NULL and inoskid != 0 and isnonaktif = 0";
+    $sql .= " Group by ijabid2 ";
+    //echo $sql;exit;
+              
+    $rows = $this->db->query($sql)->result();
+    foreach($rows as $r) {
+      //$data['total_'.$r->ijabid2] = $r->total;
+      $data[$r->ijabid2]['total'] = $r->total;
+    }
+    
+    $datas['data'] = $data;
+    $datas['bgcolor'] = $bgcolor;
+    $datas['cs'] = $cs;
+    
+    return $datas;
+  }
+  
+  function lists($page_ke=0) {
+		$html = '';
+		$table = 'app_m_informasi';
+
+		//print_r($_POST);
+		//exit;
+		
+		if ( $page_ke == 0 ) {
+			 $this->session->{$table.'_page'} = 1;
+		} else {
+			if ( $this->session->{$table.'_page'} == '' ) {
+				$this->session->{$table.'_page'} = 1;
+			} else {
+			  if ( $page_ke != 0 ) $this->session->{$table.'_page'} = $page_ke;
+			}
+		}
+		
+		$page = $this->session->{$table.'_page'};
+
+		$offset = ($page - 1) * $this->limit;
+
+		foreach ($_POST as $k=>$v) {			
+			$krit = str_replace("q_", "", $k);
+			$this->kriteria[$krit] = $this->input->post($k);
+		}
+		$this->kriteria = (object)$this->kriteria;
+		//print_r($this->kriteria);
+		//exit;
+
+		//echo $offset;
+		//exit;
+
+		$html  = "<form id='t_terbit_sk_form-edit'>";
+		$html .= "<table class='table table-responsive table-condensed table-bordered' width='100%'>
+					<thead>
+						<tr class='active'>
+							<th width='5%'>No.</th>
+							<th width='85%'>Judul</th>
+							<th width='10%'>Lampiran</th>
+						</tr>
+					</thead>";
+
+    $today = date('Y-m-d');
+		$sql = "SELECT app_m_informasi.id, app_m_informasi.title, app_m_informasi.isi, app_m_informasi.lampiran,
+		  app_m_informasi.type
+				from app_m_informasi where 
+				deleted=0 and 
+				'{$today}' between mulai and selesai";
+				
+		//echo $sql;exit;
+		$query = $this->db->query($sql);
+
+		$this->session->jum_rec  = $query->num_rows();
+		$this->session->jum_page = ceil($this->session->jum_rec/$this->limit);
+
+		$sql .= " limit {$this->limit} offset {$offset}";
+		//echo $sql;
+		//exit;
+		
+		$query = $this->db->query($sql);
+
+		$html .= "<tbody>";
+
+		$fg_color = "#000000";
+		if ( $query ) {
+			$rows = $query->result();
+
+			if ( sizeOf($rows) > 0 ) {
+				$i=1;
+				foreach ($rows as $r) {
+
+					//if ( $i%2 ) $class = '';
+					//else 
+					if ( $offset == 0 ) $norut = $i;
+				  else $norut = ($i+$offset);
+				
+					$class = '';
+
+					$html .= "<tr class='{$class}'>";
+					$html .= "<td style='text-align:center;'>".$norut."</td>";
+					
+				  if ($r->isi !=NULL) {
+					      $isi = $r->isi;
+					  		$input = "<span data-toggle='modal' data-target='#myPreview2_{$r->id}' style='cursor:pointer;'>".$r->title."
+					  </span>";
+  	  $input .= "<div class='modal fade' id='myPreview2_{$r->id}' role='dialog' aria-labelledby='myModalLabel' data-backdrop='static' data-keyboard='false'>
+  				   <div class='modal-dialog' role='document' style='width:65%;'>
+  					 <div class='modal-content'>
+  					   <div class='modal-header'>
+  						 <button type='button' class='close' aria-label='Close' 
+  						 onclick=\"$('#myPreview2_{$r->id}').modal('hide').appendTo('.div_app_t_usulan_sk_tfile2');$('#{$this->router->class}_form-modal').css('overflow', 'scroll');\">
+  						 <span aria-hidden='true'>&times;</span></button>
+  						 <h4 class='modal-title' id='myModalLabel'><i class='glyphicon glyphicon-tasks'></i> {$r->title}</h4>
+  					   </div>
+  					   <div class='modal-body' id='modal-body'>
+  						 <div class='form-group'>
+  							 <div id='html_telusuri'>";
+  
+  		$input .= $isi;
+  
+  
+  		$input .= "			 </div>
+  						 </div>
+  					   </div>
+  					</div>
+  				</div>
+  			</div>";
+					  
+				  	$html .= "<td>".$input."</td>";
+					}
+					
+					if ($r->lampiran !=NULL) {
+					      $bfile = $r->lampiran;
+					      $vtype = $r->type;
+					  		$input = "<span data-toggle='modal' data-target='#myPreview_{$r->id}' style='cursor:pointer;' class='btn btn-warning'>
+						<i class='fas fa-file-pdf'></i>
+					  </span>";
+  	  $input .= "<div class='modal fade' id='myPreview_{$r->id}' role='dialog' aria-labelledby='myModalLabel' data-backdrop='static' data-keyboard='false'>
+  				   <div class='modal-dialog' role='document' style='width:65%;'>
+  					 <div class='modal-content'>
+  					   <div class='modal-header'>
+  						 <button type='button' class='close' aria-label='Close' 
+  						 onclick=\"$('#myPreview_{$r->id}').modal('hide').appendTo('.div_app_t_usulan_sk_tfile2');$('#{$this->router->class}_form-modal').css('overflow', 'scroll');\">
+  						 <span aria-hidden='true'>&times;</span></button>
+  						 <h4 class='modal-title' id='myModalLabel'><i class='glyphicon glyphicon-tasks'></i> {$r->title}</h4>
+  					   </div>
+  					   <div class='modal-body' id='modal-body'>
+  						 <div class='form-group'>
+  							 <div id='html_telusuri'>";
+  
+  		if ( $vtype != 'application/pdf' ) {
+  			$height='100';$width='';
+  		} else { $height='100%';$width='700';}
+  
+  		$input .= "<iframe src='data:{$vtype};base64,{$tfile}' type='{$vtype}' width='{$height}' height='{$width}' alt='{$vtype}'>PDF tidak bisa ditinjau</iframe>";
+  
+  
+  		$input .= "			 </div>
+  						 </div>
+  					   </div>
+  					</div>
+  				</div>
+  			</div>";
+					  
+				  	$html .= "<td>".$input."</td>";
+					}
+
+					$html .= "</tr>";
+
+					$i++;
+				}
+			} else {
+				$html .= "<tr><td colspan='12'>Data tidak ditemukan</td></tr>";
+			}
+		}
+
+		$html .= "</tbody>
+				</table>";
+
+		$html .= "</form>";
+
+		$pagination = $this->_ajaxPagination(base_url()."dashboard/index/lists", $this->kriteria, 'index');
+		$hasil['html'] = array('html'=>$html);
+		$hasil['pagination'] = $pagination;
+
+		echo json_encode($hasil);
+	}
+}

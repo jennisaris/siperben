@@ -1,0 +1,227 @@
+2020-06-02 15:06:55.340 WIB [10404] LOG:  starting PostgreSQL 12.3 on arm-unknown-linux-androideabi, compiled by Android (5220042 based on r346389c) clang version 8.0.7 (https://android.googlesource.com/toolchain/clang b55f2d4ebfd35bf643d27dbca1bb228957008617) (https://android.googlesource.com/toolchain/llvm 3c393fe7a7e13b0fba4ac75a01aa683d7a5b11cd) (based on LLVM 8.0.7svn), 32-bit
+2020-06-02 15:06:55.341 WIB [10404] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2020-06-02 15:06:55.353 WIB [10404] LOG:  listening on Unix socket "/data/data/com.termux/files/usr/tmp/.s.PGSQL.5432"
+2020-06-02 15:06:55.539 WIB [10411] LOG:  database system was interrupted; last known up at 2020-06-01 21:33:47 WIB
+2020-06-02 15:06:56.026 WIB [10411] LOG:  database system was not properly shut down; automatic recovery in progress
+2020-06-02 15:06:56.049 WIB [10411] LOG:  redo starts at 0/1AA67DE8
+2020-06-02 15:06:56.049 WIB [10411] LOG:  invalid record length at 0/1AA67E20: wanted 24, got 0
+2020-06-02 15:06:56.049 WIB [10411] LOG:  redo done at 0/1AA67DE8
+2020-06-02 15:06:56.276 WIB [10404] LOG:  database system is ready to accept connections
+2020-06-02 15:06:59.951 WIB [10427] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-02 15:06:59.951 WIB [10427] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-02 15:07:03.378 WIB [10503] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-02 15:07:03.378 WIB [10503] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-02 15:07:24.549 WIB [10540] ERROR:  function dblink(text, text) does not exist at character 127
+2020-06-02 15:07:24.549 WIB [10540] HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2020-06-02 15:07:24.549 WIB [10540] STATEMENT:  select count(b.id) as total, b.cidorg, unitkerja.nama_unor 
+		        		from srt_t_masuk a, srt_t_masuk_history b, 
+		        		dblink('dbname=db_dikbudhr port=5432 host=localhost user=postgres password=postgres'::text, 'select "ID", "NAMA_UNOR" from hris.unitkerja'::text) unitkerja(id text, nama_unor text)
+		        		where a.id = b.isuratid and b.cidorg = unitkerja.id and 
+		        		to_char(a.tcreated, 'YYYY') = '2020' group by b.cidorg, unitkerja.nama_unor
+2020-06-02 15:07:24.568 WIB [10540] ERROR:  function dblink(text, text) does not exist at character 112
+2020-06-02 15:07:24.568 WIB [10540] HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2020-06-02 15:07:24.568 WIB [10540] STATEMENT:  select count(a.*) as total,
+						trim(a.ccreatedby) as pic,
+						pegawai.nama as nama from srt_t_masuk a,
+						dblink('dbname=db_dikbudhr port=5432 host=localhost user=postgres password=postgres'::text, 'select "NIP_BARU", "NAMA" from hris.pegawai'::text) pegawai(nip_baru text, nama text)
+						where trim(a.ccreatedby) = pegawai.nip_baru and to_char(a.tcreated, 'YYYY') = '2020'
+		                group by a.ccreatedby, pegawai.nama
+2020-06-02 15:08:04.983 WIB [10779] ERROR:  relation "srt_t_layanan_daftar_lampiran" does not exist at character 8
+2020-06-02 15:08:04.983 WIB [10779] STATEMENT:  UPDATE "srt_t_layanan_daftar_lampiran" SET "tupdated" = '2020-06-02 15:08:04', "cupdatedby" = 'superadmin'
+	WHERE "id" = 8
+2020-06-02 15:09:28.326 WIB [11588] ERROR:  column jabatan.id does not exist at character 604
+2020-06-02 15:09:28.326 WIB [11588] STATEMENT:  SELECT pegawai."ID" as pegawai_id,pegawai."PNS_ID" as pegawai_pns_id,pegawai."NIP_BARU" as pegawai_nip_baru,pegawai."NAMA" as pegawai_nama,pegawai."UNOR_ID" as pegawai_unor_id,pegawai."GOL_ID" as pegawai_gol_id,pegawai."JABATAN_INSTANSI_ID" as pegawai_jabatan_instansi_id,vw_unor_satker."ID_UNOR" as vw_unor_satker_id_unor,vw_unor_satker."ID_SATKER" as vw_unor_satker_id_satker,vw_unor_satker."NAMA_UNOR" as vw_unor_satker_nama_unor,vw_unor_satker."NAMA_SATKER" as vw_unor_satker_nama_satker,golongan."ID" as golongan_id,golongan."NAMA" as golongan_nama,golongan."NAMA_PANGKAT" as golongan_nama_pangkat,jabatan.id as jabatan_id,jabatan."KODE_JABATAN" as jabatan_kode_jabatan,jabatan."NAMA_JABATAN" as jabatan_nama_jabatan from pegawai left  join vw_unor_satker on pegawai."UNOR_ID" = vw_unor_satker."ID_UNOR" left  join golongan on pegawai."GOL_ID" = golongan."ID" left  join jabatan on pegawai."JABATAN_INSTANSI_ID" = jabatan."KODE_JABATAN" where pegawai."ID" != 0  and pegawai."UNOR_ID" IN ('193F174A1676B4E3E050640A1502411A','1940CF2301DEB17CE050640A150273EF','1954454C2799BE54E050640A150270D0','1954454C279ABE54E050640A150270D0','1954454C279BBE54E050640A150270D0','1940CF2301DFB17CE050640A150273EF','1954454C279CBE54E050640A150270D0','1954454C279DBE54E050640A150270D0','1954454C279EBE54E050640A150270D0','1940CF2301E0B17CE050640A150273EF','1954454C279FBE54E050640A150270D0','1954454C27A0BE54E050640A150270D0','1954454C27A1BE54E050640A150270D0','1940CF2301E1B17CE050640A150273EF','1954454C27A2BE54E050640A150270D0','1954454C27A3BE54E050640A150270D0','1954454C27A4BE54E050640A150270D0') and pegawai."KEDUDUKAN_HUKUM_ID" <> '99' 
+									and pegawai."KEDUDUKAN_HUKUM_ID" <> '66' 
+									and pegawai."KEDUDUKAN_HUKUM_ID" <> '52' 
+									and pegawai."KEDUDUKAN_HUKUM_ID" <> '20' 
+									and pegawai."KEDUDUKAN_HUKUM_ID" <> '04' order by pegawai."NIP_BARU" asc limit 10 offset 0
+2020-06-02 15:09:28.328 WIB [11588] ERROR:  column jabatan.id does not exist at character 604
+2020-06-02 15:09:28.328 WIB [11588] STATEMENT:  SELECT pegawai."ID" as pegawai_id,pegawai."PNS_ID" as pegawai_pns_id,pegawai."NIP_BARU" as pegawai_nip_baru,pegawai."NAMA" as pegawai_nama,pegawai."UNOR_ID" as pegawai_unor_id,pegawai."GOL_ID" as pegawai_gol_id,pegawai."JABATAN_INSTANSI_ID" as pegawai_jabatan_instansi_id,vw_unor_satker."ID_UNOR" as vw_unor_satker_id_unor,vw_unor_satker."ID_SATKER" as vw_unor_satker_id_satker,vw_unor_satker."NAMA_UNOR" as vw_unor_satker_nama_unor,vw_unor_satker."NAMA_SATKER" as vw_unor_satker_nama_satker,golongan."ID" as golongan_id,golongan."NAMA" as golongan_nama,golongan."NAMA_PANGKAT" as golongan_nama_pangkat,jabatan.id as jabatan_id,jabatan."KODE_JABATAN" as jabatan_kode_jabatan,jabatan."NAMA_JABATAN" as jabatan_nama_jabatan from pegawai left  join vw_unor_satker on pegawai."UNOR_ID" = vw_unor_satker."ID_UNOR" left  join golongan on pegawai."GOL_ID" = golongan."ID" left  join jabatan on pegawai."JABATAN_INSTANSI_ID" = jabatan."KODE_JABATAN" where pegawai."ID" != 0  and pegawai."UNOR_ID" IN ('193F174A1676B4E3E050640A1502411A','1940CF2301DEB17CE050640A150273EF','1954454C2799BE54E050640A150270D0','1954454C279ABE54E050640A150270D0','1954454C279BBE54E050640A150270D0','1940CF2301DFB17CE050640A150273EF','1954454C279CBE54E050640A150270D0','1954454C279DBE54E050640A150270D0','1954454C279EBE54E050640A150270D0','1940CF2301E0B17CE050640A150273EF','1954454C279FBE54E050640A150270D0','1954454C27A0BE54E050640A150270D0','1954454C27A1BE54E050640A150270D0','1940CF2301E1B17CE050640A150273EF','1954454C27A2BE54E050640A150270D0','1954454C27A3BE54E050640A150270D0','1954454C27A4BE54E050640A150270D0') and pegawai."KEDUDUKAN_HUKUM_ID" <> '99' 
+									and pegawai."KEDUDUKAN_HUKUM_ID" <> '66' 
+									and pegawai."KEDUDUKAN_HUKUM_ID" <> '52' 
+									and pegawai."KEDUDUKAN_HUKUM_ID" <> '20' 
+									and pegawai."KEDUDUKAN_HUKUM_ID" <> '04' order by pegawai."NIP_BARU" asc
+2020-06-03 00:05:20.771 WIB [28219] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 00:05:20.771 WIB [28219] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:15:53.539 WIB [14150] ERROR:  function dblink(text, text) does not exist at character 127
+2020-06-03 10:15:53.539 WIB [14150] HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2020-06-03 10:15:53.539 WIB [14150] STATEMENT:  select count(b.id) as total, b.cidorg, unitkerja.nama_unor 
+		        		from srt_t_masuk a, srt_t_masuk_history b, 
+		        		dblink('dbname=db_dikbudhr port=5432 host=localhost user=postgres password=postgres'::text, 'select "ID", "NAMA_UNOR" from hris.unitkerja'::text) unitkerja(id text, nama_unor text)
+		        		where a.id = b.isuratid and b.cidorg = unitkerja.id and 
+		        		to_char(a.tcreated, 'YYYY') = '2020' group by b.cidorg, unitkerja.nama_unor
+2020-06-03 10:15:53.567 WIB [14150] ERROR:  function dblink(text, text) does not exist at character 112
+2020-06-03 10:15:53.567 WIB [14150] HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2020-06-03 10:15:53.567 WIB [14150] STATEMENT:  select count(a.*) as total,
+						trim(a.ccreatedby) as pic,
+						pegawai.nama as nama from srt_t_masuk a,
+						dblink('dbname=db_dikbudhr port=5432 host=localhost user=postgres password=postgres'::text, 'select "NIP_BARU", "NAMA" from hris.pegawai'::text) pegawai(nip_baru text, nama text)
+						where trim(a.ccreatedby) = pegawai.nip_baru and to_char(a.tcreated, 'YYYY') = '2020'
+		                group by a.ccreatedby, pegawai.nama
+2020-06-03 10:15:57.774 WIB [14222] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:15:57.774 WIB [14222] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:15:57.936 WIB [14224] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:15:57.936 WIB [14224] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:00.273 WIB [14226] ERROR:  function dblink(text, text) does not exist at character 127
+2020-06-03 10:16:00.273 WIB [14226] HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2020-06-03 10:16:00.273 WIB [14226] STATEMENT:  select count(b.id) as total, b.cidorg, unitkerja.nama_unor 
+		        		from srt_t_masuk a, srt_t_masuk_history b, 
+		        		dblink('dbname=db_dikbudhr port=5432 host=localhost user=postgres password=postgres'::text, 'select "ID", "NAMA_UNOR" from hris.unitkerja'::text) unitkerja(id text, nama_unor text)
+		        		where a.id = b.isuratid and b.cidorg = unitkerja.id and 
+		        		to_char(a.tcreated, 'YYYY') = '2020' group by b.cidorg, unitkerja.nama_unor
+2020-06-03 10:16:00.291 WIB [14226] ERROR:  function dblink(text, text) does not exist at character 112
+2020-06-03 10:16:00.291 WIB [14226] HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2020-06-03 10:16:00.291 WIB [14226] STATEMENT:  select count(a.*) as total,
+						trim(a.ccreatedby) as pic,
+						pegawai.nama as nama from srt_t_masuk a,
+						dblink('dbname=db_dikbudhr port=5432 host=localhost user=postgres password=postgres'::text, 'select "NIP_BARU", "NAMA" from hris.pegawai'::text) pegawai(nip_baru text, nama text)
+						where trim(a.ccreatedby) = pegawai.nip_baru and to_char(a.tcreated, 'YYYY') = '2020'
+		                group by a.ccreatedby, pegawai.nama
+2020-06-03 10:16:03.087 WIB [14307] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:03.087 WIB [14307] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:03.259 WIB [14310] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:03.259 WIB [14310] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:03.412 WIB [14312] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:03.412 WIB [14312] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:04.102 WIB [14314] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:04.102 WIB [14314] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:04.254 WIB [14316] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:04.254 WIB [14316] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:04.385 WIB [14318] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:04.385 WIB [14318] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:05.757 WIB [14330] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:05.757 WIB [14330] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:05.897 WIB [14332] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:05.897 WIB [14332] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:06.033 WIB [14335] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:06.033 WIB [14335] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:06.684 WIB [14358] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:06.684 WIB [14358] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:06.856 WIB [14360] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:06.856 WIB [14360] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:07.017 WIB [14362] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:07.017 WIB [14362] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:21.401 WIB [14383] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:21.401 WIB [14383] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:24.012 WIB [14447] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:24.012 WIB [14447] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:32.818 WIB [14463] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:32.818 WIB [14463] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:43.741 WIB [14483] ERROR:  invalid input syntax for type integer: "" at character 56
+2020-06-03 10:16:43.741 WIB [14483] STATEMENT:  select iparentid, cmenuname from srt_t_menu where id = ''
+2020-06-03 10:16:57.726 WIB [14519] ERROR:  function dblink(text, text) does not exist at character 127
+2020-06-03 10:16:57.726 WIB [14519] HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2020-06-03 10:16:57.726 WIB [14519] STATEMENT:  select count(b.id) as total, b.cidorg, unitkerja.nama_unor 
+		        		from srt_t_masuk a, srt_t_masuk_history b, 
+		        		dblink('dbname=db_dikbudhr port=5432 host=localhost user=postgres password=postgres'::text, 'select "ID", "NAMA_UNOR" from hris.unitkerja'::text) unitkerja(id text, nama_unor text)
+		        		where a.id = b.isuratid and b.cidorg = unitkerja.id and 
+		        		to_char(a.tcreated, 'YYYY') = '2020' group by b.cidorg, unitkerja.nama_unor
+2020-06-03 10:16:57.742 WIB [14519] ERROR:  function dblink(text, text) does not exist at character 112
+2020-06-03 10:16:57.742 WIB [14519] HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2020-06-03 10:16:57.742 WIB [14519] STATEMENT:  select count(a.*) as total,
+						trim(a.ccreatedby) as pic,
+						pegawai.nama as nama from srt_t_masuk a,
+						dblink('dbname=db_dikbudhr port=5432 host=localhost user=postgres password=postgres'::text, 'select "NIP_BARU", "NAMA" from hris.pegawai'::text) pegawai(nip_baru text, nama text)
+						where trim(a.ccreatedby) = pegawai.nip_baru and to_char(a.tcreated, 'YYYY') = '2020'
+		                group by a.ccreatedby, pegawai.nama
+2020-06-05 03:45:26.151 WIB [15797] LOG:  starting PostgreSQL 12.3 on arm-unknown-linux-androideabi, compiled by Android (5220042 based on r346389c) clang version 8.0.7 (https://android.googlesource.com/toolchain/clang b55f2d4ebfd35bf643d27dbca1bb228957008617) (https://android.googlesource.com/toolchain/llvm 3c393fe7a7e13b0fba4ac75a01aa683d7a5b11cd) (based on LLVM 8.0.7svn), 32-bit
+2020-06-05 03:45:26.154 WIB [15797] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2020-06-05 03:45:26.164 WIB [15797] LOG:  listening on Unix socket "/data/data/com.termux/files/usr/tmp/.s.PGSQL.5432"
+2020-06-05 03:45:26.359 WIB [15801] LOG:  database system was interrupted; last known up at 2020-06-03 11:54:24 WIB
+2020-06-05 03:45:26.906 WIB [15801] LOG:  database system was not properly shut down; automatic recovery in progress
+2020-06-05 03:45:26.929 WIB [15801] LOG:  redo starts at 0/1AAEDB88
+2020-06-05 03:45:26.929 WIB [15801] LOG:  invalid record length at 0/1AAEDBC0: wanted 24, got 0
+2020-06-05 03:45:26.929 WIB [15801] LOG:  redo done at 0/1AAEDB88
+2020-06-05 03:45:27.273 WIB [15797] LOG:  database system is ready to accept connections
+2020-06-05 03:45:35.134 WIB [15827] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:45:35.134 WIB [15827] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:45:48.196 WIB [15859] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:45:48.196 WIB [15859] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:45:48.873 WIB [15864] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:45:48.873 WIB [15864] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:45:49.050 WIB [15866] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:45:49.050 WIB [15866] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:45:49.168 WIB [15868] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:45:49.168 WIB [15868] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:45:49.296 WIB [15870] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:45:49.296 WIB [15870] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:45:49.423 WIB [15872] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:45:49.423 WIB [15872] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:45:49.552 WIB [15874] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:45:49.552 WIB [15874] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:45:54.016 WIB [15884] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:45:54.016 WIB [15884] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:46:03.519 WIB [15918] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:46:03.519 WIB [15918] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:47:15.564 WIB [16035] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:47:15.564 WIB [16035] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:47:35.171 WIB [16087] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:47:35.171 WIB [16087] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:47:46.659 WIB [16120] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:47:46.659 WIB [16120] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 03:47:51.852 WIB [16130] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 03:47:51.852 WIB [16130] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:12.882 WIB [18651] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:12.882 WIB [18651] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:13.545 WIB [18653] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:13.545 WIB [18653] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:13.708 WIB [18655] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:13.708 WIB [18655] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:13.831 WIB [18657] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:13.831 WIB [18657] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:13.961 WIB [18659] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:13.961 WIB [18659] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:14.095 WIB [18661] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:14.095 WIB [18661] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:14.236 WIB [18664] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:14.236 WIB [18664] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:14.355 WIB [18666] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:14.355 WIB [18666] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:14.483 WIB [18668] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:14.483 WIB [18668] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:14.611 WIB [18673] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:14.611 WIB [18673] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:14.723 WIB [18675] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:14.723 WIB [18675] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:14.845 WIB [18677] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:14.845 WIB [18677] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:14.973 WIB [18679] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:14.973 WIB [18679] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:08:40.637 WIB [18727] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:08:40.637 WIB [18727] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:09:06.763 WIB [18874] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:09:06.763 WIB [18874] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:09:27.505 WIB [18925] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:09:27.505 WIB [18925] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:09:48.215 WIB [18982] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:09:48.215 WIB [18982] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2020-06-05 04:10:28.775 WIB [19079] ERROR:  invalid input syntax for type integer: "" at character 57
+2020-06-05 04:10:28.775 WIB [19079] STATEMENT:  select iparentid, cmenuname from priv_t_menu where id = ''
+2021-02-19 17:15:20.244 WIB [6237] LOG:  starting PostgreSQL 13.1 on arm-unknown-linux-androideabi, compiled by Android (6454773 based on r365631c2) clang version 9.0.8 (https://android.googlesource.com/toolchain/llvm-project 98c855489587874b2a325e7a516b99d838599c6f) (based on LLVM 9.0.8svn), 32-bit
+2021-02-19 17:15:20.252 WIB [6237] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2021-02-19 17:15:20.268 WIB [6237] LOG:  listening on Unix socket "/data/data/com.termux/files/usr/tmp/.s.PGSQL.5432"
+2021-02-19 17:15:20.469 WIB [6244] LOG:  database system was interrupted; last known up at 2021-02-09 22:48:33 WIB
+2021-02-19 17:15:20.809 WIB [6244] LOG:  database system was not properly shut down; automatic recovery in progress
+2021-02-19 17:15:20.842 WIB [6244] LOG:  redo starts at 0/124F5658
+2021-02-19 17:15:20.843 WIB [6244] LOG:  invalid record length at 0/124F5740: wanted 24, got 0
+2021-02-19 17:15:20.843 WIB [6244] LOG:  redo done at 0/124F5708
+2021-02-19 17:15:21.068 WIB [6237] LOG:  database system is ready to accept connections
+2021-02-23 23:09:01.503 WIB [18490] LOG:  starting PostgreSQL 13.1 on arm-unknown-linux-androideabi, compiled by Android (6454773 based on r365631c2) clang version 9.0.8 (https://android.googlesource.com/toolchain/llvm-project 98c855489587874b2a325e7a516b99d838599c6f) (based on LLVM 9.0.8svn), 32-bit
+2021-02-23 23:09:01.508 WIB [18490] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2021-02-23 23:09:01.533 WIB [18490] LOG:  listening on Unix socket "/data/data/com.termux/files/usr/tmp/.s.PGSQL.5432"
+2021-02-23 23:09:01.600 WIB [18496] LOG:  database system was interrupted; last known up at 2021-02-23 19:44:33 WIB
+2021-02-23 23:09:01.999 WIB [18496] LOG:  database system was not properly shut down; automatic recovery in progress
+2021-02-23 23:09:02.033 WIB [18496] LOG:  redo starts at 0/125178D8
+2021-02-23 23:09:02.033 WIB [18496] LOG:  invalid record length at 0/125179C0: wanted 24, got 0
+2021-02-23 23:09:02.033 WIB [18496] LOG:  redo done at 0/12517988
+2021-02-23 23:09:02.141 WIB [18490] LOG:  database system is ready to accept connections
+2021-03-01 15:51:02.181 WIB [22484] FATAL:  database "u0_a344" does not exist
+2021-04-02 20:08:48.564 WIB [8329] LOG:  starting PostgreSQL 13.1 on arm-unknown-linux-androideabi, compiled by Android (6454773 based on r365631c2) clang version 9.0.8 (https://android.googlesource.com/toolchain/llvm-project 98c855489587874b2a325e7a516b99d838599c6f) (based on LLVM 9.0.8svn), 32-bit
+2021-04-02 20:08:48.583 WIB [8329] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2021-04-02 20:08:48.655 WIB [8329] LOG:  listening on Unix socket "/data/data/com.termux/files/usr/tmp/.s.PGSQL.5432"
+2021-04-02 20:08:48.821 WIB [8335] LOG:  database system was interrupted; last known up at 2021-03-21 05:06:36 WIB
+2021-04-02 20:08:49.215 WIB [8335] LOG:  database system was not properly shut down; automatic recovery in progress
+2021-04-02 20:08:49.252 WIB [8335] LOG:  redo starts at 0/125CF330
+2021-04-02 20:08:49.252 WIB [8335] LOG:  invalid record length at 0/125CF418: wanted 24, got 0
+2021-04-02 20:08:49.252 WIB [8335] LOG:  redo done at 0/125CF3E0
+2021-04-02 20:08:49.541 WIB [8329] LOG:  database system is ready to accept connections

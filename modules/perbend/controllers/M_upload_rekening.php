@@ -1,0 +1,206 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+
+class M_upload_rekening extends MX_Controller {
+  var $prefix = 'app';
+	public function __construct() {
+		parent::__construct();
+		$controller = "perbend/m_upload_rekening";
+		$table  = $this->prefix."_m_unor_rekening";
+
+   		$this->_setTitle('Rekening Satuan Kerja');
+		$this->_setController($controller);
+		$this->_init('default');
+        $this->_setModal(true);
+
+		$this->_addTable($table);
+		$this->_addField($table, 'id', '', true, true);
+        $this->_addField($table, 'file', 'Dokumen', true, false, true);
+
+        $this->_changeType($table, 'file', 'file');
+		
+		//clear session header_controller
+		$this->session->unset_userdata('header_controller');
+	}
+
+    function save() {
+        $post = (Object)$_POST;
+        //print_r($_FILES);
+        //exit;
+        //$uploads = 'excel/sprint/'.trim($this->session->username);
+        //if (!file_exists(realpath($uploads))) {
+        //    mkdir($uploads);
+        //}
+        
+        $files = $this->uploadfiles($_FILES['app_m_unor_rekening_file'], false);
+        $spreadsheet = IOFactory::load($files->tmp);
+        $sheet = $spreadsheet->getActiveSheet();
+        $rowIterator = $sheet->getRowIterator();
+        $array_data = array();
+        $data = array();
+
+        foreach($rowIterator as $row){
+            $rowIndex = $row->getRowIndex();	
+            
+            //ambil NIP
+            if ($rowIndex > 4) {
+            
+                $array_data[$rowIndex] = array('A'=>'','B'=>'', 'C'=>'', 'D'=>'', 'E'=>''
+                , 'F'=>'', 'G'=>'', 'H'=>'', 'I'=>'', 'J'=>'', 'K'=>'', 'L'=>'', 'M'=>'');
+                        
+                $cell = $sheet->getCell('A' . $rowIndex);
+                if ($cell->getValue() =='' ) break;
+                $array_data[$rowIndex]['A'] = $cell->getValue();
+
+                $cell = $sheet->getCell('B' . $rowIndex);
+                $array_data[$rowIndex]['B'] = $cell->getValue();
+                
+                $cell = $sheet->getCell('C' . $rowIndex);
+                $array_data[$rowIndex]['C'] = $cell->getValue();
+                
+                $cell = $sheet->getCell('D' . $rowIndex);
+                $array_data[$rowIndex]['D'] = $cell->getValue(); 
+                
+                $cell = $sheet->getCell('E' . $rowIndex);
+                $array_data[$rowIndex]['E'] = $cell->getValue();
+
+                $cell = $sheet->getCell('F' . $rowIndex);
+                $array_data[$rowIndex]['F'] = $cell->getValue();
+
+                $cell = $sheet->getCell('G' . $rowIndex);
+                $array_data[$rowIndex]['G'] = $cell->getValue();
+
+                $cell = $sheet->getCell('H' . $rowIndex);
+                $array_data[$rowIndex]['H'] = $cell->getValue();
+
+                $cell = $sheet->getCell('I' . $rowIndex);
+                $array_data[$rowIndex]['I'] = $cell->getValue();
+
+                $cell = $sheet->getCell('J' . $rowIndex);
+                $array_data[$rowIndex]['J'] = $cell->getValue();
+
+                $cell = $sheet->getCell('K' . $rowIndex);
+                $array_data[$rowIndex]['K'] = $cell->getFormattedValue();
+
+                $cell = $sheet->getCell('L' . $rowIndex);
+                $array_data[$rowIndex]['L'] = $cell->getValue();
+
+                $cell = $sheet->getCell('M' . $rowIndex);
+                $array_data[$rowIndex]['M'] = $cell->getFormattedValue();
+                
+                /* $cell = $sheet->getCell('N' . $rowIndex);
+                $array_data[$rowIndex]['N'] = $cell->getValue();
+
+                $cell = $sheet->getCell('O' . $rowIndex);
+                $array_data[$rowIndex]['O'] = $cell->getFormattedValue(); */
+
+                    
+            }
+        }
+
+        foreach($array_data as $d) {
+            if ( trim($d['A']) == '' ) break;
+            else $data[] = $d;
+        }
+
+        //print_r($data);
+        //exit;
+
+        $status_aktif = ['Aktif'=>0, 'Non Aktif'=>1];
+        $query = array();
+        $today = date('Y-m-d H:i:s');
+        $username = $this->session->username;
+        foreach($data as $d) {
+            $kdsatker = trim($d['C']);
+            $norek = str_replace("'", "", trim($d['E']));
+            $nmrek = str_replace("'", "`", trim($d['F']));
+            $nmbank = str_replace("'", "`", trim($d['G']));
+            $jenis = $this->getrow('', 'app_m_jenis_rekening', 'id', ['nama'=>trim($d['H'])])->id != '' ? $this->getrow('', 'app_m_jenis_rekening', 'id', ['nama'=>trim($d['H'])])->id : 0;
+            $tipe = 0;//$this->getrow('', 'app_m_tipe_rekening', 'id', ['nama'=>trim($d['I'])])->id != '' ? $this->getrow('', 'app_m_tipe_rekening', 'id', ['nama'=>trim($d['I'])])->id : 0;
+            $cluster = 0;//$this->getrow('', 'app_m_cluster_rekening', 'id', ['nama'=>trim($d['J'])])->id != '' ? $this->getrow('', 'app_m_cluster_rekening', 'id', ['nama'=>trim($d['J'])])->id : 0;
+            $aktif = $status_aktif[trim($d['I'])];
+            $no_surat1 = trim($d['J']);
+            $tgl_surat1 = (trim($d['K']) != '' ? date('Y-m-d', strtotime(trim($d['K']))) : NULL);
+            $no_surat2 = trim($d['L']);
+            $tgl_surat2 = (trim($d['M']) != '' ? date('Y-m-d', strtotime(trim($d['M']))) : NULL);
+            $issync = ( $this->getrow('', 'app_t_rekening_sprint', 'count(*) as total', ['kode_satker'=>$kdsatker, 'no_rekening'=>$norek])->total > 0 ? 1 : 0);
+
+            //if ( $norek == '652784195271000' ) {
+            //    echo $d['J'].' => '.trim($d['K']).' => '.$tgl_surat1.' => '.trim($d['M']).' => '.$tgl_surat2;
+            //    exit;
+            //}
+
+            //check dulu
+            if ( $this->getrow('', 'app_m_unor_rekening', 'count(*) as total', ['kode_satker'=>$kdsatker, 'no_rekening'=>$norek])->total > 0 ) {
+                //update
+                $sql = "UPDATE app_m_unor_rekening set nama_rekening='{$nmrek}', 
+                            jenis_rekening='{$jenis}', tipe='{$tipe}', cluster='{$cluster}', istatus='{$aktif}',
+                            no_surat1='{$no_surat1}'";
+                if ( $tgl_surat1 != NULL ) $sql .= ", tgl_surat1 = '{$tgl_surat1}'"; 
+                $sql .= ",no_surat2='{$no_surat2}' ";
+                if ( $tgl_surat2 != NULL ) $sql .= ", tgl_surat2 = '{$tgl_surat2}'";
+                $sql .= ",issync = '{$issync}' where kode_satker='{$kdsatker}' and no_rekening='{$norek}'";
+
+                $query[] = $sql;
+            } else {
+                //INSERT
+                $sql = "INSERT INTO app_m_unor_rekening (kode_satker, no_rekening,
+                            nama_rekening, nama_bank, jenis_rekening, tipe, cluster, 
+                            istatus, no_surat1 ";
+                if ( $tgl_surat1 != NULL ) $sql .= ", tgl_surat1";            
+                $sql .= ", no_surat2";
+                if ( $tgl_surat2 != NULL ) $sql .= ", tgl_surat2"; 
+                $sql .= ", issync, createdat, createdby) VALUES 
+                            ('{$kdsatker}', '{$norek}', '{$nmrek}', '{$nmbank}', '{$jenis}', 
+                            '{$tipe}', '{$cluster}', '{$aktif}', '{$no_surat1}' ";
+                if ( $tgl_surat1 != NULL ) $sql .= ", '{$tgl_surat1}'";            
+                $sql .= ", '{$no_surat2}'";
+                if ( $tgl_surat2 != NULL ) $sql .= ", '{$tgl_surat2}'";             
+                $sql .= ", '{$issync}', '{$today}', '{$username}')";
+
+                $query[] = $sql;
+            }
+        }
+
+        //print_r($query);
+        //exit;
+
+        /* foreach($query as $q) {
+            try {
+                $this->db->query($q);
+            }catch(Exception $e) {
+                die($e->getMessage());
+            }
+        } */
+
+        $this->db->trans_start();
+        foreach($query as $q) {
+            $this->db->query($q);
+        }
+        $this->db->trans_complete();
+
+        $datas = [];
+        $datas['id'] = 0;
+        if ($this->db->trans_status() === FALSE) {
+            $datas['status'] = false;
+            $datas['msg'] = 'Import gagal disimpan';
+            $this->db->trans_rollback();
+        } else {
+            $datas['status'] = true;
+            $datas['msg'] = 'Import berhasil disimpan';
+            $this->db->trans_commit();
+        }
+
+        echo json_encode($datas);
+    }
+
+    function listBox_ACTION($buttons) {
+        unset($buttons);
+
+        return $buttons;
+    }
+
+}

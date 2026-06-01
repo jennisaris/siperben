@@ -1,0 +1,44 @@
+<?php
+$CI =&get_instance();
+$controller = strtolower($controller);
+?>
+<div class="panel-heading" onclick="$('#<?=$controller;?>-panel-body-search').toggle();">
+	<div class="row">
+		<div class="col-xs-12 col-md-12 text-left">
+			<b>Pencarian <?=$title?></b>
+		</div>
+	</div>
+</div>
+<div class='panel-body' id='<?=$controller;?>-panel-body-search'>
+	<div class="row">
+		<div class="col-xs-12 col-md-12 text-left">
+			<form id='<?=$controller;?>_form_search' onsubmit="$('#<?=$controller;?>_btn_search').click();return false;" class='form-horizontal'>
+				
+				<div class='col-xs-12 col-md-12'>
+					<?php
+						foreach($search as $k=>$s) {
+							if ( $k != 'totunhide' && $s['hide'] == TRUE && trim($s['label']) == '') {
+									echo $s['crit'];
+								} else {
+					?>
+					<div class="form-group div_q_<?=$name;?>">
+						<?php if ( trim($s['label']) != '' && $s['hide'] == FALSE ) { ;?><label for="q_<?=$s['label'];?>" class="col-sm-2 control-label" style='text-align: left;'><?=$s['label'];?></label><?php } ?>
+					    <div class="col-sm-10">
+					      <?=$s['crit'];?>
+					    </div>
+				    </div>
+				    
+				    <?php
+								}
+							}
+				    ?>
+				    <div class="form-group">
+			    		<?php foreach($search['button'] as $b) {
+			    			echo $b.'&nbsp;';	
+			    		}?>
+		       		</div>
+				</div>
+	    	</form>
+	    </div>
+	</div>
+</div>

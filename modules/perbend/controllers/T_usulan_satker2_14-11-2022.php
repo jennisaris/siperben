@@ -1,0 +1,972 @@
+<?php
+ini_set('memory_limit', '2048M');
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+//require_once 'T_usulan_daftar.php';
+
+/* Namespace alias. */
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+class T_usulan_satker2 extends MX_Controller {
+  var $prefix = 'app';
+  var $ar_statusid = array();
+  var $ar_statusperubahan = array();
+
+  var $ar_unor = array();
+	public function __construct() {
+		parent::__construct();
+		$controller = "perbend/t_usulan_satker2";
+		$table  = $this->prefix."_t_usulan";
+
+   		//$this->_setTitle('Usulan Satker (Lainnya)');
+   		$this->_setTitle('Usulan Satker (Lainnya)');
+		$this->_setController($controller);
+		$this->_init('default');
+
+		$this->_addTable($table);
+		$this->_addField($table, 'id', '', true, true);
+		$this->_addField($table, 'ijns', 'ijns', false, true);
+		$this->_addField($table, 'iunorid', 'Satuan Kerja', true);
+		$this->_addField($table, 'cnousul', 'No. SK', true);
+		$this->_addField($table, 'dtglusul', 'Tgl. SK', true);
+		$this->_addField($table, 'istatusid', 'Status Perubahan', false, true);
+		$this->_addField($table, 'ijnsprubhnid', 'Jenis Perubahan', false, true);
+		$this->_addField($table, 'lampiran', 'Lampiran Surat Keputusan (dlm format PDF)', false, false, true);
+		$this->_addField($table, 'istatus', 'Status Usulan', false);
+		$this->_addField($table, 'valasan', 'Alasan Penolakan', false, true);
+		$this->_addField($table, 'keterangan', 'Keterangan', false, true, true);
+		$this->_addField($table, 'daftarnama', '', false, false, true, 0, 'left', '','', true);
+		$this->_addField($table, 'tcreated', 'Waktu dibuat', false, true);
+		$this->_addField($table, 'ccreatedby', 'Dibuat oleh', false, true);
+		$this->_addField($table, 'tupdated', 'Waktu ubah', false, true);
+		$this->_addField($table, 'cupdatedby', 'Diubah oleh', false, true);
+		$this->_addField($table, 'ctahun', 'ctahun', false, true);
+		$this->_addField($table, 'itipe', 'itipe', false, true);
+		//$this->_addField($table, 'tfile', 'Lampiran', true, true);
+		//$this->_addField($table, 'tfile_path', 'Lampiran', false, true);
+		$this->_addField($table, 'vtype', 'Tipe Dokumen', false, true);
+		$this->_addField($table, 'nsize', 'nsize', false, true);
+		if ( trim($this->session->username) == trim($this->session->sysparam->superuser[0]) ) $israhasia = false;
+		else $israhasia = true;
+		$this->_addField($table, 'israhasia', 'Rahasia ?', false, $israhasia);
+
+		//$this->_add2SearchField($table, 'cnip');
+		//$this->_add2SearchField($table, 'vname');
+		//$this->_add2SearchField($table, 'ldeleted');
+		
+		$rows = $this->getall('', $this->prefix.'_m_status', '*', array('ldeleted'=>0));
+		foreach($rows as $r) {
+		$this->ar_statusid[$r->id] = $r->vdesc;
+		}
+		
+		$this->_changeType($table, 'istatusid', 'combobox', 
+		$this->ar_statusid);
+		
+		$rows = $this->getall('', $this->prefix.'_m_perubahan', '*', array('ldeleted'=>0));
+		foreach($rows as $r) {
+		$this->ar_statusperubahan[$r->id] = $r->vdesc;
+		}
+		
+		$this->_changeType($table, 'ijnsprubhnid', 'combobox', 
+		$this->ar_statusperubahan);
+		
+		$this->_changeType($table, 'istatus', 'combobox', 
+		$this->session->sysparam->status_usulan2);
+
+		if ( trim($this->session->username) == trim($this->session->sysparam->superuser[0]) ) $this->_changeType($table, 'israhasia', 'combobox', $this->session->sysparam->yesno);
+		
+		$this->_changeType($table, 'dtglusul', 'date', 'd-m-Y');
+		
+		$this->_add2SearchField($table, 'cnousul');
+		$this->_add2SearchField($table, 'dtglusul');
+		//$this->_add2SearchField($table, 'istatusid');
+		//$this->_add2SearchField($table, 'ijnsprubhnid');
+		
+		$this->_setAlign($table, 'dtglusul', 'center');
+		$this->_setAlign($table, 'istatus', 'center');
+		$this->_setAlign($table, 'istatusid', 'center');
+		$this->_setAlign($table, 'ijnsprubhnid', 'center');
+    
+		$this->_add2ListField($table, 'iunorid, cnousul, dtglusul, istatus, keterangan, lampiran');//, tfile,istatusid, ijnsprubhnid,  tupdated, cupdatedby');
+
+		//if ( $this->session->groupid != $this->session->sysparam->group_superuser[0] ) {
+		/*if ( !$this->session->superuser ) {
+			$this->_addQuery($table, $table.'.iunorid = '.trim($this->session->username), 'and', '', true);
+		}*/
+		//if ( !in_array($this->session->groupid, explode(",", $this->session->sysparam->all_group[0])) ) {
+		if ( !$this->session->isadmin ) {			
+			$this->_addQuery($table, $table.".iunorid = '".trim($this->session->username)."'", 'and', '', true);
+		} else {
+		  $groupids = explode(',', $this->session->groupid);
+		  $all_groups = explode(",", $this->session->sysparam->all_group[0]);
+			//if ( in_array($this->session->sysparam->group_superuser[0], $groupids) ) {
+
+			$ada = 0;
+			foreach($groupids as $g) {
+				if (in_array($g, $all_groups)) $ada++;
+			}
+
+			if ( $ada > 0 ) {
+				$ar_unor = array();
+				foreach($this->getall('', 'app_m_unor', 'kode, nama') as $r) {
+					$ar_unor[$r->kode] = $r->nama; 
+				}
+			} else {
+				$ar_unor = $this->session->orgs;
+			}
+
+			foreach($ar_unor as $k=>$v) {
+				$ar_unor_[] = $k; 
+			}
+			
+			$this->_changeType($table, 'iunorid', 'combobox', $ar_unor);
+			$this->_add2SearchField($table, 'iunorid');
+
+			$ar_unor_ = "'".implode("','", $ar_unor_)."'";
+			$this->_addQuery($table, $table.".iunorid in ({$ar_unor_})", "and", "", true);
+		}
+
+		$this->_addQuery($table, 'app_t_usulan.ijns = 2', 'and', '', true);
+		//$this->_addQuery($table, 'app_t_usulan.istatus != 7', 'and', '', true);
+		$this->_addQuery($table, "app_t_usulan.ctahun = '{$this->session->settahun}'", 'and', '', true);
+		if ( trim($this->session->username) != trim($this->session->sysparam->superuser[0]) ) $this->_addQuery($table, "app_t_usulan.israhasia = '0'", 'and', '', true);
+		
+		$this->_addOrderBy($table, ['dtglusul'=>'asc']);
+
+		//clear session header_controller
+		$this->session->unset_userdata('header_controller');
+	}
+	
+	function insertBox_app_t_usulan_ctahun($name) {
+		$input = "<input type='hidden' name='{$name}' class='form-control {$name}' id='{$name}' value='{$this->session->settahun}'/>";
+
+		return $input;
+	}
+	
+	function listBox_app_t_usulan_tupdated($value, $datas) {
+	  if ( $value != null ) {
+	    return date('d-m-Y H:i:s', strtotime($value));
+	  } else return date('d-m-Y H:i:s', strtotime($datas->app_t_usulan_tcreated));
+	}
+	
+	function listBox_app_t_usulan_cupdatedby($value, $datas) {
+	  if ( $value != null ) {
+	    $nama = $this->getrow($this->db, 'priv_t_user', 'realname', array('username'=>trim($value)))->realname;
+	   } else {
+	     $nama = $this->getrow($this->db, 'priv_t_user', 'realname', array('username'=>trim($datas->app_t_usulan_ccreatedby)))->realname;
+	   }
+	  
+	  return $nama;
+	}
+
+	function insertBox_app_t_usulan_iunorid($name) {
+		$groupids = explode(',', $this->session->groupid);
+			$ada = 0;
+			if (sizeOf($groupids) > 0 ) {
+  			foreach($groupids as $g) {
+  			  //echo $g.',';
+    			if ( in_array($g, explode(",", $this->session->sysparam->all_group[0])) ) $ada++;
+  			}
+			} else {
+			  if ( in_array($this->session->groupid, explode(",", $this->session->sysparam->all_group[0])) ) $ada++;
+			}
+		if ( $ada == 0 ) {
+			$name_txt = $this->getrow('', 'app_m_unor', 'nama', array('kode'=>$this->session->username))->nama;
+			$input = "<input type='hidden' name='{$name}' id='{$name}' class='form-control {$name}' value='{$this->session->username}'/>";
+			$input .= "<input readonly type='text' name='{$name}_txt' id='{$name}' class='form-control {$name}' value='{$name_txt}'/>";
+		} else {
+
+			$input = "<input type='hidden' name='{$name}' id='{$name}' class='form-control {$name}' value=''/>";
+			$input .= "<input placeholder='Satuan Kerja' type='text' name='{$name}_txt' id='{$name}_txt' class='form-control {$name}_txt' value=''/>"; 
+		}
+
+		return $input;
+	}
+
+	function updateBox_app_t_usulan_iunorid($name, $value) {
+		$name_txt = $this->getrow('', 'app_m_unor', 'nama', array('kode'=>$value))->nama;
+		$groupids = explode(',', $this->session->groupid);
+			$ada = 0;
+			if (sizeOf($groupids) > 0 ) {
+  			foreach($groupids as $g) {
+  			  //echo $g.',';
+    			if ( in_array($g, explode(",", $this->session->sysparam->all_group[0])) ) $ada++;
+  			}
+			} else {
+			  if ( in_array($this->session->groupid, explode(",", $this->session->sysparam->all_group[0])) ) $ada++;
+			}
+		if ( $ada == 0 ) {
+			
+			$input = "<input type='hidden' name='{$name}' id='{$name}' class='form-control {$name}' value='{$this->session->username}'/>";
+			$input .= "<input readonly type='text' name='{$name}_txt' id='{$name}_txt' class='form-control {$name}_txt' value='{$name_txt}'/>";
+		} else {
+
+			$input = "<input type='hidden' name='{$name}' id='{$name}' class='form-control {$name}' value='{$value}'/>";
+			$input .= "<input placeholder='Satuan Kerja' type='text' name='{$name}_txt' id='{$name}_txt' class='form-control {$name}_txt' value='{$name_txt}'/>"; 
+		}
+
+		return $input;
+	}
+
+	function viewBox_app_t_usulan_iunorid($name, $value) {
+		$name_txt = $this->getrow('', 'app_m_unor', 'nama', array('kode'=>$value))->nama;
+		$html = "<p class='form-control-static {$name}'>".$name_txt."</p>";
+		return $html;
+	}
+
+	function listBox_app_t_usulan_iunorid($value) {
+		$name_txt = $this->getrow('', 'app_m_unor', 'nama', array('kode'=>$value))->nama;
+		return $name_txt;
+	}
+
+	public function after_insert_processor($id, $post) {
+		$new_post = array();
+
+		$files = $this->uploadfiles($_FILES['app_t_usulan_lampiran'], $id);
+		if ( !empty($files->file) ) {
+			$new_post['tfile'] = $files->file;
+			$new_post['vtype'] = $files->type;
+			$new_post['nsize'] = $files->size;
+		}
+		
+		$new_post['tcreated']   = date('Y-m-d H:i:s');
+		$new_post['ccreatedby'] = $this->session->userdata['username'];
+
+		$this->db->where('id', $id);
+		$this->db->update($this->prefix.'_t_usulan', $new_post);
+	}
+
+	public function after_update_processor($id, $post, $oldpost) {
+		$new_post = array();
+		$files = $this->uploadfiles($_FILES['app_t_usulan_lampiran'], $id);
+		if ( !empty($files->file) ) {
+			$new_post['tfile'] = $files->file;
+			$new_post['vtype'] = $files->type;
+			$new_post['nsize'] = $files->size;
+		}
+
+		$new_post['tupdated']   = date('Y-m-d H:i:s');
+		$new_post['cupdatedby'] = $this->session->userdata['username'];
+
+		$this->db->where('id', $id);
+		$this->db->update($this->prefix.'_t_usulan', $new_post);
+
+		if ($post->app_t_usulan_istatus == 3) {
+			$post->app_t_usulan_id = $id;
+
+
+			//update detail pegawai
+				$new_post = array();
+				$new_post['istatus'] = 0;
+				$new_post['valasan'] = NULL;
+				$new_post['istatus2'] = 0;
+				$new_post['valasan2'] = NULL;
+				$new_post['tupdated']   = date('Y-m-d H:i:s');
+				$new_post['cupdatedby'] = $this->session->userdata['username'];
+
+				$this->db->where('iusulanid', $id);
+				$this->db->update($this->prefix.'_t_usulan_pegawai', $new_post);
+			//update detail pegawai
+
+			//print_r($post);exit;
+    		//send_email ke next step
+    		//$this->send_email(2, '', '', $post, TRUE);
+    		
+    		//send_email ke requestor
+    		$tos = [
+    		  0=>(object)['unorid'=>$post->app_t_usulan_iunorid, 'email'=>$this->getrow('', 'priv_t_user', 'email', ['username'=>trim($post->app_t_usulan_iunorid)])->email]
+    		];
+    		//print_r($tos);
+    		//exit;
+			$tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[99]->url."?q=".$post->app_t_usulan_cnousul."'>disini</a>";
+				
+			$tahap = $this->session->sysparam->status_usulan[1];
+			$pesan = str_replace("__tautan__", $tautan, $this->session->sysparam->group_verifikator[99]->msg);
+			$pesan = str_replace("__tahap__", $tahap, $pesan);
+    		//$this->send_email(99, $tos, $pesan, $post);
+		}
+	}
+
+	function listBox_app_t_usulan_keterangan($value, $datas) {
+		$pesan = '';
+		$sql = "SELECT count(*) as total from app_t_usulan_pegawai where iusulanid = {$datas->app_t_usulan_id} and 
+				case
+					when istatus2 != 0 then istatus2
+					else istatus
+				end = 2";
+		$total = $this->db->query($sql)->row()->total;
+		if ( $total > 0 ) {
+			$pesan = " Ada {$total} penolakan ";
+		} else $pesan = "";
+
+		return $pesan;
+	}
+	
+	function listBox_ACTION($buttons, $datas) {
+		//unset($buttons['hapus']);
+
+		if ( $datas->app_t_usulan_istatus != 5) {
+
+			$sql = "SELECT count(*) as total from app_t_usulan_pegawai where iusulanid = {$datas->app_t_usulan_id} and 
+					case
+					when istatus2 != 0 then istatus2
+					else istatus
+					end = 2";
+			$total = $this->db->query($sql)->row()->total;
+			
+			//echo $total.' '.trim($datas->app_t_usulan_ccreatedby).' '.trim($this->session->username).' '.trim($datas->app_t_usulan_iunorid);
+			//exit;
+			if ( $datas->app_t_usulan_itipe == 0 ) {
+				if ( $total > 0 || 
+					( 
+					trim($datas->app_t_usulan_ccreatedby) != trim($this->session->username) 
+					&& trim($datas->app_t_usulan_iunorid) != trim($this->session->username))
+					){
+					unset($buttons['ubah']);
+					if ( !$this->session->superuser ) unset($buttons['hapus']);
+				/*} else if(!$this->session->isadmin) {
+					if (trim($datas->app_t_usulan_ccreatedby) != trim($this->session->username) 
+						&& trim($datas->app_t_usulan_iunorid) != trim($this->session->username))
+					{
+						//echo trim($datas->app_t_usulan_ccreatedby).' '.trim($datas->app_t_usulan_iunorid) .'!='. trim($this->session->username);exit;
+						
+						unset($buttons['ubah']);
+						unset($buttons['hapus']);
+					} /*else {
+						//echo 'bal';exit;
+						//echo '2 => '.trim($datas->app_t_usulan_ccreatedby).' '.trim($datas->app_t_usulan_iunorid) .'!='. trim($this->session->username);exit;
+					}
+				*/
+				} else {
+					if ( $datas->app_t_usulan_istatus > 0 ) unset($buttons['ubah']);
+				}
+			} else {
+				$groupids = explode(',', $this->session->groupid);
+				//print_r($groupids);
+				$ada = 0;
+				if (sizeOf($groupids) > 0 ) {
+					foreach($groupids as $g) {
+					//echo $g.',';
+						if ( in_array($g, explode(",", $this->session->sysparam->all_group[0])) ) $ada++;
+					}
+				} else {
+					if ( in_array($this->session->groupid, explode(",", $this->session->sysparam->all_group[0])) ) $ada++;
+				}
+					
+				//echo 'ada'.$ada;exit;
+				if ( $ada == 0 )  unset($buttons['ubah']);
+				if ( !$this->session->superuser ) unset($buttons['hapus']);//unset($buttons['hapus']);
+			}
+		} else {
+			unset($buttons['hapus']);
+		}
+
+	  
+	  return $buttons;
+	
+	}
+	
+	public function insertBox_app_t_usulan_lampiran($name) {
+		$input = "<input type='file' name='{$name}' id='{$name}' class='form-control {$name}' accept='application/pdf'/>";
+		$input .= $this->session->sysparam->info_max_upload[0];
+		return $input;
+	}
+	
+	function listBox_app_t_usulan_lampiran($value, $datas) {
+	  $input = "";
+	  
+	  //$vtype = trim($datas->app_t_usulan_vtype);
+	  $nsize = (int)$datas->app_t_usulan_nsize;
+	  	//$files = $this->getrow('', $this->prefix."_t_usulan", 'tfile, vtype', ['id'=>$datas->app_t_usulan_id]);
+		//$tfile = $files->tfile;
+		//$vtype = trim($files->vtype);
+	  
+	  if ( $nsize > 0 ){
+			$input .= "<span data-toggle='modal' data-target='#myPreview_{$datas->app_t_usulan_id}' style='cursor:pointer;' class='label label-primary' 
+						onclick='get_attachment({$datas->app_t_usulan_id}, \"myPreview_{$datas->app_t_usulan_id}\");'>
+						<b>Surat Keputusan</b>
+					  </span>";
+  	  $input .= "<div class='modal fade' id='myPreview_{$datas->app_t_usulan_id}' role='dialog' aria-labelledby='myModalLabel' data-backdrop='static' data-keyboard='false'>
+  				   <div class='modal-dialog' role='document' style='width:65%;'>
+  					 <div class='modal-content'>
+  					   <div class='modal-header'>
+  						 <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+  						 <h4 class='modal-title' id='myModalLabel'><i class='glyphicon glyphicon-tasks'></i> Surat Usulan {$datas->app_t_usulan_cnousul}</h4>
+  					   </div>
+  					   <div class='modal-body' id='modal-body'>
+  						 <div class='form-group'>
+  							 <div id='html_telusuri'>";
+  
+  		//if ( $vtype != 'application/pdf' ) {
+  		//	$height='100';$width='';
+  		//} else { $height='100%';$width='700';}
+  
+  		//$input .= "<embed src='".base_url()."{$tfile}' type='{$vtype}' width='{$height}' height='{$width}' alt='{$vtype}'>";
+  
+  
+  		$input .= "			 </div>
+  						 </div>
+						   <center>
+								<button class='btn btn-warning' type='button'
+									onclick=\"$('#myPreview_{$datas->app_t_usulan_id}').modal('hide').appendTo('#t_usulan_satker2_list-edit');$('#{$this->router->class}_form-modal').css('overflow', 'scroll');\">
+								Tutup</button>
+							</center>
+  					   </div>
+  					</div>
+  				</div>
+  			</div>";
+	  }
+	  
+		return $input;
+	}
+
+	public function updateBox_app_t_usulan_lampiran($name, $value, $datas) {
+		//$tfile = $datas->app_t_usulan_tfile;
+		//$vtype = trim($datas->app_t_usulan_vtype);
+		//$files = $this->getrow('', $this->prefix."_t_usulan", 'tfile, vtype', ['id'=>$datas->app_t_usulan_id]);
+		//$tfile = $files->tfile;
+		//$vtype = trim($files->vtype);
+		$nsize = (int)$datas->app_t_usulan_nsize;
+
+		$input = "<input type='file' name='{$name}' id='{$name}' class='form-control {$name}' accept='application/pdf'/>";
+		$input .= $this->session->sysparam->info_max_upload[0];
+		if ( $nsize > 0 ){
+			$input .= "<br/><span data-toggle='modal' data-target='#myPreview_{$datas->app_t_usulan_id}' style='cursor:pointer;' class='label label-primary' 
+						onclick='get_attachment({$datas->app_t_usulan_id}, \"myPreview_{$datas->app_t_usulan_id}\");'>
+						<b>Surat Usulan</b>
+					  </span>";
+		}
+
+		$input .= "<div class='modal fade' id='myPreview' role='dialog' aria-labelledby='myModalLabel' data-backdrop='static' data-keyboard='false'>
+				   <div class='modal-dialog' role='document' style='width:65%;'>
+					 <div class='modal-content'>
+					   <div class='modal-header'>
+						 <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+						 <h4 class='modal-title' id='myModalLabel'><i class='glyphicon glyphicon-tasks'></i> Surat Usulan {$datas->app_t_usulan_cnousul} </h4>
+					   </div>
+					   <div class='modal-body' id='modal-body'>
+						 <div class='form-group'>
+							 <div id='html_telusuri'>";
+
+		/*if (trim($vtype) != 'application/pdf' ) {
+			$height='100';$width='';
+		} else { $height='100%';$width='700';}
+
+		$input .= "<embed src='data:{$vtype};base64,{$tfile}' type='{$vtype}' width='{$height}' height='{$width}' alt='{$vtype}'>";
+		*/
+
+		$input .= "			 </div>
+						 </div>
+						 <center>
+								<button class='btn btn-warning' type='button'
+									onclick=\"$('#myPreview_{$datas->app_t_usulan_id}').modal('hide').appendTo('#t_usulan_satker2_list-edit');$('#{$this->router->class}_form-modal').css('overflow', 'scroll');\">
+								Tutup</button>
+							</center>
+					   </div>
+					</div>
+				</div>
+			</div>";
+
+		
+		return $input;
+	}
+
+	public function viewBox_app_t_usulan_lampiran($name, $value, $datas) {
+		$input = '';
+		$nsize = (int)$datas->app_t_usulan_nsize;
+
+		$input .= $this->session->sysparam->info_max_upload[0];
+		if ( $nsize > 0 ){
+			$input .= "<br/><span data-toggle='modal' data-target='#myPreview_{$datas->app_t_usulan_id}' style='cursor:pointer;' class='label label-primary' 
+						onclick='get_attachment({$datas->app_t_usulan_id}, \"myPreview_{$datas->app_t_usulan_id}\");'>
+						<b>Surat Usulan</b>
+					  </span>";
+		}
+
+		$input .= "<div class='modal fade' id='myPreview_{$datas->app_t_usulan_id}' role='dialog' aria-labelledby='myModalLabel' data-backdrop='static' data-keyboard='false'>
+				   <div class='modal-dialog' role='document' style='width:65%;'>
+					 <div class='modal-content'>
+					   <div class='modal-header'>
+						 <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+						 <h4 class='modal-title' id='myModalLabel'><i class='glyphicon glyphicon-tasks'></i> Surat Usulan {$datas->app_t_usulan_cnousul} </h4>
+					   </div>
+					   <div class='modal-body' id='modal-body'>
+						 <div class='form-group'>
+							 <div id='html_telusuri'>";
+
+		/*if (trim($vtype) != 'application/pdf' ) {
+			$height='100';$width='';
+		} else { $height='100%';$width='700';}
+
+		$input .= "<embed src='data:{$vtype};base64,{$tfile}' type='{$vtype}' width='{$height}' height='{$width}' alt='{$vtype}'>";
+		*/
+
+		$input .= "			 </div>
+						 </div>
+						 <center>
+								<button class='btn btn-warning' type='button'
+									onclick=\"$('#myPreview_{$datas->app_t_usulan_id}').modal('hide').appendTo('#t_usulan_satker2_list-edit');$('#{$this->router->class}_form-modal').css('overflow', 'scroll');\">
+								Tutup</button>
+							</center>
+					   </div>
+					</div>
+				</div>
+			</div>";
+
+		
+		return $input;
+	}
+	
+	public function before_insert_processor($post) {
+		$post->app_t_usulan_ijns = 2;
+		
+		return $post;
+	}
+	
+	/* public function before_update_processor($id, $post) {
+		$files = $this->uploadfiles($_FILES['app_t_usulan_lampiran']);
+		if ( !empty($files->file) ) {
+			$post->app_t_usulan_tfile = $files->file;
+			$post->app_t_usulan_vtype = $files->type;
+			$post->app_t_usulan_nsize = $files->size;
+		}
+	
+		return $post;
+	} */
+	
+	/* function insertCheck_app_t_usulan_tfile($value, $post) {
+		$data['status'] = true;
+		if ( !empty($value) ) {
+			if ( trim($post->app_t_usulan_vtype) != 'application/pdf' ) {
+				$data['status']  = false;
+				$data['msg'] = 'Lampiran wajib dalam format PDF';
+				$data['obj'] = 'app_t_usulan_lampiran';
+			}
+		}
+
+		return $data;
+	}
+	
+	function updateCheck_app_t_usulan_tfile($value, $post, $id) {
+		$data['status']  = true;
+	  	if ($this->input->post('app_t_usulan_istatus') == 3) {
+			if ($this->gettotaldaftarpegawai($id) == 0) {
+				$data['status']  = false;
+				$data['msg'] = 'Lengkapi daftar pegawai yang diusulkan';
+			}
+			return $data;
+	  	} else return $this->insertCheck_app_t_usulan_tfile($value, $post);
+	} */
+
+	function insertCheck_app_t_usulan_cnousul($value, $post) {
+		$data['status'] = true;
+		if ( !empty($value) ) {
+			if ( $_FILES['app_t_usulan_lampiran']['error'] != 0 ) {
+				if ( trim($post->app_t_usulan_vtype) != 'application/pdf' ) {
+					$data['status']  = false;
+					$data['msg'] = 'Lampiran wajib dilengkapi & dalam format PDF';
+					$data['obj'] = 'app_t_usulan_lampiran';
+				}
+			}
+		} else {
+			$data['status']  = false;
+			$data['msg'] = 'No Usul wajib disi';
+			$data['obj'] = 'app_t_usulan_cnousul';
+		}
+
+		return $data;
+	}
+	
+	function updateCheck_app_t_usulan_cnousul($value, $post, $id) {
+		$data['status']  = true;
+	  	if ($this->input->post('app_t_usulan_istatus') == 3) {
+			if ($this->gettotaldaftarpegawai($id) == 0) {
+				$data['status']  = false;
+				$data['msg'] = 'Lengkapi daftar pegawai yang diusulkan';
+			}
+			return $data;
+	  	} else return $this->insertCheck_app_t_usulan_cnousul($value, $post);
+	}
+	
+	public function manipulate_update_button($buttons, $datas) {
+		/*$btn_simpankirim = "<button type='submit' id='btn_send' class='btn btn-primary' style='{$style}' 
+								onclick='tinyMCE.triggerSave(true,true);$(\"#t_usulan_satker2_form-edit #app_t_usulan_istatus\").val(3);'>
+										<i class='glyphicon glyphicon-send'></i>&nbsp;Simpan & Kirim {$this->title}
+									</button>";
+
+		$buttons['simpan'] .= $btn_simpankirim;*/
+		
+		$btn_simpan = "<button type='submit' id='btn_save' class='btn btn-primary' style='{$style}' 
+  								onclick='tinyMCE.triggerSave(true,true);$(\"#t_usulan_satker2_form-edit #app_t_usulan_istatus\").val(0);'>
+  										<i class='fa fa-save'></i>&nbsp;Simpan {$this->title}
+  									</button>";	
+		$btn_simpankirim = "<button type='submit' id='btn_send' class='btn btn-primary' style='{$style}' 
+  								onclick='tinyMCE.triggerSave(true,true);$(\"#t_usulan_satker2_form-edit #app_t_usulan_istatus\").val(3);'>
+  										<i class='glyphicon glyphicon-send'></i>&nbsp;Simpan & Kirim {$this->title}
+  									</button>";
+  
+  		$buttons['simpan'] = $btn_simpan.' '.$btn_simpankirim;
+		//array_push($buttons, $btn_simpankirim);
+
+		return $buttons;
+	}
+	
+	function gettotaldaftarpegawai($iusulanid) {
+		return $this->getrow('', 'app_t_usulan_pegawai', 'count(*) as total', array('iusulanid'=>$iusulanid))->total;
+	}
+	
+	function after_delete_processor($id) {
+		$where = array('iusulanid'=>$id);
+		$this->db->where($where);
+		$this->db->delete('app_t_usulan_pegawai');
+	}
+	
+	public function insertBox_app_t_usulan_daftarnama($name) {
+		return "<p class='form-control-static {$name}'></p>";
+	}
+
+	public function updateBox_app_t_usulan_daftarnama($name, $value, $datas) {
+		$html = "<div>
+				<ul class='nav nav-tabs' role='tablist' id='all_tabs'>
+				  <li role='presentation' class='active'>
+					  <a href='#tab1' data-toggle='tab' aria-controls='tab1' role='tab'>Daftar Pegawai</a>
+				  </li>
+				</ul>
+			  
+				<div class='tab-content'>
+				  <div role='tabpanel' class='tab-pane fade in active' id='tab1'></div>
+				</div>
+			  </div>";
+			  
+	  	$html .= "<script type='text/javascript'>
+				  $(document).ready(function() {
+					  //tab 1
+					  //alert($('.app_t_usulan_id').val());
+					  url = '".base_url()."perbend/t_usulan_daftar2/index';
+					  $('#tab1').html(getHTML(url, '', 0, false));
+					  $('#t_usulan_daftar2 #q_app_t_usulan_pegawai_iusulanid').val($('.app_t_usulan_id').val());
+					  $('#t_usulan_daftar2 #q_app_t_usulan_pegawai_ispelatihan').val(0);
+				  });
+				  
+				</script>";				
+			  
+	  return $html;	
+	}
+
+	public function viewBox_app_t_usulan_daftarnama($name, $value, $datas) {
+		$html = "<div>
+				<ul class='nav nav-tabs' role='tablist' id='all_tabs'>
+				  <li role='presentation' class='active'>
+					  <a href='#tab1' data-toggle='tab' aria-controls='tab1' role='tab'>Daftar Pegawai</a>
+				  </li>
+				</ul>
+			  
+				<div class='tab-content'>
+				  <div role='tabpanel' class='tab-pane fade in active' id='tab1'></div>
+				</div>
+			  </div>";
+			  
+	  	$html .= "<script type='text/javascript'>
+				  $(document).ready(function() {
+					  //tab 1
+					  url = '".base_url()."perbend/t_usulan_daftar2/index';
+					  $('#tab1').html(getHTML(url, '', 0, false));
+					  $('#t_usulan_daftar2 #q_app_t_usulan_pegawai_iusulanid').val($('.app_t_usulan_id').val());
+					  $('#t_usulan_daftar2 #q_app_t_usulan_pegawai_ispelatihan').val(0);
+				  });
+				  
+				</script>";				
+			  
+	  return $html;	
+	}
+
+	public function manipulate_url_save($save) {
+		unset($save);
+		$save['method'] = "save_usulan('".base_url()."perbend/t_usulan_satker2', 't_usulan_satker2', '', '', 'form-modal')";
+		return $save;
+	}
+
+	function app_t_usulan_output() {
+		$js = "<script type='text/javascript'>
+				var btn_save_html = '';
+				$(document).ready(function() {
+
+					
+					$('#app_t_usulan_iunorid_txt').keyup(function() {
+						$('#app_t_usulan_iunorid').val('');
+					});
+
+					$('#app_t_usulan_iunorid_txt').typeahead({
+						source: function (query, result) {
+							$.ajax({
+								url: '".base_url()."perbend/m_unor/getunor',
+								data: 'query='+query,
+								dataType: 'json',
+								type: 'POST',
+								beforeSend: function() {
+									// alert('sending data');
+									// do some loading options
+									btn_save_html = $('.btn_save').html();
+									if ( isloading==true ) $('#divLoading').addClass('show');
+									if ( !debug ) {
+										$('button').attr('disabled', true);
+										$('.btn_save').html(\"<i class='fas fa-cog fa-spin'> </i> Mohon Tunggu...\");
+									}
+								},
+								success: function (data) {
+									result($.map(data, function (item) {
+										return item;
+									}));
+								}
+							});
+						},
+						items: 20,
+						updater: function (item) {
+							$('#app_t_usulan_iunorid').val(item.kode);
+
+							$(\"#divLoading\").removeClass('show');
+							$('button').removeAttr('disabled');
+				    		$('.btn_save').html(\"<i class='fa fa-save' aria-hidden='true'> </i> Simpan {$this->title}\");
+
+							return  item.value;
+						},
+					});
+				});
+
+				function save_usulan(url, table_id, default_txt_confirm='Simpan {$this->title}. Anda yakin?', _ismodal=false, _modals='form-modal') {
+				
+					if ( default_txt_confirm == '' ) default_txt_confirm='Simpan {$this->title}. Anda yakin?';
+					if ( $('#t_usulan_satker2_form-edit #app_t_usulan_istatus').val() == 3 ) default_txt_confirm='Simpan dan Kirim {$this->title}. Anda yakin?';
+					var form_name = table_id+'_form-edit';
+					var formData = new FormData(jQuery('#'+form_name)[0]);
+					save_confirm(url+'/save', formData, default_txt_confirm, table_id, _ismodal, function(output) {
+						var o = jQuery.parseJSON(output);
+						$('div').removeClass('has-error');
+						if ( o.status == true ) {
+							if ( $('#'+table_id+'_form-edit #app_t_usulan_istatus').val() == 3 ) { 
+								$('#'+table_id+'-panel-default-form').hide(); 
+							} else edit(url+'/edit/'+o.id, table_id, _ismodal, _modals);
+
+							reload_grid(url+'/lists', table_id, '', table_id+'-panel-default-form');
+						} else {
+							if ( o.msg != undefined) bootbox_alert('', '', o.msg, true, false);
+							$('.'+o.obj).focus();
+							$('div .grp_'+o.obj).addClass('has-error');
+							$('div .div_'+o.obj).addClass('has-error');
+							if ( _ismodal ) $('#'+_modals).css('overflow', 'scroll');
+							return false;
+						}
+					});
+					$('body').css('padding-right', 0);
+				}
+
+				function get_attachment(id, divid) {
+					var data = getHTML3('".base_url()."perbend/t_usulan_satker2/get_attachment/'+id);
+					var o = jQuery.parseJSON(data);
+					$('#'+divid+' #html_telusuri').html(o.attachment);
+				}
+
+				</script>";
+
+		return $js;
+	}
+	
+	  function send_email($next=0, $tos='', $pesan='', $post, $isnotif=FALSE) {
+  		if ($tos=='') {
+  		  	$groupid = $this->session->sysparam->group_verifikator[$next]->id;
+    		$sql = "SELECT email, username from priv_t_user where igroupid like '%{$groupid}%'";
+    		//echo $sql;
+    		$tos = $this->db->query($sql)->result();
+  		}
+
+		//print_r($tos);
+		//echo 'isnotif  : '.$isnotif;
+  		
+  		if ($isnotif==TRUE) {
+			$pesan = $this->session->sysparam->group_verifikator[$next]->desc;
+			$tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[$next]->url."'>{$pesan}</a>";
+			$notifs=[
+					//'username'=>$t2->username,
+					'url'=>base_url().$this->session->sysparam->group_verifikator[$next]->url,
+					'usulanid'=>$post->app_t_usulan_id,
+					'groupid'=>$groupid,
+					'msg' => $pesan,
+					'created'=> date('Y-m-d H:i:s'),
+					'createdby'=>trim($this->session->username)
+				];
+			$this->db->insert('app_notification', $notifs);
+			//$sql = $this->db->set($notifs)->get_compiled_insert('app_notification');
+			//echo $sql;exit;
+		}
+  		
+  		//PHPMailer
+  	  $mail = new PHPMailer(true);
+  	  //print_r($mail);
+  	  //exit;
+  	  
+  	  /*echo $this->session->sysparam->smtphost[0];
+  	  echo $this->session->sysparam->smtpauth[0];
+  	  echo $this->session->sysparam->smtpsecure[0];
+  	  echo $this->session->sysparam->smtpuser[0];
+  	  echo $this->session->sysparam->smtppasswd[0];
+  	  echo $this->session->sysparam->smtpport[0];
+  	  exit;*/
+  	  
+  	  /* Open the try/catch block. */
+      try {
+         /* SMTP parameters. */
+         $mail->isSMTP();
+         $mail->Host = $this->session->sysparam->smtphost[0];
+         $mail->SMTPAuth = $this->session->sysparam->smtpauth[0];
+         $mail->SMTPSecure = $this->session->sysparam->smtpsecure[0];
+         $mail->Username = $this->session->sysparam->smtpuser[0];
+         $mail->Password = $this->session->sysparam->smtppasswd[0];
+         $mail->Port = $this->session->sysparam->smtpport[0];
+     
+         /* Set the mail sender. */
+         $mail->setFrom($this->session->sysparam->smtpuser[0], 'POSTMASTER');
+      
+         /* Add a recipient. */
+         foreach($tos as $t1=>$t2) {
+           $mail->addAddress($t2->email, $t2->email);
+         }
+      
+         /* Set the subject. */
+         $mail->Subject = $this->session->sysparam->group_verifikator[$next]->subject;
+      
+         /* Set the mail message body. */
+         $mail->isHTML(TRUE);
+         
+         if ($pesan == '' ) {
+           $tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[$next]->url."?q=".$post->app_t_usulan_cnousul."'>disini</a>";
+           
+           $pesan = str_replace("__tautan__", $tautan, $this->session->sysparam->group_verifikator[$next]->msg);
+         }
+         
+         $mail->Body = $pesan;
+         //print_r($mail);
+         //exit;
+         /* Finally send the mail. */
+         $mail->send();
+         $status = true;
+         // 'Email Terkirim';
+      }
+      catch (Exception $e)
+      {
+         /* PHPMailer exception. */
+         $status = false;
+         $pesan = $e->errorMessage();
+      }
+      catch (\Exception $e)
+      {
+         /* PHP exception (note the backslash to select the global namespace Exception class). */
+         $status = false;
+         $pesan = $e->getMessage();
+      }
+  	  
+  	  $datas = [
+  	       'status' => $status,
+  	       'msg' => $pesan
+  	     ];
+  	     
+  	  //return $datas;
+  	  //print_r($datas);exit;
+    }
+	
+	public function uploadfiles($files, $id=0) {
+		$tmp_name = '';
+		$rel_name = '';
+		$err_name = '';
+		$typ_name = '';
+		$siz_name = '';
+
+		$upload_path = $this->session->sysparam->upload_path[0];
+
+		foreach ($files as $key=>$values) {
+
+			if (preg_match('/^name(.*)$/', $key, $match)) {
+				$rel_name = $values;
+			}
+
+			if (preg_match('/^tmp_name(.*)$/', $key, $match)) {
+				$tmp_name = $values;
+
+			}
+
+			if (preg_match('/^error(.*)$/', $key, $match)) {
+				$err_name = $values;
+			}
+
+			if (preg_match('/^type(.*)$/', $key, $match)) {
+				$typ_name = $values;
+			}
+
+			if (preg_match('/^size(.*)$/', $key, $match)) {
+				$siz_name = $values;
+			}
+		}
+
+		$data = array();
+			
+		//$today = date('Ymd');
+		//$new_path = realpath($upload_path)."/".$today;
+		//if ( !file_exists($new_path) ) mkdir($new_path, 0777);
+		//$new_file = $new_path."/".$id;
+		//echo $new_file;exit;
+		//echo $new_file;
+		//exit;
+		
+		$file    = file_get_contents(realpath($tmp_name));
+		$escaped = base64_encode($file);//pg_escape_bytea($data);
+		//if ( move_uploaded_file(realpath($tmp_name), $new_file ) ) {
+			$type    = $typ_name;		
+			$data['file'] = $escaped;
+			
+			$data['name'] = $rel_name;
+			$data['tmp'] = $tmp_name;
+			$data['type'] = $typ_name;
+			$data['size'] = $siz_name;
+			//$data['path'] = $new_file;
+		//}
+		
+		return (object)$data;
+	}
+
+	function insertBox_app_t_usulan_istatus($name) {
+		$html = "<p class='form-control-static {$name}'>-</p>";
+		$html .= "<input type='hidden' name='{$name}' class='{$name}' id='{$name}' value='0'/>";
+		return $html;
+	}
+
+	function updateBox_app_t_usulan_istatus($name, $value, $datas) {
+		$status = $this->session->sysparam->status_usulan2;
+		$html = "<p class='form-control-static {$name}'>
+					<span class=''>".$status[$value]."</span>
+				  </p>";
+		$html .= "<input type='hidden' name='{$name}' class='{$name}' id='{$name}' value='{$value}'/>";
+		if ( $datas->app_t_usulan_valasan != NULL ) $html .= "<p><i>Alasan : ".trim($datas->app_t_usulan_valasan)."</i></p>";
+		return $html;
+	}
+	
+	function viewBox_app_t_usulan_istatus($name, $value, $datas) {
+		$status = $this->session->sysparam->status_usulan2;
+		$html = "<p class='form-control-static {$name}'>
+					<span class=''>".$status[$value]."</span>
+				  </p>";
+		if ( $datas->app_t_usulan_valasan != NULL ) $html .= "<p><i>Alasan : ".trim($datas->app_t_usulan_valasan)."</i></p>";
+		return $html;
+	}
+	function get_attachment($id) {
+		$where = ['id'=>$id];
+		$files = $this->getrow($this->db, $this->prefix."_t_usulan", 'tfile, vtype, nsize', $where);
+		if (trim($files->vtype) != 'application/pdf' ) {
+			$height='100';$width='';
+		} else { $height='100%';$width='700';}
+		$json = array();
+		$json['attachment'] = "<embed src='data:".trim($files->vtype).";base64,".trim($files->tfile)."' type='".trim($files->vtype)."' width='{$height}' height='{$width}' alt='".trim($files->vtype)."'>";
+
+		echo json_encode($json);
+	}
+
+}

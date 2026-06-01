@@ -1,0 +1,79 @@
+<?php
+
+ini_set('max_execution_time', -1);
+
+//ini_set('display_errors', 'Off');
+ini_set('display_errors', 'On');
+
+//
+//define(_CLASS_, 'pgsql');
+define(_CLASS_, 'mysql');
+
+//DB1
+define(_HOST_, 'localhost');
+define(_USER_, 'root');//
+define(_PASS_, '');//
+define(_DB_, 'db_app0');
+define(_PORT_, '3306');
+
+/*define(_HOST_, 'localhost');
+define(_USER_, 'postgres');//
+define(_PASS_, 'postgres');//
+define(_DB_, 'cpns2019');
+define(_PORT_, '5432');
+*/
+
+
+//DB2
+define(_HOST2_, 'localhost');
+define(_USER2_, 'postgres');//
+define(_PASS2_, 'postgres');//
+define(_DB2_, 'db_sipdn');
+define(_PORT2_, '5432');
+
+//DB3
+define(_HOST3_, '118.98.234.98');
+define(_USER3_, 'postgres');//
+define(_PASS3_, 'postgres');//
+define(_DB3_, 'arsip');
+define(_PORT3_, '5432');
+
+//DB4
+define(_HOST4_, 'localhost');//118.98.234.198
+define(_USER4_, 'postgres');//
+define(_PASS4_, 'postgres');//p0stgr3s
+define(_DB4_, 'db_dikbudhr2');//db_dikbudhr
+define(_PORT4_, '5432');
+
+//PREFIX
+define(_SCHEME_, 'public');
+define(_PREFIX_, '');
+
+//PREFIX2
+define(_SCHEME2_, 'public');
+define(_PREFIX2_, 'srt_');
+
+//PREFIX3
+define(_SCHEME3_, 'public');
+define(_PREFIX3_, '');
+
+//PREFIX4
+define(_SCHEME4_, 'hris');
+define(_PREFIX4_, '');
+
+//
+define(_SESSION_, 'ars');
+define(_LIMIT_, 10);
+define(_APPNAME_, 'Sistem Arsip Kepegawaian Online');
+
+//path upload
+//define(_PATH_, 'upload');
+define(_PATH_, 'upload');
+define(_APLIKASI_, 'arsip');
+
+//
+//define(_ERROR_, E_ERROR);
+define(_ERROR_, E_ALL);
+
+
+?>

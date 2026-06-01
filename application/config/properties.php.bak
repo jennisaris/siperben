@@ -1,0 +1,41 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+$config['nama_app_title'] = "Sistem Perbendaharaan";
+$config['nama_app'] = "Sistem Perbendaharaan";
+$config['nama_app_sm'] = "<b>Perbend</b>";
+$config['nama_app_lg'] = "<b>S</b>Perb.";
+$config['nama_pt'] = "Biro Keuangan<br/>Kemendikbud";
+$config['short_desc'] = "<small>Jakarta, Indonesia</small>";
+$config['logo_app'] = "assets/images/logo.png";
+$config['limit'] = 10;
+$config['upload_path'] = "uploads/";
+
+$config['whereistheconverter'] = "sudo /usr/sbin/convert_me";
+$config['image_ext'] = array('jpg', 'jpeg', 'png', 'bmp', 'tif');
+$config['image_noprev'] = "uploads/no_photo_profile.jpeg";
+
+$config['dbprefix'] = "priv_";
+$config['theme'] = 'AdminLTE-2.3.11';//,sb-admin-2, default, bootstrap4
+
+$config['exclude_controller'] = array('api', 'nologin/reset_password', 'nologin/konfirmasi', 'perbend/set_tahun/save');//'privileges/user/chgpwd'
+$config['exclude_ext'] = array('css', 'js', 'png', 'gif', 'jpg', 'jpeg', 'ttf', 'woff', 'woff2', 'less', 'map');
+$config['dashboard_index'] = 'dashboard/index';
+$config['redirect_dashboard'] = '';
+
+//session
+$config['session'] = 'prototype2';
+
+//DEV
+/*$config['client_id'] = '52b5a3e2-a6bf-4f0c-b238-744a4e8769d8';
+$config['client_secret'] = 'c94e80a5-d088-4ccc-9f3a-82640a75d8bf';
+$config['x_api_key'] = '834fa24e-eb5e-11eb-9a03-0242ac130003';
+*/
+
+//PROD
+$config['client_id'] = '4ebd0208-8328-5d69-8c44-ec50939c0967';
+$config['client_secret'] = 'b895ecbc-c152-4815-991a-d50ea6b20b82';
+$config['x_api_key'] = 'b9729656-be4d-5700-9193-dcd3dbe1d1f3';
+
+//BASIC AUTH
+$config['dikbudhr_url'] = "https://data-sdm.kemdikbud.go.id";
+$config['dikbudhr_user'] = '198210032015041001';
+$config['dikbudhr_pass'] = 'Rahas1@Dong!';

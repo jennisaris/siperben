@@ -1,0 +1,421 @@
+<?php
+//ini_set("display_errors", 1);
+//error_reporting(E_ALL);
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+
+/* Namespace alias. */
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+class T_terbit_sk_upload extends MX_Controller {
+  	var $prefix = 'app';
+  	var $table;
+
+	var $ar_jabatan;
+	
+	var $url_opener = '';
+	
+	var $istatus;
+	var $valasan;
+	public function __construct() {
+		parent::__construct();
+		$controller = "perbend/t_terbit_sk_upload";
+		$this->table  = $this->prefix."_t_usulan_sk";
+
+		$url_opener = explode('/', $_SERVER['HTTP_REFERER']);
+		$this->url_opener = end($url_opener);
+
+		$this->_setModal(true);
+   		$this->_setTitle('Upload SK');
+		$this->_setController($controller);
+		$this->_init('default');
+
+		$this->_addTable($this->table);
+		$this->_addField($this->table, 'id', '', true, true);
+		$this->_addField($this->table, 'ijns', 'ijns', false, true);
+    $this->_addField($this->table, 'cnosk', 'No. SK', false, true);
+		$this->_addField($this->table, 'lampiran', 'Lampiran Surat Keputusan (dlm format PDF)', false, false, true);
+    $this->_addField($this->table, 'tfile2', 'tfile', false, true);
+		$this->_addField($this->table, 'vtype', 'vtype', false, true);
+		$this->_addField($this->table, 'nsize', 'nsize', false, true);
+    $this->_addField($this->table, 'cnosurat', 'No. Surat', false, true);
+    $this->_addField($this->table, 'lampiran2', 'Lampiran Surat Pengantar (dlm format PDF)', false, false, true);
+    $this->_addField($this->table, 'tfile6', 'tfile', false, true);
+		$this->_addField($this->table, 'vtype6', 'vtype', false, true);
+		$this->_addField($this->table, 'nsize6', 'nsize', false, true);
+		$this->_addField($this->table, 'tupdated', 'Waktu ubah', false, true);
+		$this->_addField($this->table, 'cupdatedby', 'Diubah oleh', false, true);
+		$this->_addField($this->table, 'ctahun', 'ctahun', false, true);
+		$this->_addField($this->table, 'iunorid', 'iunorid', false, true);
+
+		//clear session header_controller
+		$this->session->unset_userdata('header_controller');
+		$header_controller = array('header_controller' => 'perbend/t_terbit_sk');
+		$this->session->set_userdata($header_controller);
+	}
+
+    public function updateBox_app_t_usulan_sk_lampiran($name, $value, $datas) {
+		$tfile2 = $datas->app_t_usulan_sk_tfile2;
+		$vtype = trim($datas->app_t_usulan_sk_vtype);
+
+		$input = "<input type='file' name='{$name}' id='{$name}' class='form-control {$name}' accept='application/pdf'/>";
+		$input .= $this->config->item('info_max_upload');
+		if ( !empty($tfile2) ){
+			//data-toggle='modal' data-target='#myPreview_{$datas->app_t_usulan_sk_id}' 
+			$input .= "<br/><span onclick='$(\"#{$this->router->class}_myPreview_{$datas->app_t_usulan_sk_id}\").modal(\"show\").appendTo(\"body\");' style='cursor:pointer;' class='label label-primary'>
+						<b>Surat Keputusan</b>
+					  </span>";
+		
+
+			$input .= "<div class='modal fade' id='{$this->router->class}_myPreview_{$datas->app_t_usulan_sk_id}' role='dialog' aria-labelledby='myModalLabel' data-backdrop='false' data-keyboard='false'>
+					<div class='modal-dialog' role='document' style='width:80%;'>
+						<div class='modal-content'>
+						<div class='modal-header'>
+							<button type='button' class='close' aria-label='Close' 
+								onclick=\"$('#{$this->router->class}_myPreview_{$datas->app_t_usulan_sk_id}').modal('hide').appendTo('.div_app_t_usulan_sk_lampiran');
+											$('#{$this->router->class}_form-modal').css('overflow', 'scroll');\"><span aria-hidden='true'>&times;</span></button>
+							<h4 class='modal-title' id='myModalLabel'><i class='glyphicon glyphicon-tasks'></i> Preview {$datas->app_t_usulan_sk_cnosk}</h4>
+						</div>
+						<div class='modal-body' id='modal-body'>
+							<div class='form-group'>
+								<div id='html_telusuri'>";
+
+			if (trim($vtype) != 'application/pdf' ) {
+				$height='100';$width='';
+			} else { $height='100%';$width='700';}
+
+			$input .= "<embed src='data:{$vtype};base64,{$tfile2}' type='{$vtype}' width='{$height}' height='{$width}' alt='{$vtype}'>";
+
+
+			$input .= "			 </div>
+							</div>
+						</div>
+						</div>2
+					</div>
+				</div>";
+		}
+
+		
+		return $input;
+    }
+	
+	public function updateBox_app_t_usulan_sk_lampiran2($name, $value, $datas) {
+		$tfile2 = $datas->app_t_usulan_sk_tfile6;
+		$vtype = trim($datas->app_t_usulan_sk_vtype6);
+
+		$input = "<input type='file' name='{$name}' id='{$name}' class='form-control {$name}' accept='application/pdf'/>";
+		$input .= $this->config->item('info_max_upload');
+		if ( !empty($tfile2) ){
+			//data-toggle='modal' data-target='#myPreview_{$datas->app_t_usulan_sk_id}' 
+			$input .= "<br/><span onclick='$(\"#{$this->router->class}_myPreview_{$datas->app_t_usulan_sk_id}_sp\").modal(\"show\").appendTo(\"body\");' style='cursor:pointer;' class='label label-primary'>
+						<b>Surat Pengantar</b>
+					  </span>";
+		
+
+			$input .= "<div class='modal fade' id='{$this->router->class}_myPreview_{$datas->app_t_usulan_sk_id}_sp' role='dialog' aria-labelledby='myModalLabel' data-backdrop='false' data-keyboard='false'>
+					<div class='modal-dialog' role='document' style='width:80%;'>
+						<div class='modal-content'>
+						<div class='modal-header'>
+							<button type='button' class='close' aria-label='Close' 
+								onclick=\"$('#{$this->router->class}_myPreview_{$datas->app_t_usulan_sk_id}_sp').modal('hide').appendTo('.div_app_t_usulan_sk_lampiran2');
+											$('#{$this->router->class}_form-modal').css('overflow', 'scroll');\"><span aria-hidden='true'>&times;</span></button>
+							<h4 class='modal-title' id='myModalLabel'><i class='glyphicon glyphicon-tasks'></i> Preview {$datas->app_t_usulan_sk_cnosurat}</h4>
+						</div>
+						<div class='modal-body' id='modal-body'>
+							<div class='form-group'>
+								<div id='html_telusuri'>";
+
+			if (trim($vtype) != 'application/pdf' ) {
+				$height='100';$width='';
+			} else { $height='100%';$width='700';}
+
+			$input .= "<embed src='data:{$vtype};base64,{$tfile2}' type='{$vtype}' width='{$height}' height='{$width}' alt='{$vtype}'>";
+
+
+			$input .= "			 </div>
+							</div>
+						</div>
+						</div>
+					</div>
+				</div>";
+		}
+
+		
+		return $input;
+    }
+
+    public function before_update_processor($id, $post, $oldpost) {
+
+      $post->app_t_usulan_sk_tupdated = date('Y-m-d H:i:s');
+      $post->app_t_usulan_sk_cupdatedby = trim($this->session->username);
+
+      //if ($post->app_t_usulan_sk_tfile2 == null) {
+        $files = $this->uploadfiles($_FILES['app_t_usulan_sk_lampiran']);
+
+        if ( !empty($files->file) ) {
+          $post->app_t_usulan_sk_tfile2 = $files->file;
+          $post->app_t_usulan_sk_vtype = $files->type;
+          $post->app_t_usulan_sk_nsize = $files->size;
+        }
+      //}
+
+      //if ($post->app_t_usulan_sk_tfile6 == null) {
+        $files = $this->uploadfiles($_FILES['app_t_usulan_sk_lampiran2']);
+
+        if ( !empty($files->file) ) {
+          $post->app_t_usulan_sk_tfile6 = $files->file;
+          $post->app_t_usulan_sk_vtype6 = $files->type;
+          $post->app_t_usulan_sk_nsize6 = $files->size;
+        }
+      //}
+
+      //print_r($post);exit;
+      return $post;
+    }
+    
+    function after_update_processor($id, $post) {
+		//print_r($post);exit;
+      if ($post->app_t_usulan_sk_tfile2 != null) {
+        $sql = "Select b.iusulanid, a.istatusid, 
+                a.ijnsprubhnid,
+                a.id, a.itipe, a.iunorid,
+                (select cjabid2 from app_m_perubahan 
+                where id = a.ijnsprubhnid) as cjabid2 
+                from app_t_usulan_pegawai b,
+                app_t_usulan a 
+                where b.iusulanid=a.id 
+                and b.inoskid = {$id} limit 1";
+        $row = $this->db->query($sql)->row();
+        $usulan_id = $row->iusulanid;
+        $cjabid2 = $row->cjabid2;
+        $jnsprubhnid = $row->ijnsprubhnid;
+        $statusid = $row->istatusid;
+        $itipe = $row->itipe;
+        $iunorid = $row->iunorid;
+        
+		
+		//echo 'tips : '.$itipe;exit;
+        if ($itipe != 1 ) { //bukan hasil unggah
+            //update statua usulan
+            $new_post = array();
+            $new_post['istatus'] = 7;
+            $new_post['tupdated'] = date('Y-m-d H:i:s');
+            $new_post['cupdatedby'] = trim($this->session->username);
+            
+            $where = array('id'=>$usulan_id);
+            
+            $this->db->where($where);
+            $this->db->update('app_t_usulan', $new_post);
+            
+            //update status isnonaktif
+            //
+            $sql = "Select cjabid2 from app_m_perubahan 
+            where id = '{$jnsprubhnid}'";
+            $cjabid2 = $this->db->query($sql)->row()->cjabid2;
+            if ($cjabid2 != '') {
+              //update berdasarkan cnipold
+              $sql = "SELECT cnipold from app_t_usulan_pegawai 
+              where inoskid = {$id}";
+              foreach($this->db->query($sql)->result() as $r) {
+                $datas = ['isnonaktif'=>1];
+                $where = ['inoskid !='=>$id, 'istatus2'=>1, 'inoskid !='=>NULL, 'cnip'=>$r->cnipold];
+                
+                $this->db->where($where);
+                $this->db->update('app_t_usulan_pegawai', $datas);
+				
+				//echo '1 : '.$this->db->last_query();
+				//exit;
+              }
+            } else {
+              $sql = "SELECT cnip from app_t_usulan_pegawai 
+              where inoskid = {$id}";
+              foreach($this->db->query($sql)->result() as $r) {
+                $datas = ['isnonaktif'=>1];
+                $where = ['inoskid !='=>$id, 'istatus2'=>1, 'inoskid !='=>NULL, 'cnip'=>$r->cnip];
+                
+                $this->db->where($where);
+                $this->db->update('app_t_usulan_pegawai', $datas);
+				//echo '2 : '.$this->db->last_query();
+				//exit;
+              }
+            }
+            
+            //update status app_notification
+            $where = ['usulanid'=>$usulan_id, 'groupid'=>$this->session->sysparam->group_verifikator[3]->id];
+            $datas = ['isread'=>1, 'updated'=>date('Y-m-d H:i:s'), 'updatedby'=>trim($this->session->username)];
+            $this->db->where($where);
+            $this->db->update('app_notification', $datas);
+            
+            //send_email ke requestor
+            $tos = [
+              		  0=>(object)['unorid'=>$iunorid, 'email'=>$this->getrow('', 'priv_t_user', 'email', ['username'=>trim($iunorid)])->email]
+            ];
+              		//print_r($tos);
+              		//exit;
+            $tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[99]->url."?q=".$cnousul."'>disini</a>";
+                         
+            $tahap = $this->session->sysparam->status_usulan[7];
+            $pesan = str_replace("__tautan__", $tautan, $this->session->sysparam->group_verifikator[99]->msg);
+            $pesan = str_replace("__tahap__", $tahap, $pesan);
+            $this->send_email(99, $tos, $pesan, $post);
+            //send email
+        }
+      }
+    }
+
+    public function manipulate_url_save($save) {
+      unset($save);
+      $save['method'] = "save_sk_upload('".base_url()."perbend/t_terbit_sk_upload', 't_terbit_sk_upload', '', '', 'form-modal')";
+      return $save;
+    }
+
+	function app_t_usulan_sk_output() {
+		$js = "<script type='text/javascript'>
+
+                var url_opener = location.href.split('/');
+                var url_opener_ = (url_opener[url_opener.length-1]).replace('#', '');
+     
+				//function save(url, table_id, default_txt_confirm='', _ismodal=false, _modals='form-modal', _islochref=false, _isneedrefresh=true, _isneededit=false, _isOldFashion=false, _msg='Simpan berhasil.', table_id2) {
+                function save_sk_upload(url, table_id, default_txt_confirm='Simpan SK. Anda yakin?', _ismodal=false, _modals='form-modal', _islochref=false, _isneedrefresh=true, _isneededit=false, _isOldFashion=false, _msg='Upload SK berhasil.', table_id2='') {
+                    if ( default_txt_confirm == '' ) default_txt_confirm='Simpan SK. Anda yakin?';
+                    var form_name = table_id+'_form-edit';
+                    var formData = new FormData(jQuery('#'+form_name)[0]);
+                    save_confirm(url+'/save', formData, default_txt_confirm, table_id, _ismodal, function(output) {
+                        //alert(output);
+                        var o = jQuery.parseJSON(output);
+                        //alert(o.status);
+                        //alert(o.id);
+                        $('div').removeClass('has-error');
+                        if ( o.status == true ) {
+                            //alert('OK');
+                            //alert(url_opener_);
+                            //alert('".base_url()."perbend/t_terbit_sk_upload/edit/'+o.id);
+                            var url_opener__ = url_opener_.split('?');
+                            url_opener_ = url_opener__[0];
+                            //alert(url_opener_);
+							              bootbox_alert('', '', _msg, true);
+                            reload_grid('".base_url()."perbend/'+url_opener_+'/lists', url_opener_);
+                            edit('".base_url()."perbend/t_terbit_sk_upload/edit/'+o.id, url_opener_, true, 't_terbit_sk_upload_form-modal');
+                        } else {
+                            if ( o.msg != undefined) bootbox_alert('', '', o.msg, true);
+                            $('.'+o.obj).focus();
+                            $('div .div_'+o.obj).addClass('has-error');
+                            $('div .'+o.obj).addClass('has-error');
+                            if ( _ismodal ) $('#'+_modals).css('overflow', 'scroll');
+                            return false;
+                        }
+                    });
+                    $('body').css('padding-right', 0);
+                }
+			
+			</script>";
+
+		return $js;
+	}
+	
+	function send_email($next=0, $tos='', $pesan='', $post, $isnotif=FALSE) {
+		  
+		  $post = (object)$post;
+  		if ($tos=='') {
+  		  $groupid = $this->session->sysparam->group_verifikator[$next]->id;
+  		  //echo $groupid;
+    		$sql = "SELECT email, username from priv_t_user where igroupid like '%{$groupid}%'";
+    		//echo $sql;
+    		$tos = $this->db->query($sql)->result();
+  		}
+  		
+  		
+  		if ($isnotif==TRUE) {
+        $pesan = $this->session->sysparam->group_verifikator[$next]->desc;
+        $tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[$next]->url."'>{$pesan}</a>";
+        $notifs=[
+            //'username'=>$t2->username,
+            'url'=>$this->session->sysparam->group_verifikator[$next]->url,
+            'usulanid'=>$post->usulanid,
+            'groupid'=>$groupid,
+            'msg' => $pesan,
+            'created'=> date('Y-m-d H:i:s'),
+            'createdby'=>trim($this->session->username)
+        ];
+        $this->db->insert('app_notification', $notifs);
+        /*$sql = $this->db->set($notifs)->get_compiled_insert('app_notification');
+        echo $sql;exit;*/
+      }
+         
+  		//PHPMailer
+  	  $mail = new PHPMailer(true);
+  	  //print_r($mail);
+  	  //exit;
+  	  
+  	  /*echo $this->session->sysparam->smtphost[0];
+  	  echo $this->session->sysparam->smtpauth[0];
+  	  echo $this->session->sysparam->smtpsecure[0];
+  	  echo $this->session->sysparam->smtpuser[0];
+  	  echo $this->session->sysparam->smtppasswd[0];
+  	  echo $this->session->sysparam->smtpport[0];
+  	  exit;*/
+  	  
+  	  /* Open the try/catch block. */
+      try {
+         /* SMTP parameters. */
+         $mail->isSMTP();
+         $mail->Host = $this->session->sysparam->smtphost[0];
+         $mail->SMTPAuth = $this->session->sysparam->smtpauth[0];
+         $mail->SMTPSecure = $this->session->sysparam->smtpsecure[0];
+         $mail->Username = $this->session->sysparam->smtpuser[0];
+         $mail->Password = $this->session->sysparam->smtppasswd[0];
+         $mail->Port = $this->session->sysparam->smtpport[0];
+     
+         /* Set the mail sender. */
+         $mail->setFrom($this->session->sysparam->smtpuser[0], 'POSTMASTER');
+      
+         /* Add a recipient. */
+         foreach($tos as $t1=>$t2) {
+           $mail->addAddress($t2->email, $t2->email);
+         }
+      
+         /* Set the subject. */
+         $mail->Subject = $this->session->sysparam->group_verifikator[$next]->subject;
+      
+         /* Set the mail message body. */
+         $mail->isHTML(TRUE);
+         
+         if ($pesan == '' ) {
+           $tautan = "<a href='".base_url().$this->session->sysparam->group_verifikator[$next]->url."?q=".$post."'>disini</a>";
+           
+           $pesan = str_replace("__tautan__", $tautan, $this->session->sysparam->group_verifikator[$next]->msg);
+         }
+         
+         $mail->Body = $pesan;
+         //if ($next==0) {
+        //   print_r($mail);
+        //   exit;
+         //}
+         /* Finally send the mail. */
+         $mail->send();
+         $status = true;
+         // 'Email Terkirim';
+      }
+      catch (Exception $e)
+      {
+         /* PHPMailer exception. */
+         $status = false;
+         $pesan = $e->errorMessage();
+      }
+      catch (\Exception $e)
+      {
+         /* PHP exception (note the backslash to select the global namespace Exception class). */
+         $status = false;
+         $pesan = $e->getMessage();
+      }
+  	  
+  	  $datas = [
+  	       'status' => $status,
+  	       'msg' => $pesan
+  	     ];
+  	     
+  	  //return $datas;
+  	  //print_r($datas);exit;
+    }
+}

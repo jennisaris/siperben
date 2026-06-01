@@ -1,0 +1,184 @@
+<?php $CI =&get_instance();
+$controller = 'index';
+//print_r($bgcolor);exit;
+?>
+<div class='row' style='text-align:center;'>
+  <?php $i=0;foreach($data as $k=>$v) {
+    if ($i==0) $class = "col-lg-12 col-xs-12";
+    else $class = "col-lg-2";
+  ?>
+   <div class="<?=$class;?>">
+          <!-- small box -->
+          <div class="small-box <?=$bgcolor[$k-1];?>">
+            <div class="inner">
+              <p>Jumlah <?=$v['kode']?><br/></p>
+              <center>
+                <h3><?=$v['total'];?></h3>
+              </center>
+         
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+            <?php if ($cs[$k-1] != '' ) { ?> 
+            <a href="<?=base_url();?>perbend/<?=$cs[$k-1];?>" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+            </a>
+            <?php } else {?>
+            &nbsp;
+            <?php } ?>
+          </div>
+    </div>
+  <?php $i++;} ?>
+    <!-- ./col -->
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class='box'>
+       <div class='box-header with-border'>
+            <h3 class='box-title'>Pengumuman</h3>
+            <div class='box-tools pull-right'>
+                <button type='button' class='btn btn-box-tool' data-widget='collapse'>    
+                 <i class='fa fa-minus'></i>
+                </button>        
+            </div>
+      </div>
+      <div class='box-body' style>
+      		<!-- pagination -->
+      		<div id='<?=$controller;?>_paging-table-data'></div>
+      		<!-- pagination -->
+      		<div id='<?=$controller;?>_table-data' style='overflow-x: auto;'></div>
+      </div>
+   </div>
+  </div>
+</div>
+
+<?php $controller4='progress_usulan_satker';?>
+<div class="row">
+  <div class="col-md-12">
+    <div class='box'>
+       <div class='box-header with-border'>
+            <h3 class='box-title'>Progress Usulan Bendahara</h3>
+            <div class='box-tools pull-right'>
+                <button type='button' class='btn btn-box-tool' data-widget='collapse'>    
+                 <i class='fa fa-minus'></i>
+                </button>        
+            </div>
+      </div>
+      <div class='box-body' style>
+          <div>
+             <?php /*<select name='pub_tahun' id='pub_tahun' class='form-control' style='width:128px;'>
+                  <option value=''>-- Pilih Tahun -- </option>
+                  <?php
+                    $sql = "SELECT ctahun from app_t_usulan 
+                        where ctahun IS NOT NULL and ctahun != '' group by ctahun";
+                    $rows = $this->db->query($sql)->result();
+                    foreach($rows as $r) {
+                      if ( $r->ctahun == $this->session->settahun ) $selected = ' selected ';
+                      else $selected = ' ';
+                  ?>
+                      <option <?=$selected;?> value='<?=$r->ctahun;?>'><?=$r->ctahun;?></option>
+                  <?php
+                    }
+                  ?>
+              </select>
+              */?>
+              <select onChange="reload_grid('<?=base_url();?>perbend/<?=$controller4;?>/lists/0/'+$(this).val(), '<?=$controller4;?>');" name='pub_bulan' id='pub_bulan' class='form-control' style='width:228px;'>
+                  <option value=''>-- Pilih Bulan -- </option>
+                  <?php
+                    foreach($this->session->sysparam->nama_bulan as $k=>$v) {
+                  ?>
+                      <option value='<?=$k;?>'><?=$v;?></option>
+                  <?php
+                    }
+                  ?>
+              </select>
+          </div>
+          <hr/>
+          <!-- pagination -->
+            <div id='<?=$controller4;?>_paging-table-data'></div>
+      		<!-- pagination -->
+      		<div id='<?=$controller4;?>_table-data' style='overflow-x: auto;'></div>
+      </div>
+   </div>
+  </div>
+</div>
+
+<?php $controller3='laporan1';?>
+<div class="row">
+  <div class="col-md-12">
+    <div class='box'>
+       <div class='box-header with-border'>
+            <h3 class='box-title'>Bendahara Bersertifikat</h3>
+            <div class='box-tools pull-right'>
+                <button type='button' class='btn btn-box-tool' data-widget='collapse'>    
+                 <i class='fa fa-minus'></i>
+                </button>        
+            </div>
+      </div>
+      <div class='box-body' style>
+          <!-- pagination -->
+            <div id='<?=$controller3;?>_paging-table-data'></div>
+      		<!-- pagination -->
+      		<div id='<?=$controller3;?>_table-data' style='overflow-x: auto;'></div>
+
+          <div id='<?=$controller3;?>_graph-data'>
+            <center><?=$charts;?></center>
+          </div>
+      </div>
+   </div>
+  </div>
+</div>
+
+<?php /*$controller2='ews';?>
+<div class="row">
+  <div class="col-md-12">
+    <div class='box'>
+       <div class='box-header with-border'>
+            <h3 class='box-title'>Reminder Perpanjangan Sertifikat</h3>
+            <div class='box-tools pull-right'>
+                <button type='button' class='btn btn-box-tool' data-widget='collapse'>    
+                 <i class='fa fa-minus'></i>
+                </button>        
+            </div>
+       </div>
+       <div class='box-body' style>
+      		<!-- pagination -->
+      		<div id='<?=$controller2;?>_paging-table-data'></div>
+      		<!-- pagination -->
+      		<div id='<?=$controller2;?>_table-data' style='overflow-x: auto;'></div>
+       </div>
+   </div>
+  </div>
+</div>
+<?php */ ?>
+
+<div class='modal fade' id='myModal_browse' role='dialog' aria-labelledby='myModalLabel' data-backdrop='static' data-keyboard='false'>
+							<div class='modal-dialog' role='document' style='width:85%;'>
+							<div class='modal-content'>
+								<div class='modal-header'>
+								<h4 class='modal-title' id='myModalLabel'><i class='glyphicon glyphicon-tasks'></i> Detail Info </h4>
+								</div>
+								<div class='modal-body' id='modal-body' style='overflow-x: auto;'>
+								<div class='form-group'>
+									<div id='html_telusuri'></div>
+								</div>
+								</div>
+							</div>
+							</div>
+</div>
+
+<script type='text/javascript'>
+$(document).ready(function() {
+  
+  $('body').addClass('skin-blue sidebar-mini active sidebar-collapse');
+  
+	reload_grid("<?=base_url();?>dashboard/index/lists", '<?=$controller;?>');
+	//reload_grid("<?=base_url();?>dashboard/ews/lists", '<?=$controller2;?>');
+	
+	reload_grid("<?=base_url();?>perbend/<?=$controller4;?>/lists", '<?=$controller4;?>');
+	
+  reload_grid("<?=base_url();?>perbend/<?=$controller3;?>/lists", '<?=$controller3;?>');
+});
+</script>
