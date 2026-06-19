@@ -6,10 +6,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Redirect HTTP ke HTTPS
-    RewriteCond %{HTTPS} off
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
     # Routing untuk CodeIgniter
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -20,10 +16,6 @@
     RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC,OR]
     RewriteCond %{QUERY_STRING} GLOBALS(=|[|%[0-9A-Z]{0,2}) [OR]
     RewriteCond %{QUERY_STRING} _REQUEST(=|[|%[0-9A-Z]{0,2})
-    RewriteRule .* - [F,L]
-
-    # Blokir file PHP palsu
-    RewriteCond %{THE_REQUEST} (\.php[345]?|\.asp|\.exe|\.pl|\.cgi) [NC]
     RewriteRule .* - [F,L]
 </IfModule>
 
@@ -48,24 +40,6 @@ Options -Indexes
 <FilesMatch "^(application|system).*">
     Require all denied
 </FilesMatch>
-
-# Blokir file PHP di folder upload (pindahkan ke .htaccess dalam /uploads/)
-# <FilesMatch "\.(php|php5|phtml)$">
-#     Deny from all
-# </FilesMatch>
-
-# ================================
-# Blokir Bot Jahat
-# ================================
-SetEnvIfNoCase User-Agent "^libwww-perl" bad_bot
-SetEnvIfNoCase User-Agent "^Wget" bad_bot
-SetEnvIfNoCase User-Agent "^curl" bad_bot
-SetEnvIfNoCase User-Agent "^python-requests" bad_bot
-SetEnvIfNoCase User-Agent "^httpclient" bad_bot
-SetEnvIfNoCase User-Agent "^HTTrack" bad_bot
-Order Allow,Deny
-Allow from all
-Deny from env=bad_bot
 
 # ================================
 # Optimasi: Kompresi & Caching
@@ -94,3 +68,16 @@ Deny from env=bad_bot
 # Nonaktifkan ETag untuk mengurangi overhead server
 FileETag None
 
+# ================================
+# Security Headers
+# ================================
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header always set Content-Security-Policy "default-src \"self\"; script-src \"self\" \"unsafe-inline\" \"unsafe-eval\"; style-src \"self\" \"unsafe-inline\"; img-src \"self\" data:; font-src \"self\" data:;"
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>

@@ -13,9 +13,13 @@ class Template {
 			$theme = $this->_ci->config->item('theme');
 			
 			//$this->_ci->Menu_model->getAccessMenu($this->_ci->uri->uri_string, $this->_ci->session->userdata['groupid']);
-			if (isset($this->_ci->session->header_controller))
-			  access_menu(trim($this->_ci->session->header_controller), $this->_ci->session->userdata['groupid']);	
-			else access_menu($this->_ci->uri->segment(1).'/'.$this->_ci->uri->segment(2), $this->_ci->session->userdata['groupid']);			
+			// Jangan panggil access_menu untuk guest/login page. Pada sesi kosong,
+			// groupid belum ada sehingga query privilege dapat menghasilkan output kosong.
+			if (!empty($this->_ci->session->userdata['logged_in'])) {
+				if (isset($this->_ci->session->header_controller))
+				  access_menu(trim($this->_ci->session->header_controller), $this->_ci->session->userdata['groupid']);	
+				else access_menu($this->_ci->uri->segment(1).'/'.$this->_ci->uri->segment(2), $this->_ci->session->userdata['groupid']);
+			}
 				
 			$data['_theme']=base_url().'application/views/themes/'.$theme.'/';
 					

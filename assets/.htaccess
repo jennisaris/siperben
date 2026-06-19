@@ -6,9 +6,8 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Redirect HTTP ke HTTPS
-    RewriteCond %{HTTPS} off
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    # Cloudflare Tunnel deployment: HTTPS redirect disabled here.
+    # TLS terminates at Cloudflare; origin receives HTTP, so this rule caused self-redirect loops for assets.
 
     # Routing untuk CodeIgniter
     RewriteCond %{REQUEST_FILENAME} !-f

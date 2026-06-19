@@ -10,7 +10,7 @@ ini_set('display_errors', 'On');
 define(_CLASS_, 'mysql');
 
 //DB1
-define(_HOST_, '127.0.0.1');
+define(_HOST_, 'localhost');
 define(_USER_, 'root');//
 define(_PASS_, '');//
 define(_DB_, 'db_app01');

@@ -66,17 +66,16 @@ class User_authentication extends MX_Controller {
 		}
 
 		// Validasi input
-		$this->form_validation->set_rules('username', 'Username / Email', 'trim|required', array('required' => 'Username/email wajib diisi.'));
-		$this->form_validation->set_rules('password', 'Kata Sandi', 'trim|required', array('required' => 'Kata sandi wajib diisi.'));
-		// $this->form_validation->set_rules('captcha', 'Kode Captcha', 'trim|required', array('required' => 'Kode captcha wajib diisi.')); // disabled for testing
+		$this->form_validation->set_rules('username', 'NIP', 'trim|required');
+		$this->form_validation->set_rules('password', 'Password', 'trim|required');
+		$this->form_validation->set_rules('captcha', 'Kode Captcha', 'trim|required');
 
 		if ($this->form_validation->run() === FALSE) {
 			$data = $this->set_captch(); // load ulang captcha
-			$validation_message = trim(strip_tags(validation_errors(' ', ' ')));
-			if ($validation_message === '') {
-				$validation_message = 'Mohon lengkapi data login yang wajib diisi.';
-			}
-			$data['error_message'] = $this->login_alert('Data login belum lengkap', $validation_message, 'warning', array('Lengkapi username/email, kata sandi, dan kode captcha.', 'Lalu tekan tombol Masuk kembali.'));
+			$this->form_validation->set_error_delimiters(
+				'<div style="text-align:left;margin-top:5px;" class="alert alert-danger" role="alert">',
+				'</div>'
+			);
 			$this->template->display('user/form_login', $data);
 			return;
 		}
@@ -84,7 +83,7 @@ class User_authentication extends MX_Controller {
 		// ⛔ CEK RATE LIMIT DI SINI
 		if (!$this->is_login_allowed()) {
 			$data = $this->set_captch();
-			$data['error_message'] = $this->login_alert('Akses sementara dibatasi', 'Terlalu banyak percobaan login dari perangkat ini.', 'warning', array('Silakan coba lagi dalam 15 menit.', 'Pastikan username/email, password, dan captcha sudah benar sebelum mencoba kembali.'));
+			$data['error_message'] = '<div class="alert alert-danger">Terlalu banyak percobaan login dari IP Anda. Silakan coba lagi dalam 15 menit.</div>';
 			$this->template->display('user/form_login', $data);
 			return;
 		}
@@ -94,29 +93,29 @@ class User_authentication extends MX_Controller {
 		$password = $this->security->xss_clean($this->input->post('password', TRUE));
 		$captcha_input = $this->security->xss_clean($this->input->post('captcha', TRUE));
 
-// 		// Validasi CAPTCHA
-// 		$expiration = time() - 7200; // 2 jam
-// 		$this->db->where('captcha_time <', $expiration)->delete('captcha');
-// 
-// 		$sql = "SELECT COUNT(*) AS count FROM captcha 
-// 				WHERE word = ? AND ip_address = ? AND captcha_time > ?";
-// 		$binds = [$captcha_input, $this->input->ip_address(), $expiration];
-// 		$query = $this->db->query($sql, $binds);
-// 		$row = $query->row();
-// 
-// 		if ($row->count == 0) {
-// 			$data = $this->set_captch();
-// 			$data['error_message'] = $this->login_alert('Captcha belum sesuai', 'Kode captcha yang dimasukkan tidak cocok atau sudah kedaluwarsa.', 'warning', array('Masukkan ulang kode captcha terbaru pada gambar.', 'Perhatikan huruf besar, huruf kecil, dan angka.'));
-// 			$this->template->display('user/form_login', $data);
-// 			return;
-// 		}
+		// Validasi CAPTCHA
+		$expiration = time() - 7200; // 2 jam
+		$this->db->where('captcha_time <', $expiration)->delete('captcha');
+
+		$sql = "SELECT COUNT(*) AS count FROM captcha 
+				WHERE word = ? AND ip_address = ? AND captcha_time > ?";
+		$binds = [$captcha_input, $this->input->ip_address(), $expiration];
+		$query = $this->db->query($sql, $binds);
+		$row = $query->row();
+
+		if ($row->count == 0) {
+			$data = $this->set_captch();
+			$data['error_message'] = '<div style="text-align:left;margin-top:5px;" class="alert alert-danger" role="alert">Kode Captcha tidak sesuai. Silahkan ulangi.</div>';
+			$this->template->display('user/form_login', $data);
+			return;
+		}
 
 		// Proses login user
 		$sess_data = $this->_getUserInfo($username, $password);
 
 		if (!isset($sess_data['success']) || $sess_data['success'] !== 1) {
 			$data = $this->set_captch();
-			$data['error_message'] = $this->login_alert('Login belum berhasil', 'Username/email atau kata sandi yang dimasukkan belum sesuai.', 'danger', array('Periksa kembali penulisan username/email.', 'Pastikan tombol Caps Lock tidak aktif saat mengetik kata sandi.', 'Jika lupa kata sandi, gunakan tautan Lupa Kata Sandi di bawah form.'));
+			$data['error_message'] = '<div style="text-align:left;margin-top:5px;" class="alert alert-danger" role="alert">Invalid Username / Password</div>';
 			$this->template->display('user/form_login', $data);
 			return;
 		}
@@ -209,7 +208,7 @@ class User_authentication extends MX_Controller {
 	// 		} else if ( $sess_data['success'] == 0 ) {
 	// 			$cap = $this->set_captch();
 	// 			$data['cap'] = $cap['cap'];
-	// 			$data['error_message'] = $this->login_alert('Login belum berhasil', 'Username/email atau kata sandi yang dimasukkan belum sesuai.', 'danger', array('Periksa kembali penulisan username/email.', 'Pastikan tombol Caps Lock tidak aktif saat mengetik kata sandi.', 'Jika lupa kata sandi, gunakan tautan Lupa Kata Sandi di bawah form.'));
+	// 			$data['error_message'] = '<div style="text-align:left;margin-top:5px;" class="alert alert-danger" role="alert">Invalid Username / Password</div>';
 	// 			$return = $this->template->display('user/form_login', $data);
 	// 		} else {
 	// 			if ( empty($sess_data['error_message']) )
@@ -321,39 +320,6 @@ class User_authentication extends MX_Controller {
 	}
 
 
-
-	private function login_alert($title, $message, $tone = 'danger', $tips = array())
-	{
-		$allowed_tones = array('danger', 'warning', 'info', 'success');
-		if (!in_array($tone, $allowed_tones)) {
-			$tone = 'danger';
-		}
-
-		$icons = array(
-			'danger' => 'fa-exclamation-triangle',
-			'warning' => 'fa-shield-alt',
-			'info' => 'fa-info-circle',
-			'success' => 'fa-check-circle'
-		);
-
-		$html  = '<div class="login-alert login-alert-'.$tone.'" role="alert" aria-live="polite">';
-		$html .= '<div class="login-alert-icon"><i class="fa '.$icons[$tone].'"></i></div>';
-		$html .= '<div class="login-alert-content">';
-		$html .= '<strong>'.html_escape($title).'</strong>';
-		$html .= '<p>'.html_escape($message).'</p>';
-
-		if (!empty($tips)) {
-			$html .= '<ul>';
-			foreach ($tips as $tip) {
-				$html .= '<li>'.html_escape($tip).'</li>';
-			}
-			$html .= '</ul>';
-		}
-
-		$html .= '</div></div>';
-		return $html;
-	}
-
 	private function _getUserInfo($username, $password) {
 		$sess_data = array();
 		
@@ -419,9 +385,6 @@ class User_authentication extends MX_Controller {
 						
 						$orgs = array();
 						$orgs2 = array();
-						$kodeunits = array();
-						$kodeunit = '';
-						$kodeatasan = '';
 						if (trim($username) != trim($sess_data['sysparam']->superuser[0])) {
 							$kodeunits = $this->getall('', 'kepeg_m_unor', 'id', 
 								array('kode_satker'=>trim($username))

@@ -1,0 +1,38 @@
+networks:
+  siperben-net:
+    driver: bridge
+services:
+  app:
+    build:
+      context: ../siperben_docker_build
+      dockerfile: Dockerfile
+    container_name: siperben-app
+    depends_on:
+    - mariadb
+    environment:
+    - APACHE_RUN_USER=www-data
+    - APACHE_RUN_GROUP=www-data
+    mem_limit: 256m
+    networks:
+    - siperben-net
+    ports:
+    - 8080:8080
+    restart: unless-stopped
+    volumes:
+    - ../siperben:/var/www/html
+  mariadb:
+    container_name: siperben-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_ganti_ini
+    image: mariadb:10.4
+    mem_limit: 512m
+    networks:
+    - siperben-net
+    ports:
+    - 3306:3306
+    restart: unless-stopped
+    volumes:
+    - siperben-mariadb-data:/var/lib/mysql
+    - ./mysql-config/low-memory.cnf:/etc/mysql/conf.d/low-memory.cnf:ro
+volumes:
+  siperben-mariadb-data: null

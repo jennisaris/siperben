@@ -2,9 +2,8 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Redirect HTTP ke HTTPS (jika menggunakan SSL)
-    RewriteCond %{HTTPS} off
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    # Cloudflare Tunnel deployment: HTTPS redirect disabled here.
+    # TLS terminates at Cloudflare; origin receives HTTP.
 
     # Blokir akses ke file sensitif
     <FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql)$">

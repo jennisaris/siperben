@@ -87,58 +87,44 @@ class Reset_password extends MX_Controller {
 	  
 	  //print_r($sysparam);
 	  //exit;
-	  $mail = new PHPMailer(true);
-	  //print_r($mail);
-	  //exit;
-	  
-	  /* Open the try/catch block. */
-    try {
-       /* SMTP parameters. */
-       $mail->isSMTP();
-       $mail->Host = $sysparam->smtphost[0];
-       $mail->SMTPAuth = $sysparam->smtpauth[0];
-       $mail->SMTPSecure = $sysparam->smtpsecure[0];
-       $mail->Username = $sysparam->smtpuser[0];
-       $mail->Password = $sysparam->smtppasswd[0];
-       $mail->Port = $sysparam->smtpport[0];
-   
-       /* Set the mail sender. */
-       $mail->setFrom($sysparam->smtpuser[0], 'SIPERBEN');
-    
-       /* Add a recipient. */
-       $mail->addAddress($post->priv_t_user_email, $post->priv_t_user_email);
-    
-       /* Set the subject. */
-       $mail->Subject = 'Permintaan Reset Password Aplikasi SIPERBEN';
-    
-       /* Set the mail message body. */
-       $rand = rand(0,99999);
-       $size = strlen($rand);
-       $keys = base64_encode($post->priv_t_user_email);
-       $keys .= $rand.''.$size;
-       $mail->isHTML(TRUE);
-       $tautan = "<a href='".base_url()."nologin/konfirmasi?key=".$keys."'>disini</a>";
-       $body = "Halo Operator SIPERBEN<br/><br/>Ini adalah sistem email otomatis yang terkirim atas permintaan anda untuk proses Ubah / Lupa Password <br/>Berikut kami sampaikan tautan untuk me-reset password Anda. Silahkan klik {$tautan} untuk melakukan perubahan password. <br/> Jika kamu tidak merasa melakukan permintaan ini, harap abaikan email ini.  <br/> <br/>Terima Kasih";
-       $mail->Body = $body;
-    
-       /* Finally send the mail. */
-       $mail->send();
-       $status = true;
-       // 'Email Terkirim';
-    }
-    catch (Exception $e)
-    {
-       /* PHPMailer exception. */
-       $status = false;
-       $pesan = $e->errorMessage();
-    }
-    catch (\Exception $e)
-    {
-       /* PHP exception (note the backslash to select the global namespace Exception class). */
-       $status = false;
-       $pesan = $e->getMessage();
-    }
-	  
+		  $rand = rand(0,99999);
+		  $size = strlen($rand);
+		  $keys = base64_encode($post->priv_t_user_email);
+		  $keys .= $rand.''.$size;
+		  $tautan = "<a href='".base_url()."nologin/konfirmasi?key=".$keys."'>disini</a>";
+		  $body = "Halo Operator SIPERBEN<br/><br/>Ini adalah sistem email otomatis yang terkirim atas permintaan anda untuk proses Ubah / Lupa Password <br/>Berikut kami sampaikan tautan untuk me-reset password Anda. Silahkan klik {$tautan} untuk melakukan perubahan password. <br/> Jika kamu tidak merasa melakukan permintaan ini, harap abaikan email ini.  <br/> <br/>Terima Kasih";
+		  
+		  $smtp_auth = filter_var($sysparam->smtpauth[0], FILTER_VALIDATE_BOOLEAN);
+		  $email_config = array(
+		    'protocol' => 'smtp',
+		    'smtp_host' => $sysparam->smtphost[0],
+		    'smtp_user' => $sysparam->smtpuser[0],
+		    'smtp_pass' => $sysparam->smtppasswd[0],
+		    'smtp_port' => (int)$sysparam->smtpport[0],
+		    'smtp_crypto' => $sysparam->smtpsecure[0],
+		    'smtp_timeout' => 20,
+		    'smtp_auth' => $smtp_auth,
+		    'mailtype' => 'html',
+		    'charset' => 'utf-8',
+		    'newline' => "\r\n",
+		    'crlf' => "\r\n"
+		  );
+		  
+		  $this->load->library('email');
+		  $this->email->initialize($email_config);
+		  $this->email->from($sysparam->smtpuser[0], 'SIPERBEN');
+		  $this->email->to($post->priv_t_user_email);
+		  $this->email->subject('Permintaan Reset Password Aplikasi SIPERBEN');
+		  $this->email->message($body);
+		  
+		  if ($this->email->send()) {
+		    $status = true;
+		  } else {
+		    $status = false;
+		    $pesan = trim(strip_tags($this->email->print_debugger(array('headers'))));
+		    if (empty($pesan)) $pesan = 'Email reset password belum bisa dikirim. Silakan hubungi administrator.';
+		  }
+
 	  $datas = [
 	       'status' => $status,
 	       'obj' => $this->table.'_email',

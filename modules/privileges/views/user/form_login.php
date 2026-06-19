@@ -19,12 +19,13 @@ $sysparam = (object)$sysparam;
 </head>
 <style type="text/css">
   body,html {
-    height:100%!important;
+    min-height:100%!important;
     margin:0;
-    background-image:url('<?=base_url();?>assets/images/bg23.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background:
+      radial-gradient(circle at top left, rgba(125, 211, 252, .55) 0, rgba(125, 211, 252, 0) 34%),
+      radial-gradient(circle at bottom right, rgba(191, 219, 254, .7) 0, rgba(191, 219, 254, 0) 36%),
+      linear-gradient(135deg, #e0f2fe 0%, #f8fbff 48%, #ffffff 100%);
+    background-attachment: fixed;
   }
   .form-signin {
     max-width: 300px;
@@ -51,6 +52,86 @@ $sysparam = (object)$sysparam;
     margin-bottom: 15px;
     padding: 7px 9px;
   }
+
+  .panel.panel-default {
+    border: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 18px 45px rgba(0,0,0,.22);
+  }
+  .panel-heading {
+    border-bottom: 1px solid #eef2f7;
+  }
+  .login-alert {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    text-align: left;
+    margin: 0 0 16px 0;
+    padding: 14px 15px;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    box-shadow: 0 10px 25px rgba(15,23,42,.08);
+    animation: loginAlertIn .28s ease-out;
+  }
+  .login-alert-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    margin-top: 1px;
+  }
+  .login-alert-content strong {
+    display: block;
+    font-size: 14px;
+    line-height: 1.35;
+    margin-bottom: 3px;
+  }
+  .login-alert-content p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #1e293b;
+  }
+  .login-alert-content ul {
+    margin: 7px 0 0 16px;
+    padding: 0;
+    color: #334155;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .login-alert-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border-color: #fecaca;
+  }
+  .login-alert-danger .login-alert-icon {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+  }
+  .login-alert-danger strong { color: #991b1b; }
+  .login-alert-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-color: #fde68a;
+  }
+  .login-alert-warning .login-alert-icon {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  .login-alert-warning strong { color: #92400e; }
+  .panel-body .alert-danger {
+    text-align: left;
+    border-radius: 14px;
+    border-color: #fecaca;
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+    box-shadow: 0 10px 25px rgba(15,23,42,.08);
+  }
+  @keyframes loginAlertIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 </style>
 <div class="container-fluid">
   <div class="row">
@@ -72,19 +153,19 @@ $sysparam = (object)$sysparam;
 	    </h3>
 	  </div>
 	  <div class="panel-body">
-	    <form class="form-horizontal" method='post' action='<?php echo base_url();?>privileges/user_authentication/dologin'>
-		    	<?php
-					if (isset($error_message)) {
-						echo $error_message;
-					}		
-					echo validation_errors();	
-				?>
+	    <form class="form-horizontal" method='post' action='<?php echo base_url();?>privileges/user_authentication/dologin'>			    	<?php
+						if (isset($error_message)) {
+							echo $error_message;
+						} else {
+							echo validation_errors();
+						}
+					?>
 		    <div class="form-group">
     			<div class="col-sm-12">
     				<div class="input-group">
 						<input type='hidden' name='doLogin' id='doLogin' value='doLogin'/>
 						<div class="input-group-addon"><i class='fa fa-user fa-fw'></i></div>
-			    		<input type="text" class="form-control" placeholder="Masukkan Username" id="username" name="username">
+			    		<input type="text" class="form-control" placeholder="Masukkan Username / Email" id="username" name="username">
 			    	</div>
 		    	</div>
 		    </div>
