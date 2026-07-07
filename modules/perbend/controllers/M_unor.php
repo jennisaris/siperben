@@ -389,33 +389,47 @@ class M_unor extends MX_Controller {
 	  return $buttons;
 	} */
 	
+	// OPTIMIZED: load semua app_m_unor SEKALI ke memory, traversal in-memory
+	// Menggantikan N recursive SQL queries dengan 1 query + traversal array
+	private static $_unor_tree_cache = null;
+	private static $_unor_tree_cache_with_deleted = null;
+
+	private function _loadUnorTree($include_deleted = false) {
+		$cache_key = $include_deleted ? '_unor_tree_cache_with_deleted' : '_unor_tree_cache';
+		if (self::$$cache_key === null) {
+			$where = $include_deleted ? '' : ' WHERE deleted=0';
+			$all = $this->db->query("SELECT kode, kode_atasan, nama FROM app_m_unor{$where}")->result_array();
+			$tree = [];
+			foreach ($all as $row) {
+				$parent = trim($row['kode_atasan']);
+				$tree[$parent][] = ['kode' => trim($row['kode']), 'nama' => trim($row['nama'])];
+			}
+			self::$$cache_key = $tree;
+		}
+		return self::$$cache_key;
+	}
+
 	function getRekursifUnit($corgid='', &$data=null) {
-  		$sql = 'SELECT kode, nama from app_m_unor where kode_atasan =\''.$corgid.'\' and deleted=0';
-  		$query = $this->db->query($sql);
-  		if ( $query ) {
-  			$rows = $query->result_array();
-  			foreach ($rows as $r) {
-  			  $data[trim($r['kode'])] = trim($r['nama']);
-  				$this->getRekursifUnit(trim($r['kode']), $data);
-  			}
-  		}
-  
-  		return $data;
-    }
+		// OPTIMIZED: 1 query saja, traversal in-memory (tidak rekursif ke DB)
+		$tree = $this->_loadUnorTree(false);
+		$this->_traverseTree($corgid, $tree, $data);
+		return $data;
+	}
+
+	private function _traverseTree($kode, &$tree, &$data) {
+		if (!isset($tree[$kode])) return;
+		foreach ($tree[$kode] as $child) {
+			$data[$child['kode']] = $child['nama'];
+			$this->_traverseTree($child['kode'], $tree, $data);
+		}
+	}
 
 	function getRekursifUnit2($corgid='', &$data=null) {
-		$sql = 'SELECT kode, nama from app_m_unor where kode_atasan =\''.$corgid.'\'';
-		$query = $this->db->query($sql);
-		if ( $query ) {
-			$rows = $query->result_array();
-			foreach ($rows as $r) {
-			  $data[trim($r['kode'])] = trim($r['nama']);
-				$this->getRekursifUnit2(trim($r['kode']), $data);
-			}
-		}
-
+		// OPTIMIZED: 1 query saja, traversal in-memory (include deleted)
+		$tree = $this->_loadUnorTree(true);
+		$this->_traverseTree($corgid, $tree, $data);
 		return $data;
-  }
+	}
     
     function getunor() {
     		//print_r($_POST);exit;

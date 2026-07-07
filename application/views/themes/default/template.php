@@ -93,6 +93,11 @@ $CI =&get_instance();
 	//document.onkeypress = function(e) {stopDefaultBackspaceBehaviour(e);} 
 </script>
 
+
+<style>
+/* OPTIMIZED: hapus overlay/spinner loading global di semua menu */
+#divLoading, #divLoading.show { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+</style>
 </head>
 <body>
 <?php

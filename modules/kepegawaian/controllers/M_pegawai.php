@@ -36,8 +36,14 @@ class M_pegawai extends MX_Controller {
 		$this->_addField($table, 'ikduker3', 'Unit Kerja (Sharing)', false);
 		//$this->_addField($table, 'vnmuker', 'Nama Unit Kerja', true);
 		$this->_addField($table, 'cnobnt', 'No. BNT', false);
+		$this->_addField($table, 'dtglbnt', 'Tgl. Sertifikat BNT', false);
+		$this->_addField($table, 'dkadaluarsabnt', 'Tgl. Kadaluarsa BNT', false);
 		$this->_addField($table, 'cnosnt', 'No. SNT', false);
+		$this->_addField($table, 'dtglsnt', 'Tgl. Sertifikat SNT', false);
+		$this->_addField($table, 'dkadaluarsasnt', 'Tgl. Kadaluarsa SNT', false);
 		$this->_addField($table, 'cnopnt', 'No. PNT', false);
+		$this->_addField($table, 'dtglpnt', 'Tgl. Sertifikat PNT', false);
+		$this->_addField($table, 'dkadaluarsapnt', 'Tgl. Kadaluarsa PNT', false);
 		$this->_addField($table, 'istatus', 'Kedudukan Hukum', true);
 		$this->_addField($table, 'tcreated', 'Waktu dibuat', false, true);
 		$this->_addField($table, 'ccreatedby', 'Dibuat oleh', false, true);
@@ -45,7 +51,7 @@ class M_pegawai extends MX_Controller {
 		$this->_addField($table, 'cupdatedby', 'Diubah oleh', false, true);
 
 		//$this->_add2ListField($table, 'ifrom, cnip, vname, vgolnm, vjabnm, vnmuker, tupdated, cupdatedby');
-		$this->_add2ListField($table, 'ifrom, cnip, vname, cgolid, ijabid, ikduker, ikduker3, cnobnt,cnosnt,cnopnt, istatus,tupdated, cupdatedby');
+		$this->_add2ListField($table, 'ifrom, cnip, vname, cgolid, ijabid, ikduker, ikduker3, cnobnt, dtglbnt, dkadaluarsabnt, cnosnt, dtglsnt, dkadaluarsasnt, cnopnt, dtglpnt, dkadaluarsapnt, istatus,tupdated, cupdatedby');
 		
 		$this->_changeType($table, 'ifrom', 'combobox', 
 		$this->session->sysparam->ifrom);
@@ -78,6 +84,13 @@ class M_pegawai extends MX_Controller {
 		
 		$this->_changeType($table, 'istatus', 'combobox2', 
 		$this->ar_m_kedudukan_hukum);
+
+		$this->_changeType($table, 'dtglbnt', 'date', 'd-m-Y');
+		$this->_changeType($table, 'dkadaluarsabnt', 'date', 'd-m-Y');
+		$this->_changeType($table, 'dtglsnt', 'date', 'd-m-Y');
+		$this->_changeType($table, 'dkadaluarsasnt', 'date', 'd-m-Y');
+		$this->_changeType($table, 'dtglpnt', 'date', 'd-m-Y');
+		$this->_changeType($table, 'dkadaluarsapnt', 'date', 'd-m-Y');
 		
 		//$this->_changeType($table, 'ikduker', 'combobox2', 
 		//$this->ar_m_unor);

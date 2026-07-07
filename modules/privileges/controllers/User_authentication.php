@@ -68,8 +68,7 @@ class User_authentication extends MX_Controller {
 		// Validasi input
 		$this->form_validation->set_rules('username', 'Username / Email', 'trim|required', array('required' => 'Username/email wajib diisi.'));
 		$this->form_validation->set_rules('password', 'Kata Sandi', 'trim|required', array('required' => 'Kata sandi wajib diisi.'));
-		// $this->form_validation->set_rules('captcha', 'Kode Captcha', 'trim|required', array('required' => 'Kode captcha wajib diisi.')); // disabled for testing
-
+		$this->form_validation->set_rules('captcha', 'Kode Captcha', 'trim|required', array('required' => 'Kode captcha wajib diisi.'));
 		if ($this->form_validation->run() === FALSE) {
 			$data = $this->set_captch(); // load ulang captcha
 			$validation_message = trim(strip_tags(validation_errors(' ', ' ')));
@@ -94,22 +93,23 @@ class User_authentication extends MX_Controller {
 		$password = $this->security->xss_clean($this->input->post('password', TRUE));
 		$captcha_input = $this->security->xss_clean($this->input->post('captcha', TRUE));
 
-// 		// Validasi CAPTCHA
-// 		$expiration = time() - 7200; // 2 jam
-// 		$this->db->where('captcha_time <', $expiration)->delete('captcha');
-// 
-// 		$sql = "SELECT COUNT(*) AS count FROM captcha 
-// 				WHERE word = ? AND ip_address = ? AND captcha_time > ?";
-// 		$binds = [$captcha_input, $this->input->ip_address(), $expiration];
-// 		$query = $this->db->query($sql, $binds);
-// 		$row = $query->row();
-// 
-// 		if ($row->count == 0) {
-// 			$data = $this->set_captch();
-// 			$data['error_message'] = $this->login_alert('Captcha belum sesuai', 'Kode captcha yang dimasukkan tidak cocok atau sudah kedaluwarsa.', 'warning', array('Masukkan ulang kode captcha terbaru pada gambar.', 'Perhatikan huruf besar, huruf kecil, dan angka.'));
-// 			$this->template->display('user/form_login', $data);
-// 			return;
-// 		}
+// Validasi CAPTCHA
+$expiration = time() - 7200; // 2 jam
+$this->db->where('captcha_time <', $expiration)->delete('captcha');
+
+$sql = "SELECT COUNT(*) AS count FROM captcha 
+		WHERE word = ? AND ip_address = ? AND captcha_time > ?";
+$binds = [$captcha_input, $this->input->ip_address(), $expiration];
+$query = $this->db->query($sql, $binds);
+$row = $query->row();
+
+if ($row->count == 0) {
+	$data = $this->set_captch();
+	$data['error_message'] = $this->login_alert('Captcha belum sesuai', 'Kode captcha yang dimasukkan tidak cocok atau sudah kedaluwarsa.', 'warning', array('Masukkan ulang kode captcha terbaru pada gambar.', 'Perhatikan huruf besar, huruf kecil, dan angka.'));
+	$this->template->display('user/form_login', $data);
+	return;
+}
+
 
 		// Proses login user
 		$sess_data = $this->_getUserInfo($username, $password);
@@ -244,7 +244,7 @@ class User_authentication extends MX_Controller {
 		} */
 		// $vals = array(
 		// 	'word'          => '',
-		// 	'img_path'      => 'uploads/captcha/',
+		// 	'img_path'      => FCPATH . 'uploads/captcha/',
 		// 	'img_url'       => base_url().'uploads/captcha/',
 		// 	'font_path'     => '',//./path/to/fonts/texb.ttf;./fonts/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf
 		// 	'img_width'     => '260',
@@ -287,6 +287,14 @@ class User_authentication extends MX_Controller {
     	);
 
 		$cap = create_captcha($vals);
+		if ($cap === FALSE) {
+			log_message('error', 'Gagal membuat captcha. Periksa img_path/uploads/captcha, GD extension, dan font_path.');
+			$cap = array(
+				'time' => time(),
+				'word' => '',
+				'image' => '<div class="alert alert-warning">Captcha belum dapat dibuat. Silakan hubungi administrator.</div>'
+			);
+		}
 		$data = array(
 				'captcha_time'  => $cap['time'],
 				'ip_address'    => $this->input->ip_address(),
@@ -390,6 +398,7 @@ class User_authentication extends MX_Controller {
 						$sess_data['redirect_page'] = $r->credirect_page;
 						$sess_data['settahun']		= trim($r->ctahun);
 						$sess_data['email'] = trim($r->email);
+						$sess_data['satker_name'] = trim($r->realname);
 						
 						//tambahan
 						$kode_lama = explode(",", $r->kode_lama);
@@ -415,6 +424,16 @@ class User_authentication extends MX_Controller {
 						}
 
 						$sess_data['sysparam'] = $this->getSysparam('*');
+						if (trim($username) != trim($sess_data['sysparam']->superuser[0])) {
+							$satker_info = $this->getrow('', 'app_m_unor', 'nama', array('kode'=>trim($username)));
+							if (empty($satker_info) || empty($satker_info->nama)) {
+								$satker_info = $this->getrow('', 'kepeg_m_unor', 'nama', array('kode_satker'=>trim($username)));
+							}
+							if (!empty($satker_info) && !empty($satker_info->nama)) {
+								$sess_data['satker_name'] = trim($satker_info->nama);
+								$sess_data['realname'] = $sess_data['satker_name'];
+							}
+						}
 						//unors
 						
 						$orgs = array();

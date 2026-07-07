@@ -1,6 +1,24 @@
 <?php
 $CI =&get_instance();
 $sysparam = (object)$CI->session->sysparam;
+$display_name = '';
+$display_username = trim($CI->session->userdata('username'));
+if (empty($display_username) && !empty($CI->session->userid)) {
+  $user_info = $CI->db->query("SELECT username FROM priv_t_user WHERE id = ? LIMIT 1", array((int)$CI->session->userid))->row();
+  if (!empty($user_info) && !empty($user_info->username)) $display_username = trim($user_info->username);
+}
+if (!empty($display_username)) {
+  $satker = $CI->db->query("SELECT nama FROM app_m_unor WHERE kode = ? LIMIT 1", array($display_username))->row();
+  if (empty($satker) || empty($satker->nama)) {
+    $satker = $CI->db->query("SELECT nama FROM kepeg_m_unor WHERE kode_satker = ? LIMIT 1", array($display_username))->row();
+  }
+  if (!empty($satker) && !empty($satker->nama)) {
+    $display_name = trim($satker->nama);
+    $CI->session->set_userdata('satker_name', $display_name);
+  }
+}
+if (empty($display_name)) $display_name = $CI->session->userdata('satker_name');
+if (empty($display_name)) $display_name = $CI->session->userdata('realname');
 
 //notifications-menu
 //print_r($this->session->groupid);
@@ -145,7 +163,7 @@ foreach($notifs as $k=>$n) {
                 <img src="<?=base_url();?>assets/images/images.png" class="user-image" alt="User Image">
 				<?php } ?>
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs"><?php echo substr($this->session->userdata['realname'], 0, 50);?></span>
+              <span class="hidden-xs"><?php echo substr($display_name, 0, 50);?></span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
@@ -156,7 +174,7 @@ foreach($notifs as $k=>$n) {
                 <img src="<?=base_url();?>assets/images/images.png" class="img-circle" alt="User Image">
 				<?php } ?>
                 <p>
-                  <small><?php echo substr($this->session->userdata['realname'], 0, 50);?> - <?=trim($this->session->userdata['jabname']);?></small>
+                  <small><?php echo substr($display_name, 0, 50);?> - <?=trim($this->session->userdata['jabname']);?></small>
                   <!-- <small>Last Visited <?=$this->session->userdata['tlastvisited'];?></small>-->
                 </p>
               </li>
@@ -211,7 +229,7 @@ foreach($notifs as $k=>$n) {
 			<?php } ?>
         </div>
         <div class="pull-left info">
-          <p title='<?=$this->session->userdata['realname'];?>'><?php echo (strlen($this->session->userdata['realname']) <= 16 ? $this->session->userdata['realname'] : substr($this->session->userdata['realname'], 0, 16).' ...');?></p>
+          <p title='<?=$display_name;?>'><?php echo (strlen($display_name) <= 16 ? $display_name : substr($display_name, 0, 16).' ...');?></p>
           <!-- Status -->
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>

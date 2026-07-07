@@ -5,7 +5,7 @@
 <?php
 $CI =& get_instance();
 $sysparam = $CI->session->sysparam;
-$asset_version = '202606011053';
+$asset_version = '202606190922';
 ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

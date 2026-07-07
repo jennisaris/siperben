@@ -1,3 +1,8 @@
+
+<style>
+/* OPTIMIZED: hapus overlay/spinner loading global di semua menu */
+#divLoading, #divLoading.show { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+</style>
 <!--header -->	
 <?php echo $_header;?>
 

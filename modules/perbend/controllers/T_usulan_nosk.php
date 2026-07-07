@@ -68,9 +68,23 @@ class T_usulan_nosk extends MX_Controller {
 		return $input;
 	}
 
+
+	private function naraProsesSkDateInput($name, $value='', $placeholder='') {
+		$display = '';
+		if ($value !== '' && $value !== null) {
+			$ts = strtotime($value);
+			$display = $ts ? date('d-m-Y', $ts) : $value;
+		}
+		$placeholder = $placeholder == '' ? 'Pilih Tanggal' : $placeholder;
+		$handler = "if(window.naraShowProsesSkDatepicker){naraShowProsesSkDatepicker(this);}else if(window.jQuery&&jQuery.fn&&jQuery.fn.datepicker){var el=this;setTimeout(function(){jQuery(el).datepicker({dateFormat:'dd-mm-yy',changeMonth:true,changeYear:true,beforeShow:function(){setTimeout(function(){jQuery('#ui-datepicker-div').css('z-index',99999).show();},0);}}).datepicker('show');},0);}";
+		return "<div class='input-group nara-date-wrap'>"
+			. "<input autocomplete='off' placeholder='{$placeholder}' type='text' name='{$name}' id='{$name}' class='form-control datepicker nara-proses-sk-date {$name}' value='{$display}' onfocus=\"{$handler}\" onclick=\"{$handler}\" onmousedown=\"{$handler}\"/>"
+			. "<span class='input-group-addon nara-date-trigger' style='cursor:pointer;' onmousedown=\"var i=this.parentNode.querySelector('input'); if(i){i.focus(); if(window.naraShowProsesSkDatepicker)naraShowProsesSkDatepicker(i);}\" onclick=\"var i=this.parentNode.querySelector('input'); if(i){i.focus(); if(window.naraShowProsesSkDatepicker)naraShowProsesSkDatepicker(i);}\"><i class='fa fa-calendar'></i></span>"
+			. "</div>";
+	}
+
 	function updateBox_app_t_usulan_sk_dtgltetap($name, $value, $datas) {
-		$value = $value != null ? date('d-m-Y', strtotime($value)) : '';
-		$input = "<input placeholder='Tgl. Ditetapkan' type='text' name='{$name}' id='{$name}' class='form-control datepicker {$name}' value='{$value}'/>";
+		$input = $this->naraProsesSkDateInput($name, $value, 'Tgl. Ditetapkan');
 		
 
 		$input .= "<script type='text/javascript'>
@@ -78,7 +92,11 @@ class T_usulan_nosk extends MX_Controller {
 				dateFormat: 'dd-mm-yy',
 				changeMonth: true,
 				changeYear: true,
-				maxDate: '+0D',
+				beforeShow: function(input, inst) {
+					setTimeout(function() {
+						$('#ui-datepicker-div').css('z-index', 99999);
+					}, 0);
+				},
 				onSelect : function(dateText, inst) {
 					
 				}
@@ -90,7 +108,7 @@ class T_usulan_nosk extends MX_Controller {
 				else  $('#app_t_usulan_sk_iusetetap').val(0);
 			}
 		</script>";
-		$iusetetap = $datas->app_t_usulan_sk_iusetetap;
+		$iusetetap = is_object($datas) && isset($datas->app_t_usulan_sk_iusetetap) ? $datas->app_t_usulan_sk_iusetetap : 0;
 		if ( $iusetetap == 1 ) $chk_iusetetap = ' checked ';
 		else $chk_iusetetap = ' ';
 
@@ -147,8 +165,7 @@ class T_usulan_nosk extends MX_Controller {
 	
 	function insertBox_app_t_usulan_sk_dtglsk($name) {
 		$today = date('d-m-Y');
-		$input = "<input value='".$today."' type='text' name='{$name}' 
-			id='{$name}' class='form-control datepicker {$name}'/>";
+		$input = $this->naraProsesSkDateInput($name, $today, 'Pilih Tanggal');
 			
 		$input .= "<script type='text/javascript'>
 					$( '#{$name}').datepicker({
@@ -167,8 +184,7 @@ class T_usulan_nosk extends MX_Controller {
 	
 	function updateBox_app_t_usulan_sk_dtglsk($name, $value, $datas) {
 		$today = ($value == '' ? date('d-m-Y') : date('d-m-Y', strtotime($value)));
-		$input = "<input value='".$today."' type='text' name='{$name}' 
-			id='{$name}' class='form-control datepicker {$name}'/>";
+		$input = $this->naraProsesSkDateInput($name, $today, 'Pilih Tanggal');
 			
 		$input .= "<script type='text/javascript'>
 					$( '#{$name}').datepicker({
@@ -187,8 +203,7 @@ class T_usulan_nosk extends MX_Controller {
 
 	function insertBox_app_t_usulan_sk_dtglsurat($name) {
 		$today = date('d-m-Y');
-		$input = "<input value='".$today."' type='text' name='{$name}' 
-			id='{$name}' class='form-control datepicker {$name}'/>";
+		$input = $this->naraProsesSkDateInput($name, $today, 'Pilih Tanggal');
 			
 		$input .= "<script type='text/javascript'>
 					$( '#{$name}').datepicker({
@@ -207,8 +222,7 @@ class T_usulan_nosk extends MX_Controller {
 	
 	function updateBox_app_t_usulan_sk_dtglsurat($name, $value, $datas) {
 		$today = ($value == '' ? date('d-m-Y') : date('d-m-Y', strtotime($value)));
-		$input = "<input value='".$today."' type='text' name='{$name}' 
-			id='{$name}' class='form-control datepicker {$name}'/>";
+		$input = $this->naraProsesSkDateInput($name, $today, 'Pilih Tanggal');
 			
 		$input .= "<script type='text/javascript'>
 					$( '#{$name}').datepicker({
@@ -227,8 +241,7 @@ class T_usulan_nosk extends MX_Controller {
 
 	function insertBox_app_t_usulan_sk_dtmt($name) {
 		$today = date('d-m-Y');
-		$input = "<input value='".$today."' type='text' name='{$name}' 
-			id='{$name}' class='form-control datepicker {$name}'/>";
+		$input = $this->naraProsesSkDateInput($name, $today, 'Pilih Tanggal');
 			
 		$input .= "<script type='text/javascript'>
 					$( '#{$name}').datepicker({
@@ -247,8 +260,7 @@ class T_usulan_nosk extends MX_Controller {
 	
 	function updateBox_app_t_usulan_sk_dtmt($name, $value, $datas) {
 		$today = ($value == '' ? date('d-m-Y') : date('d-m-Y', strtotime($value)));
-		$input = "<input value='".$today."' type='text' name='{$name}' 
-			id='{$name}' class='form-control datepicker {$name}'/>";
+		$input = $this->naraProsesSkDateInput($name, $today, 'Pilih Tanggal');
 			
 		$input .= "<script type='text/javascript'>
 					$( '#{$name}').datepicker({
@@ -307,6 +319,35 @@ class T_usulan_nosk extends MX_Controller {
 
     function app_t_usulan_sk_output() {
 		$js = "<script type='text/javascript'>
+
+					window.naraShowProsesSkDatepicker = function(el) {
+						if (typeof jQuery === 'undefined' || !jQuery.fn || !jQuery.fn.datepicker) {
+							if (window.console) console.warn('jQuery UI datepicker belum termuat');
+							return;
+						}
+						var fld = jQuery(el);
+						try {
+							if (!fld.data('datepicker')) {
+								fld.datepicker({
+									dateFormat: 'dd-mm-yy',
+									changeMonth: true,
+									changeYear: true,
+									beforeShow: function(input, inst) {
+										setTimeout(function(){ jQuery('#ui-datepicker-div').appendTo('body').css({'z-index':99999,'display':'block'}); }, 0);
+									}
+								});
+							}
+							setTimeout(function(){ fld.datepicker('show'); jQuery('#ui-datepicker-div').appendTo('body').css({'z-index':99999,'display':'block'}); }, 0);
+						} catch(e) { if (window.console) console.warn('datepicker proses sk gagal', e); }
+					};
+
+					jQuery(document)
+						.off('focus.naraProsesSkDate click.naraProsesSkDate mousedown.naraProsesSkDate', '#t_usulan_nosk_form-modal input.nara-proses-sk-date, #t_usulan_nosk_form-modal input.datepicker')
+						.on('focus.naraProsesSkDate click.naraProsesSkDate mousedown.naraProsesSkDate', '#t_usulan_nosk_form-modal input.nara-proses-sk-date, #t_usulan_nosk_form-modal input.datepicker', function(){ window.naraShowProsesSkDatepicker(this); });
+
+					if (!jQuery('#nara-datepicker-zindex-style').length) {
+						jQuery('<style/>', {id:'nara-datepicker-zindex-style', text:'#ui-datepicker-div{z-index:99999!important;display:block;}.nara-date-trigger{background:#eee;}'}).appendTo('head');
+					}
 
 					function save_nosk() {
                         var table_id = 't_usulan_nosk';

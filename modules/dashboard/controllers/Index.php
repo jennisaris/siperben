@@ -142,28 +142,30 @@ class Index extends MX_Controller {
 	    $q_kd_satker = " and ckduker in (".$kd_satker_.")";
 	  } else $q_kd_satker = "";
 	  
-	  $sql = "Select ijabid2, count(cnip) as total 
-              From app_t_usulan_pegawai 
+	  // OPTIMIZED: JOIN menggantikan correlated subquery
+  $sql = "Select p.ijabid2, count(p.cnip) as total 
+              From app_t_usulan_pegawai p
+              INNER JOIN app_m_unor u ON u.kode = p.ckduker AND u.deleted = 0
               where {$q_ijabid2} ";
     if ($q_kd_satker !='') $sql.= $q_kd_satker;
 	/*$sql .= " and case 
-		when ijabid2 not in (4,5,6,7) then inoskid IS NOT NULL and inoskid !=0 and isnonaktif = 0
-		else isnonaktif = 0 and istatus != 0 and istatus2 != 0
-		end and (select count(*) from app_m_unor where kode = ckduker and deleted=0) > 0 ";*/
+		when p.ijabid2 not in (4,5,6,7) then p.inoskid IS NOT NULL and p.inoskid !=0 and p.isnonaktif = 0
+		else p.isnonaktif = 0 and p.istatus != 0 and p.istatus2 != 0
+		end ";*/
 		
 	if ( empty($kd_satker_) ) {
 		$sql .= " and case 
-			when ijabid2 not in (4,5,6,7) then inoskid IS NOT NULL and inoskid !=0 and isnonaktif = 0
-			else isnonaktif = 0 and istatus != 0 and istatus2 != 0
-			end and (select count(*) from app_m_unor where kode = ckduker and deleted=0) > 0 ";
+			when p.ijabid2 not in (4,5,6,7) then p.inoskid IS NOT NULL and p.inoskid !=0 and p.isnonaktif = 0
+			else p.isnonaktif = 0 and p.istatus != 0 and p.istatus2 != 0
+			end ";
 	} else {
 		$sql .= " and case 
-			when ijabid2 not in (4,5,6,7) then inoskid IS NOT NULL and inoskid !=0 and isnonaktif = 0
-			else isnonaktif = 0 and istatus != 0 and istatus2 != 0
-			end and (select count(*) from app_m_unor where kode in (".$kd_satker_.") and deleted=0) > 0 ";
+			when p.ijabid2 not in (4,5,6,7) then p.inoskid IS NOT NULL and p.inoskid !=0 and p.isnonaktif = 0
+			else p.isnonaktif = 0 and p.istatus != 0 and p.istatus2 != 0
+			end ";
 	}
-    //$sql .= " and inoskid IS NOT NULL and inoskid != 0 and isnonaktif = 0";
-    $sql .= " Group by ijabid2 ";
+    //$sql .= " and p.inoskid IS NOT NULL and p.inoskid != 0 and p.isnonaktif = 0";
+    $sql .= " Group by p.ijabid2 ";
     //echo $sql;exit;
               
     $rows = $this->db->query($sql)->result();

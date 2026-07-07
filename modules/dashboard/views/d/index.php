@@ -316,9 +316,11 @@ $controller = 'index';
       		<!-- pagination -->
       		<div id='<?=$controller3;?>_table-data' style='overflow-x: auto;'></div>
 
+          <?php /* Grafik Bendahara Bersertifikat disembunyikan atas permintaan user untuk menghilangkan space kosong dashboard.
           <div id='<?=$controller3;?>_graph-data'>
             <center><?=$charts;?></center>
           </div>
+          */ ?>
       </div>
    </div>
   </div>

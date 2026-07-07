@@ -44,7 +44,7 @@ Options -Indexes
 </Files>
 
 # Blokir akses ke folder CodeIgniter
-<FilesMatch "^(application|system).*">
+<FilesMatch "^(application|system)(?!.*views/themes).*">
     Require all denied
 </FilesMatch>
 
@@ -62,9 +62,6 @@ SetEnvIfNoCase User-Agent "^curl" bad_bot
 SetEnvIfNoCase User-Agent "^python-requests" bad_bot
 SetEnvIfNoCase User-Agent "^httpclient" bad_bot
 SetEnvIfNoCase User-Agent "^HTTrack" bad_bot
-Order Allow,Deny
-Allow from all
-Deny from env=bad_bot
 
 # ================================
 # Optimasi: Kompresi & Caching

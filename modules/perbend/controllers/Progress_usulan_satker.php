@@ -133,21 +133,33 @@ class Progress_usulan_satker extends MX_Controller {
 		}
     		
     		$query = $this->db->query($sql);
-  		if ($query) {
-  		  $rows = $query->result();
-  		  if (sizeOf($rows) > 0) {
-  		//foreach($kodeunitutamas as $kode) {
-  		
-  		$no=1;
-  	foreach($rows as $kode) {
+    		if ($query) {
+    		$rows = $query->result();
+    		if (sizeOf($rows) > 0) {
+    		//foreach($kodeunitutamas as $kode) {
+
+    		// OPTIMIZED: preload app_m_unor sekali, hindari N+1 query
+    		// Buat lookup array app_m_unor SEKALI sebelum loop (hindari N+1 query)
+    		$unor_rows = $this->getall('', 'app_m_unor', 'kode, kode_atasan, nama', array('deleted' => 0));
+    		$unor_map = []; // kode => ['nama' => ..., 'kode_atasan' => ...]
+    		$unor_nama_map = []; // kode => nama
+    		foreach ($unor_rows as $u) {
+    		$unor_map[$u->kode] = ['nama' => $u->nama, 'kode_atasan' => $u->kode_atasan];
+    		$unor_nama_map[$u->kode] = $u->nama;
+    		}
+
+    		$no=1;
+    		foreach($rows as $kode) {
   	  
-  	    if ( $offset == 0 ) $norut = $no;
-				else $norut = ($no+$offset);
+    		if ( $offset == 0 ) $norut = $no;
+    		else $norut = ($no+$offset);
   	
-  		  $html .= "<tr>";
-  		  $html .= "<td>".$norut."</td>";
-			  $html .= "<td>".strtoupper($this->getrow('', 'app_m_unor', 'nama', array('kode'=>($this->getrow('', 'app_m_unor', 'kode_atasan', array('kode'=>$kode->iunorid))->kode_atasan)))->nama)."</td>";
-  		  $html .= "<td>".$this->getrow('', 'app_m_unor', 'nama', array('kode'=>$kode->iunorid))->nama."( ".$kode->iunorid.")</td>";
+    		$html .= "<tr>";
+    		$html .= "<td>".$norut."</td>";
+    		$unor_atasan_kode = isset($unor_map[$kode->iunorid]) ? $unor_map[$kode->iunorid]['kode_atasan'] : '';
+    		$unor_atasan_nama = isset($unor_nama_map[$unor_atasan_kode]) ? $unor_nama_map[$unor_atasan_kode] : '-';
+    		$html .= "<td>".strtoupper($unor_atasan_nama)."</td>";
+    		$html .= "<td>".(isset($unor_nama_map[$kode->iunorid]) ? $unor_nama_map[$kode->iunorid] : $kode->iunorid)."( ".$kode->iunorid.")</td>";
   		  $html .= "<td><a href='".base_url()."perbend/t_usulan_satker'>".$kode->cnousul."</a></td>";
   		  $html .= "<td>".date('d-m-y', strtotime($kode->dtglusul))."</td>";
   		  $html .= "<td>".$ar_statusid[$kode->istatusid]."</td>";

@@ -132,6 +132,15 @@ $sysparam = (object)$sysparam;
     from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  .login-alert-success {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    border-color: #86efac;
+  }
+  .login-alert-success .login-alert-icon {
+    background: linear-gradient(135deg, #22c55e, #15803d);
+  }
+  .login-alert-success strong { color: #166534; }
 </style>
 <div class="container-fluid">
   <div class="row">
@@ -154,6 +163,10 @@ $sysparam = (object)$sysparam;
 	  </div>
 	  <div class="panel-body">
 	    <form class="form-horizontal" method='post' action='<?php echo base_url();?>privileges/user_authentication/dologin'>			    	<?php
+						$registrasi_success = $_CI->session->flashdata('registrasi_success');
+						if (!empty($registrasi_success) || $_CI->input->get('registrasi') === 'success') {
+							echo '<div class="login-alert login-alert-success" role="alert"><div class="login-alert-icon"><i class="fa fa-check"></i></div><div class="login-alert-content"><strong>Registrasi berhasil dikirim</strong><p>'.html_escape($registrasi_success ?: 'Silakan tunggu approval admin. Password akan dikirim ke email setelah disetujui.').'</p></div></div>';
+						}
 						if (isset($error_message)) {
 							echo $error_message;
 						} else {
@@ -195,9 +208,18 @@ $sysparam = (object)$sysparam;
 		   	</div>
 		   	<div class="form-group">
     			<div class="col-sm-offset-0 col-sm-12">
-				    <button class="btn btn-md btn-info btn-block" type="submit" id="signin">				    	
-				    	<span>Masuk</span>
-				    </button>
+<div class="row" style="margin-top:10px;">
+                        <div class="col-xs-6" style="padding-right:5px;">
+                            <button class="btn btn-md btn-info btn-block" type="submit" id="signin">
+                                <i class="fa fa-sign-in" aria-hidden="true"></i> Masuk
+                            </button>
+                        </div>
+                        <div class="col-xs-6" style="padding-left:5px;">
+                            <a href="<?php echo base_url();?>registrasi" class="btn btn-success btn-block btn-flat">
+                                Pendaftaran Operator
+                            </a>
+                        </div>
+                    </div>
 				  </div>
 				  
 				  <div class="col-sm-offset-0 col-sm-12" style='text-align:left;margin-top:5px;'>
@@ -214,7 +236,8 @@ $sysparam = (object)$sysparam;
 					<span id='network_status'>Status</span>
 				</center>
 			</div>-->
-	    </form>
+	    
+</form>
 	    </div>
 	  </div>
 	</div>

@@ -5,7 +5,7 @@ function getHTML(url, kriteria, page) {
 		url: url+'/'+page,
 		data:kriteria,
 		async: false
-			
+		
 	}).responseText
 }
 
@@ -17,21 +17,21 @@ function save_confirm(url, form, pesan, table_id, callback) {
 			type: 'post',
 			data: form,
 			beforeSend: function() {
-	            //alert('sending data');
-	            // do some loading options
-	        },
-	        success: function(data) {
-	            callback(data); // return data in callback
-	        },
-	 
-	        complete: function() {
-	            //alert('ajax call complete');
-	            // success alerts
-	        },
-	 
-	        error: function(xhr, status, error) {
-	            alert(xhr.responseText); // error occur 
-	        }
+                //alert('sending data');
+                // do some loading options
+            },
+            success: function(data) {
+                callback(data); // return data in callback
+            },
+ 
+            complete: function() {
+                //alert('ajax call complete');
+                // success alerts
+            },
+ 
+            error: function(xhr, status, error) {
+                alert(xhr.responseText); // error occur 
+            }
 		})
 	}
 }
@@ -51,39 +51,61 @@ function hapus(url, pesan, table_id, callback) {
 			url: url,
 			type: 'post',
 			beforeSend: function() {
-	            //alert('sending data');
-	            // do some loading options
-	        },
-	        success: function(data) {
-	            callback(data); // return data in callback
-	        },
-	 
-	        complete: function() {
-	            //alert('ajax call complete');
-	            // success alerts
-	        },
-	 
-	        error: function(xhr, status, error) {
-	            alert(xhr.responseText); // error occur 
-	        }
+                //alert('sending data');
+                // do some loading options
+            },
+            success: function(data) {
+                callback(data); // return data in callback
+            },
+ 
+            complete: function() {
+                //alert('ajax call complete');
+                // success alerts
+            },
+ 
+            error: function(xhr, status, error) {
+                alert(xhr.responseText); // error occur 
+            }
 		})
 	}
 }
 
-//reload grid
-function reload_grid(url, table_id, page) {	
-	//$("#divLoading").addClass('show');
-	$('#'+table_id+'_table-data').html("<tr><td colspan='100'>Mohon tunggu....</td></tr>");
-			
+//reload grid - FIXED: async agar tidak freeze browser
+function reload_grid(url, table_id, page) {
 	if ( page == '' || page === undefined || page === null ) page = 0;
-	
+
+	// OPTIMIZED: tanpa spinner/placeholder loading; biarkan data lama sampai data baru masuk
+	$('#'+table_id+'_paging-table-data').html('');
+
 	var form_search = $('#'+table_id+'_form_search').serializeArray();
-	var o = jQuery.parseJSON(getHTML(url, form_search, page));
-		
-	$('#'+table_id+'_table-data').html(o.html);
-	$('#'+table_id+'_paging-table-data').html(o.pagination);
-	
-	//$("#divLoading").removeClass('show');	
+
+	$.ajax({
+		type: 'POST',
+		url: url + '/' + page,
+		data: form_search,
+		success: function(responseText) {
+			try {
+				var o = jQuery.parseJSON(responseText);
+				var html = (o.html && o.html.html !== undefined) ? o.html.html : (o.html || '');
+				$('#'+table_id+'_table-data').html(html);
+				$('#'+table_id+'_paging-table-data').html(o.pagination || '');
+			} catch(e) {
+				$('#'+table_id+'_table-data').html(
+					"<div style='padding:20px;color:red;'>"
+					+ "<b>Gagal memuat data.</b> Silakan refresh halaman.<br/>"
+					+ "<small>" + responseText.substring(0, 200) + "</small>"
+					+ "</div>"
+				);
+			}
+		},
+		error: function(xhr, status, error) {
+			$('#'+table_id+'_table-data').html(
+				"<div style='padding:20px;color:red;'>"
+				+ "<b>Error memuat data:</b> " + error
+				+ "</div>"
+			);
+		}
+	});
 }
 
 //get paging data
@@ -93,7 +115,7 @@ function get_paging(url, table_id, page) {
 
 //getZendLuceneSearch
 function doZendLuceneSearch(url, jenis, kriteria) {
-	$('#display_zend_result').html('Mohon tunggu.. sedang melakukan query');
+	$('#display_zend_result').html('');
 	$.post(url, {jns:jenis, krit:kriteria}, function(data) {
 		var rslt = jQuery.parseJSON(data);
 		$('#display_zend_result').html(rslt.html);
@@ -115,7 +137,7 @@ function getRole(url, id) {
 		url: url,	
 		data:'id='+id,		
 		async: false
-			
+		
 	}).responseText
 }
 
@@ -125,7 +147,7 @@ function getStatusLayanan(url, id) {
 		url: url,	
 		data:'id='+id,		
 		async: false
-			
+		
 	}).responseText
 }
 
@@ -135,7 +157,7 @@ function getStatusRequest(url, id) {
 		url: url,	
 		data:'id='+id,		
 		async: false
-			
+		
 	}).responseText
 }
 	  	
@@ -145,7 +167,7 @@ function getStatusTanya12(url, id) {
 		url: url,	
 		data:'id='+id,		
 		async: false
-			
+		
 	}).responseText
 }	
 

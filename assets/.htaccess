@@ -1,3 +1,4 @@
+Require all granted
 # ================================
 # Proteksi & Optimasi .htaccess
 # ================================
@@ -62,9 +63,6 @@ SetEnvIfNoCase User-Agent "^curl" bad_bot
 SetEnvIfNoCase User-Agent "^python-requests" bad_bot
 SetEnvIfNoCase User-Agent "^httpclient" bad_bot
 SetEnvIfNoCase User-Agent "^HTTrack" bad_bot
-Order Allow,Deny
-Allow from all
-Deny from env=bad_bot
 
 # ================================
 # Optimasi: Kompresi & Caching
@@ -93,3 +91,7 @@ Deny from env=bad_bot
 # Nonaktifkan ETag untuk mengurangi overhead server
 FileETag None
 
+
+<FilesMatch "\.css$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+</FilesMatch>

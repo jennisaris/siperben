@@ -14,7 +14,7 @@
 <!-- JSTree -->
 <link rel="stylesheet" href="<?php echo $_theme;?>template/assets/jstree/themes/default/style.min.css" />
 <script src="<?php echo $_theme;?>template/assets/jstree/jstree.min.js"></script>
-<script src="<?php echo $_theme;?>template/assets/js/func.js"></script>
+<script src="<?php echo $_theme;?>template/assets/js/func.js?v=20260703fix2"></script>
 
 <!-- Bootstrap -->
 <link rel="stylesheet" href="<?php echo $_theme;?>template/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -38,6 +38,11 @@
 	document.onkeypress = function(e) {stopDefaultBackspaceBehaviour(e);} 
 </script>
 
+
+<style>
+/* OPTIMIZED: hapus overlay/spinner loading global di semua menu */
+#divLoading, #divLoading.show { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+</style>
 </head>
 <body>
 <!--header -->	

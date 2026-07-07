@@ -1580,9 +1580,21 @@ class MX_Controller
 				$rows = $query->result();
 			}
 
-			$query = $this->db->query($sqlc);
+			// OPTIMIZED GLOBAL: hitung total pakai COUNT(*), bukan fetch seluruh data tanpa LIMIT.
+			// Sebelumnya query count menjalankan SELECT penuh (termasuk longtext/base64 tfile), lalu num_rows().
+			// Ini membuat hampir semua menu lambat, terutama tabel app_t_usulan yang besar.
+			$sqlc_count = $sqlc;
+			if (stripos($sqlc_count, ' group by ') === false && stripos($sqlc_count, ' having ') === false) {
+				$sqlc_count = preg_replace('/^\s*select\s+.+?\s+from\s/is', 'SELECT COUNT(*) AS total FROM ', $sqlc_count, 1);
+				$sqlc_count = preg_replace('/\s+order\s+by\s+.*$/is', '', $sqlc_count);
+			} else {
+				$sqlc_count = "SELECT COUNT(*) AS total FROM (".$sqlc_count.") _count_query";
+			}
+
+			$query = $this->db->query($sqlc_count);
 			if ( $query ) {
-				$total = $query->num_rows();
+				$row_count = $query->row();
+				$total = isset($row_count->total) ? (int)$row_count->total : 0;
 			}
 
 			$this->session->jum_rec  = $total;

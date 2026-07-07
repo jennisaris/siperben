@@ -266,6 +266,7 @@ class Laporan1 extends MX_Controller {
         return $js;
   }
   
+  // OPTIMIZED: JOIN menggantikan correlated subquery
   private function get_total_perbendaharaan($ijabid2='', $kd_satker='') {
     //print_r($kd_satker);exit;
 	  $data = [
@@ -276,26 +277,28 @@ class Laporan1 extends MX_Controller {
 	  
 	  if ($ijabid2 != '') {
 	    $ijabid2_ = "'".implode("','", $ijabid2)."'";
-	    $q_ijabid2 = " ijabid2 in (".$ijabid2_.")";
-	  } else $q_ijabid2 = "  ijabid2 in (2,3,6) ";
+	    $q_ijabid2 = " p.ijabid2 in (".$ijabid2_.")";
+	  } else $q_ijabid2 = "  p.ijabid2 in (2,3,6) ";
 	  
 	  if ($kd_satker !='') {
 	    $kd_satker_ = "'".implode("','", $kd_satker)."'";
-	    $q_kd_satker = " and ckduker in (".$kd_satker_.")";
+	    $q_kd_satker = " and p.ckduker in (".$kd_satker_.")";
 	  } else $q_kd_satker = "";
 	  
-	  $sql = "Select ijabid2, count(cnip) as total 
-              From app_t_usulan_pegawai 
+	  // OPTIMIZED: JOIN menggantikan correlated subquery
+	  // Gunakan INNER JOIN ke app_m_unor agar hanya baris dengan unit atau yang valid yang terhitung
+	  $sql = "Select p.ijabid2, count(p.cnip) as total 
+              From app_t_usulan_pegawai p INNER JOIN app_m_unor u ON u.kode = p.ckduker AND u.deleted = 0
               where {$q_ijabid2} ";
     if ($q_kd_satker !='') $sql.= $q_kd_satker;
 	$sql .= " and case 
-		when ijabid2 not in (4,5,6,7) then inoskid IS NOT NULL and inoskid !=0 and isnonaktif = 0
-		else isnonaktif = 0
-		end and (select count(*) from app_m_unor where kode = ckduker and deleted=0) > 0 ";
+		when p.ijabid2 not in (4,5,6,7) then p.inoskid IS NOT NULL and p.inoskid !=0 and p.isnonaktif = 0
+		else p.isnonaktif = 0
+		end ";
 
-    //$sql .= " and inoskid IS NOT NULL and inoskid != 0 ";
-	//$sql .= " and isnonaktif = 0 ";
-    $sql .= " Group by ijabid2";
+    //$sql .= " and p.inoskid IS NOT NULL and p.inoskid != 0 ";
+	//$sql .= " and p.isnonaktif = 0 ";
+    $sql .= " Group by p.ijabid2";
     //echo $sql;exit;
               
     $rows = $this->db->query($sql)->result();

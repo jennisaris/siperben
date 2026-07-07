@@ -1,7 +1,7 @@
 <?php ?>
 <script type='text/javascript'>
     var debug =false;
-    var isloading = true;
+    var isloading = false; // OPTIMIZED: matikan overlay loading global
 
     //var debug =true;
     //var isloading = false;
@@ -312,42 +312,51 @@
         });
     }
 
-    // reload grid
-    function reload_grid(url, table_id, page, frm='', order_by='', is_loading=true, is_window_opener=false) {
-        //alert('url : '+url);
-        //return false;
-        // $("#divLoading").addClass('show');
-        if (is_loading) $('#'+table_id+'_table-data').html("<tr><td colspan='100'>Mohon tunggu....</td></tr>");
-
+    // reload grid - OPTIMIZED GLOBAL: async, tanpa spinner/overlay loading
+    function reload_grid(url, table_id, page, frm='', order_by='', is_loading=false, is_window_opener=false) {
         if ( page == '' || page === undefined || page === null ) page = 0;
 
         var form_search;
         if ( !is_window_opener )
             form_search = $('#'+table_id+'_form_search').serializeArray();
         else form_search = $('#'+table_id+'_form_search', window.opener.document).serializeArray();
-        
+
         form_search.push({name: 'order_by', value: order_by});
-        var o = jQuery.parseJSON(getHTML(url, form_search, page, is_loading));
 
-        if ( !is_window_opener ) {
-            $('#'+table_id+'_table-data').html(o.html.html);
-            $('#'+table_id+'_paging-table-data').html(o.pagination);
-        } else {
-            $('#'+table_id+'_table-data', window.opener.document).html(o.html.html);
-            $('#'+table_id+'_paging-table-data', window.opener.document).html(o.pagination);
-        }
+        $.ajax({
+            type: 'POST',
+            url: url + '/' + page,
+            data: form_search,
+            async: true,
+            cache: false,
+            success: function(responseText) {
+                try {
+                    var o = jQuery.parseJSON(responseText);
+                    var html = (o.html && o.html.html !== undefined) ? o.html.html : (o.html || '');
 
-        if ( frm != '' ) {
-            $('html,body').animate({
-                scrollTop: $("#"+frm).offset().top
-            },'slow');
+                    if ( !is_window_opener ) {
+                        $('#'+table_id+'_table-data').html(html);
+                        $('#'+table_id+'_paging-table-data').html(o.pagination || '');
+                    } else {
+                        $('#'+table_id+'_table-data', window.opener.document).html(html);
+                        $('#'+table_id+'_paging-table-data', window.opener.document).html(o.pagination || '');
+                    }
 
-            //$('#panel-body-form').hide();
-        } else {
-            // do nothing
-            //$('#panel-default-form').hide();
-        }
-        // $("#divLoading").removeClass('show');
+                    if ( frm != '' && $('#'+frm).length ) {
+                        $('html,body').animate({ scrollTop: $("#"+frm).offset().top }, 'slow');
+                    }
+                } catch(e) {
+                    var msg = "<div style='padding:10px;color:#b91c1c;'>Gagal memuat data. Silakan refresh halaman.</div>";
+                    if ( !is_window_opener ) $('#'+table_id+'_table-data').html(msg);
+                    else $('#'+table_id+'_table-data', window.opener.document).html(msg);
+                }
+            },
+            error: function(xhr, status, error) {
+                var msg = "<div style='padding:10px;color:#b91c1c;'>Error memuat data: " + error + "</div>";
+                if ( !is_window_opener ) $('#'+table_id+'_table-data').html(msg);
+                else $('#'+table_id+'_table-data', window.opener.document).html(msg);
+            }
+        });
     }
 
     // get paging data
