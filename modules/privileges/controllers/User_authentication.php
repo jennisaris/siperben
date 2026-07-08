@@ -93,9 +93,9 @@ class User_authentication extends MX_Controller {
 		$password = $this->security->xss_clean($this->input->post('password', TRUE));
 		$captcha_input = $this->security->xss_clean($this->input->post('captcha', TRUE));
 
-// Validasi CAPTCHA
-$expiration = time() - 7200; // 2 jam
-$this->db->where('captcha_time <', $expiration)->delete('captcha');
+		// Validasi CAPTCHA
+		$expiration = time() - 7200; // 2 jam
+		$this->db->where('captcha_time <', $expiration)->delete('captcha');
 
 $sql = "SELECT COUNT(*) AS count FROM captcha 
 		WHERE word = ? AND ip_address = ? AND captcha_time > ?";
@@ -269,11 +269,11 @@ if ($row->count == 0) {
         'img_path'      => 'uploads/captcha/',
         'img_url'       => base_url().'uploads/captcha/',
         'font_path'     => FCPATH . 'fonts/Arial/arial.ttf', // Pastikan jalur font valid
-        'img_width'     => '180',
-        'img_height'    => 50,
+        'img_width'     => '200',
+        'img_height'    => 60,
         'expiration'    => 7200,
         'word_length'   => 5,
-        'font_size'     => 15, // Ukuran font captcha
+        'font_size'     => 20, // Ukuran font captcha
         'img_id'        => 'Imageid',
         'pool'          => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
     
@@ -452,8 +452,8 @@ if ($row->count == 0) {
 								array('kode_satker'=>trim($username))
 							);
 							
-							$kodeunit = $kodeunit_->id;
-							$kodeatasan = $kodeunit_->id_atasan;
+							$kodeunit = isset($kodeunit_->id) ? $kodeunit_->id : '';
+							$kodeatasan = isset($kodeunit_->id_atasan) ? $kodeunit_->id_atasan : '';
 
 							array_push($orgs2, trim($kodeunit));
 							array_push($orgs2, trim($username));

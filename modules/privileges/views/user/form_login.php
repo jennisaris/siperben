@@ -187,6 +187,9 @@ $sysparam = (object)$sysparam;
 		    		<div class="input-group">		    		
 			    		<div class="input-group-addon"><i class='fa fa-key fa-fw'></i></div>
 			    		<input type="password" class="form-control" placeholder="Masukkan Kata Sandi" id="password" name="password">
+						<div class="input-group-addon" id="togglePassword" style="cursor: pointer;">
+							<i class="fa fa-eye fa-fw" id="eyeIcon"></i>
+						</div>
 		    		</div>
 		    	</div>
 		   	</div>
@@ -246,3 +249,25 @@ $sysparam = (object)$sysparam;
   </div>
   </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var togglePassword = document.getElementById("togglePassword");
+    var password = document.getElementById("password");
+    var eyeIcon = document.getElementById("eyeIcon");
+
+    if (togglePassword && password && eyeIcon) {
+        togglePassword.addEventListener("click", function() {
+            var type = password.getAttribute("type") === "password" ? "text" : "password";
+            password.setAttribute("type", type);
+            if (type === "password") {
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            } else {
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            }
+        });
+    }
+});
+</script>
