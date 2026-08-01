@@ -462,13 +462,13 @@ class User extends MX_Controller {
 		$kriteria = $this->input->post('query');
 
 		$sql = "SELECT * 
-		    from priv_t_user a where (a.realname like '%".$kriteria."%'
-				OR a.username like '%".$kriteria."%') 
+		    from priv_t_user a where (a.realname like ?
+				OR a.username like ?) 
 				ORDER BY a.realname ASC";// and b.\"EXPIRED_DATE\" IS NULL
 		
 
 		//echo $sql;
-		$query = $this->db->query($sql);
+		$query = $this->db->query($sql, array('%'.$kriteria.'%', '%'.$kriteria.'%'));
 		if ( $query ) {
 		  //print_r($query->result_array());
 				foreach($query->result_array() as $line) {

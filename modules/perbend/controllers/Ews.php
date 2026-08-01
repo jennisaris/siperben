@@ -17,7 +17,6 @@ class Ews extends MX_Controller {
 		$html = '';
 		$table = 'kepeg_m_pegawai';
 
-		//print_r($_POST);
 		//exit;
 		
 		if ( $page_ke == 0 ) {
@@ -206,7 +205,6 @@ class Ews extends MX_Controller {
 			$sql .=" and (select kode_satker from kepeg_m_unor where id = kepeg_m_pegawai.ikduker) in ({$kd_satker})";
 		}
 				
-		//echo $sql;exit;
 		$query = $this->db->query($sql);
 		
 		if (!$reports) {

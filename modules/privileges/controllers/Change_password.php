@@ -97,7 +97,7 @@ class Change_password extends MX_Controller {
     		    } else {
     	     		if ( trim($post->priv_t_user_password) != trim($posts->priv_t_user_password1) ) {
     	     			$data['status'] = false;
-    				    $data['msg'] = 'Password baru tidak sama dengan konfirmasi password baru '.trim($post->priv_t_user_password).' => '.$posts->priv_t_user_password1;
+    				    $data['msg'] = 'Password baru tidak sama dengan konfirmasi password baru';
     				    $data['obj'] = 'priv_t_user_password1';
     				    return $data;
     	     		}

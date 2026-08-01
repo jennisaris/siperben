@@ -125,7 +125,6 @@ class Mapping_unor extends MX_Controller {
       		
       		$orgs = "'".implode("','", $orgs)."'";
       		$sql2 = "Update kepeg_m_unor set kode_satker = '{$kode_satker}' where kode in ({$orgs})";
-      	  //echo $sql;exit;
       		$this->db->query($sql2);
     	}*/
 		}

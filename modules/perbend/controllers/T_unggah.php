@@ -79,7 +79,6 @@ class T_unggah extends MX_Controller {
 	   'Desember'=>'12'
 	 );
 	
-	  //print_r($_POST);
 	  //print_r($_FILES);
 	  $files2 = $this->uploadfiles($_FILES['app_t_usulan_pegawai_file2']);
 	  $spreadsheet = IOFactory::load($files2->tmp);
@@ -413,7 +412,6 @@ class T_unggah extends MX_Controller {
 			$datas['id'] = 0;
 			$datas['status'] = $status;
 			$datas['msg'] = $msg;
-			//print_r($query);
 			//exit;
 			foreach ($files->tmp as $k=>$t) {
   	   		  unlink(realpath($uploads)."/".$files->name[$k]);

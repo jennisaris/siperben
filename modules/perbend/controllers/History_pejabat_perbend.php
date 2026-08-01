@@ -27,6 +27,15 @@ class History_pejabat_perbend extends MX_Controller {
 		$this->session->set_userdata($header_controller);
 	}
 	
+	function index($satker_code = '') {
+		if (!empty($satker_code)) {
+			$this->session->set_userdata('history_satker_code', $satker_code);
+		} else {
+			$this->session->set_userdata('history_satker_code', $this->session->username);
+		}
+		parent::index();
+	}
+	
 	function lists($page_ke=0) {
   		$html = '';
   		
@@ -53,11 +62,28 @@ class History_pejabat_perbend extends MX_Controller {
 		$html .= "<th width='35%'>Jabatan</th>";
 		$html .= "</tr>";
 
+		$satker = $this->session->userdata('history_satker_code');
+		if (empty($satker)) {
+			$satker = $this->session->username;
+		}
+
+		$satkers = array(trim($satker));
+		$user_row = $this->getrow('', 'priv_t_user', 'kode_lama', ['username' => trim($satker)]);
+		if ($user_row && !empty($user_row->kode_lama)) {
+			$kode_lama = explode(',', $user_row->kode_lama);
+			foreach($kode_lama as $k) {
+				if (!empty(trim($k))) {
+					$satkers[] = trim($k);
+				}
+			}
+		}
+		$satkers_str = "'" . implode("','", $satkers) . "'";
+
 		$sql = "SELECT id, cnip, vname, vjabnm, 
 				(select vname from app_m_jabatan where id = ijabid2) as jabatan_perbendaharan
 				FROM `app_t_usulan_pegawai`
-				WHERE `ckduker` = '".trim($this->session->username)."'  
-				AND `isnonaktif` = '0' AND `itipe` = '1'";
+				WHERE `ckduker` IN ({$satkers_str})  
+				AND `isnonaktif` = '0' AND `ijabid2` IN (1, 2, 3)";
 
 		$query = $this->db->query($sql);
 

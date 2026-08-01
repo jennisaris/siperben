@@ -17,5 +17,7 @@ vendor/
 **/config/database.php
 **/config/config.php
 **/config/properties.php
-#excel/
-**/Catatan_Proses_Bisnis_Sistem_Perbendaharaan
+#sql/
+db/
+cookies.txt
+application/logs/

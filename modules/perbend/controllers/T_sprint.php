@@ -108,7 +108,6 @@ class T_sprint extends MX_Controller {
             }
         }
 
-        //print_r($query);
         //exit;
 
         //$this->db->trans_start();

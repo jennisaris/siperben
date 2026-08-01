@@ -171,7 +171,6 @@ class T_usulan_pelatihan extends MX_Controller {
 	
 	
 	function save() {
-	  //print_r($_POST);
 	  //print_r($_FILES);
 	  //exit();
 	  $error = 0;
@@ -488,7 +487,6 @@ class T_usulan_pelatihan extends MX_Controller {
     			$datas['id'] = 0;
     			$datas['status'] = $status;
     			$datas['msg'] = $msg;
-    			//print_r($query);
     			//exit;
     			foreach ($files->tmp as $k=>$t) {
 					unlink(realpath($uploads)."/".$files->name[$k]);

@@ -62,7 +62,6 @@ class Detail_sk_kpa extends MX_Controller {
   
   		$offset = ($page - 1) * $this->limit;
   
-      //print_r($_POST);
   		foreach ($_POST as $k=>$v) {			
   			$krit = str_replace("q_", "", $k);
   			$this->kriteria[$krit] = $this->input->post($k);
@@ -155,7 +154,6 @@ class Detail_sk_kpa extends MX_Controller {
 			}
 		}
   		
-		//echo $sql;exit;
 		$query = $this->db->query($sql);
 
 		$this->session->jum_rec  = $query->num_rows();
@@ -165,7 +163,6 @@ class Detail_sk_kpa extends MX_Controller {
           $sql .= " limit {$this->limit} offset {$offset}";
     		  $query = $this->db->query($sql);
         } //else { echo $sql;exit; }
-		//echo $sql;exit;
   		//exit;
   		
   		//$m_unor = new M_unor;
@@ -410,7 +407,6 @@ class Detail_sk_kpa extends MX_Controller {
 				end ";
     //$sql .= " and inoskid IS NOT NULL";
     $sql .= " Group by ijabid2";
-    //echo $sql;exit;
               
     $rows = $this->db->query($sql)->result();
     foreach($rows as $r) {

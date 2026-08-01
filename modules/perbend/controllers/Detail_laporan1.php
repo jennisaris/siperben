@@ -49,7 +49,6 @@ class Detail_laporan1 extends MX_Controller {
   
   		$offset = ($page - 1) * $this->limit;
   
-      //print_r($_POST);
   		foreach ($_POST as $k=>$v) {			
   			$krit = str_replace("q_", "", $k);
   			$this->kriteria[$krit] = $this->input->post($k);
@@ -80,7 +79,6 @@ class Detail_laporan1 extends MX_Controller {
   		$sql = "Select kode, nama from app_m_unor 
   		where kode_atasan = '{$kodeatasan}' and deleted=0";
   		
-  			//echo $sql;exit;
     		$query = $this->db->query($sql);
     
     		$this->session->jum_rec  = $query->num_rows();
@@ -355,7 +353,6 @@ class Detail_laporan1 extends MX_Controller {
 		else isnonaktif = 0
 		end and (select count(*) from app_m_unor where kode = ckduker and deleted=0) > 0 ";
     $sql .= " Group by ijabid2";
-    //echo $sql;exit;
               
     $rows = $this->db->query($sql)->result();
     foreach($rows as $r) {

@@ -287,7 +287,6 @@ class Laporan_dashboard extends MX_Controller {
     /*$sql .= " and inoskid IS NOT NULL and inoskid != 0 ";
 	$sql .= " and isnonaktif = 0 ";*/
     $sql .= " Group by ijabid2";
-    //echo $sql;exit;
               
     $rows = $this->db->query($sql)->result();
     foreach($rows as $r) {

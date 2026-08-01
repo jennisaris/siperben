@@ -156,7 +156,6 @@ class Per_jenis_jabatan2 extends MX_Controller {
     $sql .= " and isnonaktif = 0 ";
     $sql .= " and cnosertifikat != '' ";
     $sql .= " Group by ijabid2";
-    //echo $sql;exit;
               
     $rows = $this->db->query($sql)->result();
     foreach($rows as $r) {

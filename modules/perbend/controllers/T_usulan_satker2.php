@@ -763,6 +763,104 @@ class T_usulan_satker2 extends MX_Controller {
 							return  item.value;
 						},
 					});
+
+					// Browser tab/window close warning (triggers native generic browser prompt)
+					$(window).on('beforeunload', function(e) {
+						var form = $('#t_usulan_satker2_form-edit');
+						if (form.length && form.is(':visible')) {
+							var istatus = $('#t_usulan_satker2_form-edit #app_t_usulan_istatus').val();
+							if (istatus !== undefined && (istatus === '' || parseInt(istatus) < 3)) {
+								var message = 'Usulan statusnya masih usulan, segera klik simpan dan kirim agar usulan bisa diproses';
+								e.originalEvent.returnValue = message;
+								return message;
+							}
+						}
+					});
+
+					var warning_msg = 'Usulan statusnya masih usulan, segera klik simpan dan kirim agar usulan bisa diproses';
+
+					// Intercept the Tutup button inline onclick by stripping it on mousedown
+					$(document).on('mousedown', '#t_usulan_satker2-panel-default-form button.btn-default, #t_usulan_satker2_form-edit button.btn-default', function(e) {
+						var btn = $(this);
+						if (btn.attr('onclick')) {
+							btn.data('orig-onclick', btn.attr('onclick'));
+							btn.removeAttr('onclick');
+						}
+					});
+
+					// Handle the click event on the Tutup button
+					$(document).off('click', '#t_usulan_satker2-panel-default-form button.btn-default, #t_usulan_satker2_form-edit button.btn-default').on('click', '#t_usulan_satker2-panel-default-form button.btn-default, #t_usulan_satker2_form-edit button.btn-default', function(e) {
+						e.preventDefault();
+						e.stopPropagation();
+						var btn = $(this);
+						var istatus = $('#t_usulan_satker2_form-edit #app_t_usulan_istatus').val();
+						var origOnclick = btn.data('orig-onclick');
+
+						if (istatus !== undefined && (istatus === '' || parseInt(istatus) < 3)) {
+							bootbox.confirm(warning_msg + '<br><br>Apakah Anda yakin tetap ingin menutup?', function(result) {
+								if (result) {
+									$(window).off('beforeunload');
+									if (origOnclick) {
+										new Function(origOnclick)();
+									} else {
+										$('#t_usulan_satker2-panel-default-form').hide();
+										$('#form-modal').modal('hide');
+									}
+								}
+							});
+						} else {
+							$(window).off('beforeunload');
+							if (origOnclick) {
+								new Function(origOnclick)();
+							} else {
+								$('#t_usulan_satker2-panel-default-form').hide();
+								$('#form-modal').modal('hide');
+							}
+						}
+					});
+
+					// Intercept modal close via Bootstrap events (e.g. clicking x in modal or backdrop click)
+					$(document).off('hide.bs.modal', '#form-modal').on('hide.bs.modal', '#form-modal', function(e) {
+						var form = $('#t_usulan_satker2_form-edit');
+						if (form.length && form.is(':visible')) {
+							var istatus = $('#t_usulan_satker2_form-edit #app_t_usulan_istatus').val();
+							if (istatus !== undefined && (istatus === '' || parseInt(istatus) < 3)) {
+								e.preventDefault();
+								bootbox.confirm(warning_msg + '<br><br>Apakah Anda yakin tetap ingin menutup?', function(result) {
+									if (result) {
+										$(window).off('beforeunload');
+										// Temporarily unbind hide event to allow hiding without infinite recursion
+										$('#form-modal').off('hide.bs.modal').modal('hide');
+									}
+								});
+							}
+						}
+					});
+
+					// Intercept sidebar / navbar link clicks when form is active
+					$(document).off('click', '.sidebar a, #sidemenu a, .navbar a').on('click', '.sidebar a, #sidemenu a, .navbar a', function(e) {
+						var form = $('#t_usulan_satker2_form-edit');
+						if (form.length && form.is(':visible')) {
+							var istatus = $('#t_usulan_satker2_form-edit #app_t_usulan_istatus').val();
+							if (istatus !== undefined && (istatus === '' || parseInt(istatus) < 3)) {
+								e.preventDefault();
+								e.stopPropagation();
+								var link = $(this);
+								bootbox.confirm(warning_msg + '<br><br>Apakah Anda yakin tetap ingin meninggalkan halaman ini?', function(result) {
+									if (result) {
+										$(window).off('beforeunload');
+										var href = link.attr('href');
+										var onclickAttr = link.attr('onclick');
+										if (onclickAttr) {
+											new Function(onclickAttr)();
+										} else if (href && href !== '#' && !href.startsWith('javascript:')) {
+											window.location.href = href;
+										}
+									}
+								});
+							}
+						}
+					});
 				});
 
 				function save_usulan(url, table_id, default_txt_confirm='Simpan {$this->title}. Anda yakin?', _ismodal=false, _modals='form-modal') {
@@ -828,7 +926,6 @@ class T_usulan_satker2 extends MX_Controller {
 				];
 			$this->db->insert('app_notification', $notifs);
 			//$sql = $this->db->set($notifs)->get_compiled_insert('app_notification');
-			//echo $sql;exit;
 		}
   		
   		//PHPMailer
@@ -1006,29 +1103,33 @@ class T_usulan_satker2 extends MX_Controller {
 		return $buttons;
 	}
 
-	function insertBox_app_t_usulan_daftar($name, $params) {
+	function insertBox_app_t_usulan_daftar($name, $params, $satker_code = '') {
+		if (empty($satker_code)) {
+			$satker_code = trim($this->session->username);
+		}
 		$html = "<div id='tab_history'>
 			  </div>";
 			  
 	  	$html .= "<script type='text/javascript'>
 				  $(document).ready(function() {
-					  //tab 1
-					  //alert($('.app_t_usulan_id').val());
-					  url = '".base_url()."perbend/history_pejabat_perbend2/index';
+					  var satker = '{$satker_code}';
+					  if ($('#app_t_usulan_iunorid').val()) {
+						  satker = $('#app_t_usulan_iunorid').val();
+					  }
+					  var url = '".base_url()."perbend/history_pejabat_perbend2/index/' + satker;
 					  $('#tab_history').html(getHTML(url, '', 0, false));
 				  });
-				  
 				</script>";				
 			  
 	  return $html;	
 	}
 
 	function updateBox_app_t_usulan_daftar($name, $value, $datas, $params) {
-		return $this->insertBox_app_t_usulan_daftar($name,$params);
+		return $this->insertBox_app_t_usulan_daftar($name, $params, $datas->iunorid);
 	}
 
 	function viewBox_app_t_usulan_daftar($name, $value, $datas, $params) {
-		return $this->insertBox_app_t_usulan_daftar($name,$params);
+		return $this->insertBox_app_t_usulan_daftar($name, $params, $datas->iunorid);
 	}
 
 	/* function insertBox_app_t_usulan_daftar($name, $params) {

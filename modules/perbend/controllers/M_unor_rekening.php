@@ -275,7 +275,6 @@ class M_unor_rekening extends MX_Controller {
     /*function check_sprint($kodesatker, $norek) {
         $sql = "SELECT * from app_t_rekening_sprint 
                 where kode_satker='{$kodesatker}' and no_rekening = '{$norek}'";
-        //echo $sql;exit;
         $row = $this->db->query($sql)->row();
 
         if ( sizeOf($row) != 0 )
@@ -365,8 +364,7 @@ class M_unor_rekening extends MX_Controller {
 	// 			(select nama from app_m_unor where kode = a.kode_atasan) as unit_utama 
 	// 			FROM app_m_unor a, app_m_unor_rekening b 
 	// 			where a.kode = b.kode_satker {$sqlp}";
-	// 	//echo $sql;exit;
-	// 	$nama_bulan = strtoupper(NAMA_BULAN[date('m')]);
+	//	// 	$nama_bulan = strtoupper(NAMA_BULAN[date('m')]);
 	// 	$tahun = date('Y');
 	// 	$html = "<table width='100%' border='1'>
 	// 				<tr>
@@ -455,12 +453,10 @@ class M_unor_rekening extends MX_Controller {
             else $sqlp = "and a.kode = '{$kode_satker}'";
         }
 
-       //var_dump($this->session->username); 
        // var_dump($kode_satker); // Debug query
        // return;
 
 
-        //var_dump($kode_satker);
     
         // SQL Query
         $sql = "SELECT *, 

@@ -87,7 +87,6 @@ class Daftar_sk_kemdikbud extends MX_Controller {
 		where c.iunorid = '{$datas->app_m_unor_kode}' and 
 		c.tfile2 is not null and c.ctahun = '{$this->session->settahun}' 
 		order by id asc";// limit 1";
-		//echo $sql;exit;
 		$rows = $this->db->query($sql)->result();
 		
 		$input = "";
@@ -142,7 +141,6 @@ class Daftar_sk_kemdikbud extends MX_Controller {
 	  where c.iunorid = '{$datas->app_m_unor_kode}' and 
 	  c.tfile2 is not null 
 	  order by id desc limit 1";
-	  //echo $sql;exit;
 	  $r = $this->db->query($sql)->row();
 	  
 	  $input = "";

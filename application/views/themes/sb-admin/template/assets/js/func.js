@@ -1,12 +1,23 @@
 function getHTML(url, kriteria, page) {
- 
- return $.ajax({
-		type: 'POST',
-		url: url+'/'+page,
-		data:kriteria,
-		async: false
-			
-	}).responseText
+    var request_url = (typeof page !== 'undefined' && page !== null && page !== '') ? url+'/'+page : url;
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', request_url, false);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    var data_to_send = null;
+    if (kriteria) {
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        if (typeof kriteria === 'object') {
+            data_to_send = $.param(kriteria);
+        } else {
+            data_to_send = kriteria;
+        }
+    }
+    try {
+        xhr.send(data_to_send);
+    } catch (e) {
+        console.error("XMLHttpRequest failed: ", e);
+    }
+    return xhr.responseText;
 }
 
 function save_confirm(url, form, pesan, table_id, callback) {	

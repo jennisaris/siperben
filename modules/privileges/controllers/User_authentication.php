@@ -104,6 +104,7 @@ $query = $this->db->query($sql, $binds);
 $row = $query->row();
 
 if ($row->count == 0) {
+	$this->record_login_attempt();
 	$data = $this->set_captch();
 	$data['error_message'] = $this->login_alert('Captcha belum sesuai', 'Kode captcha yang dimasukkan tidak cocok atau sudah kedaluwarsa.', 'warning', array('Masukkan ulang kode captcha terbaru pada gambar.', 'Perhatikan huruf besar, huruf kecil, dan angka.'));
 	$this->template->display('user/form_login', $data);
@@ -115,6 +116,7 @@ if ($row->count == 0) {
 		$sess_data = $this->_getUserInfo($username, $password);
 
 		if (!isset($sess_data['success']) || $sess_data['success'] !== 1) {
+			$this->record_login_attempt();
 			$data = $this->set_captch();
 			$data['error_message'] = $this->login_alert('Login belum berhasil', 'Username/email atau kata sandi yang dimasukkan belum sesuai.', 'danger', array('Periksa kembali penulisan username/email.', 'Pastikan tombol Caps Lock tidak aktif saat mengetik kata sandi.', 'Jika lupa kata sandi, gunakan tautan Lupa Kata Sandi di bawah form.'));
 			$this->template->display('user/form_login', $data);
@@ -365,9 +367,9 @@ if ($row->count == 0) {
 	private function _getUserInfo($username, $password) {
 		$sess_data = array();
 		
-		$sql = "SELECT * FROM {$this->prefix}_{$this->table} where username = '{$username}'"; 		
+		$sql = "SELECT * FROM {$this->prefix}_{$this->table} where username = ?"; 		
 		//echo $sql;exit;
-		$query = $this->db->query($sql);
+		$query = $this->db->query($sql, array($username));
 		if ( $query ) {
 			if ( $query->num_rows() > 0 ) {
 				$r = $query->row();
@@ -406,10 +408,12 @@ if ($row->count == 0) {
 						$sess_data['username2'] = $kode_lama;
 
 						//cek apakah dr groupny ada yg isadmin
-						//echo "select count(isadmin) as isadmin from priv_t_group where id in ({$r->igroupid})";
-						//exit;
-						$sess_data['isadmin'] = $this->db->query("select count(isadmin) as isadmin from priv_t_group 
-						where id in ({$r->igroupid}) and isadmin = 1")->row()->isadmin;
+						$igroupids = array_filter(array_map('intval', explode(',', $r->igroupid)));
+						$this->db->select('count(isadmin) as isadmin');
+						$this->db->from('priv_t_group');
+						$this->db->where_in('id', $igroupids);
+						$this->db->where('isadmin', 1);
+						$sess_data['isadmin'] = $this->db->get()->row()->isadmin;
 						
 
 						//get menu

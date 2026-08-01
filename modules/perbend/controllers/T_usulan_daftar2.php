@@ -118,6 +118,13 @@ class T_usulan_daftar2 extends MX_Controller {
 		$this->_changeType($this->table, 'istatus', 'combobox', 
 		$this->session->sysparam->status_daftar_pegawai);
 
+		$ar_golid = array();
+		$rows_gol = $this->getall('', 'kepeg_m_golongan', '*');
+		foreach($rows_gol as $r) {
+			$ar_golid[$r->id] = $r->pangkat.", ".$r->nama;
+		}
+		$this->_changeType($this->table, 'cgolid', 'combobox', $ar_golid);
+
 
 		$this->_setAlign($this->table, 'ijabid2', 'center');
 		$this->_setAlign($this->table, 'istatus', 'center');
@@ -379,9 +386,7 @@ class T_usulan_daftar2 extends MX_Controller {
 							$('#app_t_usulan_pegawai_vname').val(item.value);
 							$('#app_t_usulan_pegawai_vname').attr('readonly', true);
 
-							$('#app_t_usulan_pegawai_cgolid').val(item.golid);
-							$('#app_t_usulan_pegawai_cgolid_txt').val(item.pktnm);
-							$('#app_t_usulan_pegawai_cgolid_txt').attr('readonly', true);
+							$('#app_t_usulan_pegawai_cgolid').val(item.golid).trigger('change');
 
 							$('#app_t_usulan_pegawai_ckduker').val(item.kduker);
 
@@ -535,6 +540,39 @@ class T_usulan_daftar2 extends MX_Controller {
 						}
 					}
 				}
+
+				function copy_prev_year_data() {
+					var usulan_id = $('.app_t_usulan_id').val();
+					if (!usulan_id) {
+						bootbox_alert('', '', 'ID Usulan tidak ditemukan.', true);
+						return;
+					}
+					var jwb = confirm('Apakah Anda yakin ingin menyalin data pejabat perbendaharaan lainnya dari tahun lalu? Tindakan ini akan menghapus data pejabat terdaftar saat ini pada usulan ini.');
+					if (jwb) {
+						$.ajax({
+							url: '".base_url()."perbend/t_usulan_daftar2/copy_data_tahun_lalu',
+							type: 'POST',
+							data: { iusulanid: usulan_id },
+							dataType: 'json',
+							beforeSend: function() {
+								$('#divLoading').addClass('show');
+							},
+							success: function(response) {
+								$('#divLoading').removeClass('show');
+								if (response.status == 'success') {
+									bootbox_alert('', '', response.message, true);
+									reload_grid('".base_url()."perbend/t_usulan_daftar2/lists', 't_usulan_daftar2');
+								} else {
+									bootbox_alert('', '', response.message, true);
+								}
+							},
+							error: function() {
+								$('#divLoading').removeClass('show');
+								bootbox_alert('', '', 'Terjadi kesalahan saat menyalin data.', true);
+							}
+						});
+					}
+				}
 	      </script>";
 
 	  return $js;
@@ -597,27 +635,7 @@ class T_usulan_daftar2 extends MX_Controller {
 		return $name_txt;
 	}
 	
-	function insertBox_app_t_usulan_pegawai_cgolid($name) {
-	  return $this->updateBox_app_t_usulan_pegawai_cgolid($name, '', '');
-	}
 
-	function updateBox_app_t_usulan_pegawai_cgolid($name, $value, $datas) {
-		$readonly = 'readonly';
-	  	$input = "<input type='hidden' 
-	            placeholder='Masukkan Golongan'
-	            name='{$name}' id='{$name}' 
-	            class='form-control {$name}' 
-	            value='{$value}'/>";
-
-		$name_txt = $this->getrow('', 'kepeg_m_golongan', 'concat(pangkat,\', \', nama) as nama_pangkat', array('id'=>$value))->nama_pangkat;
-		$input .= "<input {$readonly} type='text' 
-			placeholder='Masukkan Golongan'
-			name='{$name}_txt' id='{$name}_txt' 
-			class='form-control {$name}_txt' 
-			value='{$name_txt}'/>";
-	            
-	 return $input;
-	}
 
 	function viewBox_app_t_usulan_pegawai_cgolid($name, $value, $datas) {
 		$name_txt = $this->getrow('', 'kepeg_m_golongan', 'concat(pangkat,\', \', nama) as nama_pangkat', array('id'=>$value))->nama_pangkat;
@@ -651,7 +669,6 @@ class T_usulan_daftar2 extends MX_Controller {
 				$sql = "SELECT a.cnousul, a.dtglusul, b.* FROM app_t_usulan a, app_t_usulan_pegawai b 
 					WHERE a.id = b.iusulanid and b.ijabid2 = {$value} and b.iusulanid!={$post->app_t_usulan_pegawai_iusulanid} 
 					and b.istatus2 != 2 and b.ispelatihan=0 and b.itipe = 0 and a.iunorid='{$iunorid}' and a.istatus !=7";
-				//echo $sql;exit;
 				$row = $this->db->query($sql)->row();
 				if ( $row ) {
 					$data['status']  = false;
@@ -948,10 +965,15 @@ class T_usulan_daftar2 extends MX_Controller {
 						onclick='edit(\"".base_url().$this->router->fetch_module()."/".$this->router->class."/edit/0/\"+$(\"#t_usulan_satker_form-edit #app_t_usulan_ijnsprubhnid\").val(), \"".strtolower($this->router->class)."\");'>
 						<i class='glyphicon glyphicon-plus'></i>&nbsp;Tambah {$this->title}
 					</button>";
+					
+		if (!$this->session->_isview) {
+			$buttons['copy_prev_year'] = "<button type='button' id='btn_copy_prev_year' class='btn btn-success' onclick='copy_prev_year_data()'>
+							<i class='glyphicon glyphicon-copy'></i>&nbsp;Salin Data Tahun Lalu
+						</button>";
+		}
 			
 		if ($this->session->_isview) unset($buttons['add']);		
 		
-					
 		return $buttons;
 	}
 	
@@ -1002,7 +1024,6 @@ class T_usulan_daftar2 extends MX_Controller {
 		$sql = "SELECT c.cnip as nip, a.vname as nama
 		    from kepeg_m_pegawai a, app_t_usulan_pegawai c 
   			where a.cnip = c.cnip and c.inoskid != 0 and c.inoskid IS NOT NULL and c.isnonaktif = 0 {$add_filter} {$add_filter2}";
-		//echo $sql;exit;
 		$line = $this->db->query($sql)->row();
 		$data['name']  = ucwords(trim(strtolower($line->nama)));
 		$data['nip']   = trim($line->nip);
@@ -1032,7 +1053,6 @@ class T_usulan_daftar2 extends MX_Controller {
   			ORDER BY a.vname ASC";// and b.\"EXPIRED_DATE\" IS NULL
 		
 
-		//echo $sql;exit;
 		$query = $this->db->query($sql);
 		if ( $query ) {
 		  //print_r($query->result_array());
@@ -1148,4 +1168,97 @@ class T_usulan_daftar2 extends MX_Controller {
   	  //return $datas;
   	  //print_r($datas);exit;
     }
+
+	public function copy_data_tahun_lalu() {
+		$iusulanid = $this->input->post('iusulanid');
+		if (empty($iusulanid)) {
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'ID Usulan tidak valid.'
+			]);
+			exit;
+		}
+
+		$current_usulan = $this->getrow('', 'app_t_usulan', '*', ['id' => $iusulanid]);
+		if (!$current_usulan) {
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Data usulan tidak ditemukan.'
+			]);
+			exit;
+		}
+
+		$satker = $current_usulan->iunorid;
+
+		// Get satker code and all old satker codes (kode_lama)
+		$satkers = array(trim($satker));
+		$user_row = $this->getrow('', 'priv_t_user', 'kode_lama', ['username' => trim($satker)]);
+		if ($user_row && !empty($user_row->kode_lama)) {
+			$kode_lama = explode(',', $user_row->kode_lama);
+			foreach($kode_lama as $k) {
+				if (!empty(trim($k))) {
+					$satkers[] = trim($k);
+				}
+			}
+		}
+		$satkers_str = "'" . implode("','", $satkers) . "'";
+
+		// Find the most recent previous year that contains active officials for roles 4, 5, 6, 7
+		$year_query = $this->db->query("
+			SELECT b.ctahun
+			FROM app_t_usulan_pegawai a
+			JOIN app_t_usulan b ON a.iusulanid = b.id
+			WHERE b.iunorid IN ({$satkers_str}) AND b.ctahun < {$current_usulan->ctahun} 
+			  AND a.isnonaktif = 0 AND a.ijabid2 IN (4, 5, 6, 7)
+			ORDER BY b.ctahun DESC
+			LIMIT 1
+		")->row();
+
+		if (!$year_query) {
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Tidak ditemukan data pejabat perbendaharaan lainnya yang aktif pada tahun-tahun sebelumnya.'
+			]);
+			exit;
+		}
+
+		$prev_year = $year_query->ctahun;
+
+		// Delete existing pegawai records for this usulan
+		$this->db->where('iusulanid', $iusulanid);
+		$this->db->delete('app_t_usulan_pegawai');
+
+		// Insert records from the resolved previous year for roles PPK, PPSPM, BPP, PPABP (ijabid2 IN (4, 5, 6, 7))
+		$sql_insert = "INSERT INTO app_t_usulan_pegawai 
+				(ifrom, iusulanid, ispelatihan, cnip, vname, cnosertifikat, cgolid, 
+				vgolnm, vpktnm, ijabid, vjabnm, ijabid2, istatus, valasan, 
+				istatus2, valasan2, cnosk, inoskid, ckduker, 
+				tcreated, ccreatedby, tupdated, cupdatedby, itipe, isnonaktif, 
+				cnipold, itolak)
+				SELECT a.ifrom, {$iusulanid} as iusulanid, a.ispelatihan, a.cnip, a.vname, a.cnosertifikat, a.cgolid,
+				       a.vgolnm, a.vpktnm, a.ijabid, a.vjabnm, a.ijabid2, 1 as istatus, '' as valasan,
+				       1 as istatus2, '' as valasan2, a.cnosk, a.inoskid, '{$satker}' as ckduker,
+				       now() as tcreated, '{$this->session->username}' as ccreatedby,
+				       now() as tupdated, '{$this->session->username}' as cupdatedby, a.itipe, a.isnonaktif,
+				       NULL as cnipold, 0 as itolak
+				FROM app_t_usulan_pegawai a
+				JOIN app_t_usulan b ON a.iusulanid = b.id
+				WHERE b.iunorid IN ({$satkers_str}) AND b.ctahun = {$prev_year} 
+				  AND a.isnonaktif = 0 AND a.ijabid2 IN (4, 5, 6, 7)";
+		$this->db->query($sql_insert);
+
+		$affected_rows = $this->db->affected_rows();
+		if ($affected_rows > 0) {
+			echo json_encode([
+				'status' => 'success',
+				'message' => "Berhasil menyalin {$affected_rows} data pejabat perbendaharaan lainnya dari tahun {$prev_year}."
+			]);
+		} else {
+			echo json_encode([
+				'status' => 'error',
+				'message' => "Tidak ditemukan data pejabat perbendaharaan lainnya yang aktif pada tahun {$prev_year}."
+			]);
+		}
+		exit;
+	}
 }

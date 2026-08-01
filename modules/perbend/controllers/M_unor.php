@@ -248,7 +248,6 @@ class M_unor extends MX_Controller {
   
   /*function save() {
 	
-	  //print_r($_POST);
 	  //print_r($_FILES);exit;
 	  $files = $this->uploadfiles($_FILES['app_m_unor_file']);
 	  $spreadsheet = IOFactory::load($files->tmp);
@@ -372,7 +371,6 @@ class M_unor extends MX_Controller {
 			  }
 			}
 			
-			//print_r($query);
 			//exit;
 			echo json_encode($datas);
 	}*/

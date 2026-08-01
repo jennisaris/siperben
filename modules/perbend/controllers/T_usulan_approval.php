@@ -629,7 +629,6 @@ class T_usulan_approval extends MX_Controller {
     }
 
     function save_persetujuan() {
-        //print_r($_POST);
         //exit;
 
 		    $check_usulan_jenis = array();
@@ -806,7 +805,6 @@ class T_usulan_approval extends MX_Controller {
     		}
         }
 
-        //print_r($query);
         //exit;
         $ok=0;
         try {

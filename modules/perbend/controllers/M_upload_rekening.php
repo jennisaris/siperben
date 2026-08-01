@@ -165,7 +165,6 @@ class M_upload_rekening extends MX_Controller {
             }
         }
 
-        //print_r($query);
         //exit;
 
         /* foreach($query as $q) {

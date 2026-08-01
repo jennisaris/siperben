@@ -319,7 +319,6 @@ class T_terbit_sk extends MX_Controller {
 	
 
     function save() {
-		//print_r($_POST);
 		//exit;
 		/*
 			[check_pegawai_isklik] => Array ( [0] => 1 [1] => 0 [2] => 1 ) 
@@ -407,7 +406,6 @@ class T_terbit_sk extends MX_Controller {
 		$sk_id = $this->input->post('pegawai_idnosk')[$index];
 		
 		
-		//print_r($_POST['id_nosk']);
 		//exit;
 
 		//echo 'INDEX : '.$index;
@@ -878,7 +876,6 @@ class T_terbit_sk extends MX_Controller {
 			$datas2['block'][] = $datas;
 		}
 
-		//print_r($query);
 		//exit;
 
 		$data = array();
@@ -1004,7 +1001,6 @@ class T_terbit_sk extends MX_Controller {
 	function lists($page_ke=0) {
 		$html = '';
 
-		//print_r($_POST);
 		//exit;
 		
 		if ( $page_ke == 0 ) {
@@ -1087,7 +1083,6 @@ class T_terbit_sk extends MX_Controller {
 		$sql .= " group by app_t_usulan.iunorid";
 		//$sql .= ",app_t_usulan.id";
 				
-		//echo $sql;exit;
 
 		$query = $this->db->query($sql);
 
@@ -1187,7 +1182,6 @@ class T_terbit_sk extends MX_Controller {
 				and a.itipe = 0 
 				and a.istatus != 7 
 				order by id desc";
-		//echo $sql;exit;
 		$rs_detail = $this->db->query($sql)->result();
 
 		$detail = "<tr>";

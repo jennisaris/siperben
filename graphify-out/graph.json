@@ -1,0 +1,6026 @@
+{
+  "metadata": {
+    "projectName": "Siperben (Sistem Informasi Perbendaharaan & Kepegawaian)",
+    "extractedAt": "2026-08-01T15:06:29.640Z",
+    "totalNodes": 280,
+    "totalEdges": 331,
+    "totalCommunities": 9,
+    "architecture": "CodeIgniter 3 HMVC (Modular Extensions)"
+  },
+  "god_nodes": [
+    {
+      "id": "MX_Controller",
+      "label": "MX_Controller",
+      "type": "core",
+      "degree": 78,
+      "community": "System Core"
+    },
+    {
+      "id": "db:app_t_usulan_pegawai",
+      "label": "app_t_usulan_pegawai",
+      "type": "database_table",
+      "degree": 30,
+      "community": "Dashboard & Analytics"
+    },
+    {
+      "id": "db:app_m_jabatan",
+      "label": "app_m_jabatan",
+      "type": "database_table",
+      "degree": 27,
+      "community": "Dashboard & Analytics"
+    },
+    {
+      "id": "db:app_m_unor",
+      "label": "app_m_unor",
+      "type": "database_table",
+      "degree": 21,
+      "community": "General & Infrastructure"
+    },
+    {
+      "id": "db:app_t_usulan",
+      "label": "app_t_usulan",
+      "type": "database_table",
+      "degree": 17,
+      "community": "General & Infrastructure"
+    },
+    {
+      "id": "db:priv_t_user",
+      "label": "priv_t_user",
+      "type": "database_table",
+      "degree": 14,
+      "community": "General & Infrastructure"
+    },
+    {
+      "id": "T_usulan_satker",
+      "label": "T_usulan_satker",
+      "type": "controller",
+      "degree": 14,
+      "community": "Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:kepeg_m_unor",
+      "label": "kepeg_m_unor",
+      "type": "database_table",
+      "degree": 12,
+      "community": "General & Infrastructure"
+    },
+    {
+      "id": "for",
+      "label": "for",
+      "type": "script",
+      "degree": 11,
+      "community": "General & Infrastructure"
+    },
+    {
+      "id": "db:kepeg_m_pegawai",
+      "label": "kepeg_m_pegawai",
+      "type": "database_table",
+      "degree": 11,
+      "community": "Kepegawaian (HR & Staff)"
+    },
+    {
+      "id": "T_terbit_sk",
+      "label": "T_terbit_sk",
+      "type": "controller",
+      "degree": 11,
+      "community": "Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:the",
+      "label": "the",
+      "type": "database_table",
+      "degree": 10,
+      "community": "Shared Utilities"
+    },
+    {
+      "id": "db:app_notification",
+      "label": "app_notification",
+      "type": "database_table",
+      "degree": 10,
+      "community": "General & Infrastructure"
+    },
+    {
+      "id": "Detail_sk_kemdikbud",
+      "label": "Detail_sk_kemdikbud",
+      "type": "controller",
+      "degree": 9,
+      "community": "Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "T_terbit_sk_upload",
+      "label": "T_terbit_sk_upload",
+      "type": "controller",
+      "degree": 9,
+      "community": "Perbendaharaan (Treasury & SK)"
+    }
+  ],
+  "communities": {
+    "Configuration": 19,
+    "General & Infrastructure": 98,
+    "System Core": 11,
+    "Shared Utilities": 11,
+    "Dashboard & Analytics": 8,
+    "Kepegawaian (HR & Staff)": 16,
+    "Public & Auth Actions": 4,
+    "Perbendaharaan (Treasury & SK)": 95,
+    "Privileges & User Mgmt": 18
+  },
+  "nodes": [
+    {
+      "id": "application/config/autoload.php",
+      "label": "autoload.php",
+      "type": "config",
+      "filepath": "application/config/autoload.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "application/config/cas.php",
+      "label": "cas.php",
+      "type": "config",
+      "filepath": "application/config/cas.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "Extension",
+      "label": "Extension",
+      "type": "config",
+      "filepath": "application/config/config.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONFIG class in Configuration"
+    },
+    {
+      "id": "db:consideration",
+      "label": "consideration",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (consideration)"
+    },
+    {
+      "id": "db:account",
+      "label": "account",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (account)"
+    },
+    {
+      "id": "db:which",
+      "label": "which",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (which)"
+    },
+    {
+      "id": "defined",
+      "label": "defined",
+      "type": "config",
+      "filepath": "application/config/constants.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG class in Configuration"
+    },
+    {
+      "id": "application/config/database.php",
+      "label": "database.php",
+      "type": "config",
+      "filepath": "application/config/database.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "application/config/doctypes.php",
+      "label": "doctypes.php",
+      "type": "config",
+      "filepath": "application/config/doctypes.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "application/config/email.php",
+      "label": "email.php",
+      "type": "config",
+      "filepath": "application/config/email.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "application/config/foreign_chars.php",
+      "label": "foreign_chars.php",
+      "type": "config",
+      "filepath": "application/config/foreign_chars.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "application/config/hooks.php",
+      "label": "hooks.php",
+      "type": "config",
+      "filepath": "application/config/hooks.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "application/config/memcached.php",
+      "label": "memcached.php",
+      "type": "config",
+      "filepath": "application/config/memcached.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "and",
+      "label": "and",
+      "type": "config",
+      "filepath": "application/config/migration.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONFIG class in Configuration"
+    },
+    {
+      "id": "to",
+      "label": "to",
+      "type": "config",
+      "filepath": "application/config/mimes.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG class in Configuration"
+    },
+    {
+      "id": "application/config/profiler.php",
+      "label": "profiler.php",
+      "type": "config",
+      "filepath": "application/config/profiler.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "application/config/properties.php",
+      "label": "properties.php",
+      "type": "config",
+      "filepath": "application/config/properties.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "should",
+      "label": "should",
+      "type": "config",
+      "filepath": "application/config/routes.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG class in Configuration"
+    },
+    {
+      "id": "application/config/smileys.php",
+      "label": "smileys.php",
+      "type": "config",
+      "filepath": "application/config/smileys.php",
+      "community": "Configuration",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONFIG template file"
+    },
+    {
+      "id": "Errors",
+      "label": "Errors",
+      "type": "controller",
+      "filepath": "application/controllers/Errors.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [
+        "index",
+        "page_missing"
+      ],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in General & Infrastructure"
+    },
+    {
+      "id": "CI_Controller",
+      "label": "CI_Controller",
+      "type": "core",
+      "filepath": "",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 3,
+      "outDegree": 0,
+      "description": "Framework Base Class"
+    },
+    {
+      "id": "Registrasi",
+      "label": "Registrasi",
+      "type": "controller",
+      "filepath": "application/controllers/Registrasi.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [
+        "index"
+      ],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in General & Infrastructure"
+    },
+    {
+      "id": "registrasi/form",
+      "label": "form",
+      "type": "view",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Rendered View"
+    },
+    {
+      "id": "db:app_t_registrasi_kpa",
+      "label": "app_t_registrasi_kpa",
+      "type": "database_table",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (app_t_registrasi_kpa)"
+    },
+    {
+      "id": "db:priv_t_user",
+      "label": "priv_t_user",
+      "type": "database_table",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 14,
+      "inDegree": 14,
+      "outDegree": 0,
+      "description": "Database Table (priv_t_user)"
+    },
+    {
+      "id": "MY_Controller",
+      "label": "MY_Controller",
+      "type": "core",
+      "filepath": "application/core/MY_Controller.php",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CORE class in System Core"
+    },
+    {
+      "id": "MY_Loader",
+      "label": "MY_Loader",
+      "type": "core",
+      "filepath": "application/core/MY_Loader.php",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CORE class in System Core"
+    },
+    {
+      "id": "MX_Loader",
+      "label": "MX_Loader",
+      "type": "core",
+      "filepath": "",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 1,
+      "outDegree": 2,
+      "description": "Framework Base Class"
+    },
+    {
+      "id": "MY_Router",
+      "label": "MY_Router",
+      "type": "core",
+      "filepath": "application/core/MY_Router.php",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CORE class in System Core"
+    },
+    {
+      "id": "MX_Router",
+      "label": "MX_Router",
+      "type": "core",
+      "filepath": "",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 1,
+      "outDegree": 2,
+      "description": "Framework Base Class"
+    },
+    {
+      "id": "application/helpers/check_session_helper.php",
+      "label": "check_session_helper.php",
+      "type": "helper",
+      "filepath": "application/helpers/check_session_helper.php",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "HELPER template file"
+    },
+    {
+      "id": "application/helpers/own_helper.php",
+      "label": "own_helper.php",
+      "type": "helper",
+      "filepath": "application/helpers/own_helper.php",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "HELPER template file"
+    },
+    {
+      "id": "Curl",
+      "label": "Curl",
+      "type": "library",
+      "filepath": "application/libraries/Curl.php",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [
+        "__call",
+        "_simple_call",
+        "simple_ftp_get",
+        "post",
+        "put",
+        "patch",
+        "delete",
+        "set_cookies",
+        "http_header",
+        "http_method",
+        "http_login",
+        "proxy",
+        "proxy_login",
+        "ssl",
+        "options",
+        "option",
+        "create",
+        "execute",
+        "is_enabled",
+        "debug",
+        "debug_request",
+        "set_defaults"
+      ],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "LIBRARY class in Shared Utilities"
+    },
+    {
+      "id": "REST",
+      "label": "REST",
+      "type": "library",
+      "filepath": "application/libraries/Rest.php",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [
+        "initialize",
+        "get",
+        "post",
+        "put",
+        "patch",
+        "delete",
+        "api_key",
+        "language",
+        "header",
+        "format",
+        "debug",
+        "status",
+        "info",
+        "option",
+        "http_header"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "LIBRARY class in Shared Utilities"
+    },
+    {
+      "id": "db:the",
+      "label": "the",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [],
+      "degree": 10,
+      "inDegree": 10,
+      "outDegree": 0,
+      "description": "Database Table (the)"
+    },
+    {
+      "id": "db:start",
+      "label": "start",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (start)"
+    },
+    {
+      "id": "Template",
+      "label": "Template",
+      "type": "library",
+      "filepath": "application/libraries/Template.php",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [
+        "_createBreadcrumbs",
+        "_getMenuParentId",
+        "_getMenuId",
+        "_getPathMenu"
+      ],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "LIBRARY class in Shared Utilities"
+    },
+    {
+      "id": "application/third_party/MX/Blade.php",
+      "label": "Blade.php",
+      "type": "script",
+      "filepath": "application/third_party/MX/Blade.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "SCRIPT template file"
+    },
+    {
+      "id": "which",
+      "label": "which",
+      "type": "script",
+      "filepath": "application/third_party/MX/Ci.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "SCRIPT class in General & Infrastructure"
+    },
+    {
+      "id": "MX_Config",
+      "label": "MX_Config",
+      "type": "script",
+      "filepath": "application/third_party/MX/Config.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [
+        "load"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "SCRIPT class in General & Infrastructure"
+    },
+    {
+      "id": "CI_Config",
+      "label": "CI_Config",
+      "type": "core",
+      "filepath": "",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Framework Base Class"
+    },
+    {
+      "id": "for",
+      "label": "for",
+      "type": "script",
+      "filepath": "application/third_party/MX/Controller.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [
+        "__get",
+        "uploadfiles"
+      ],
+      "degree": 11,
+      "inDegree": 0,
+      "outDegree": 11,
+      "description": "SCRIPT class in General & Infrastructure"
+    },
+    {
+      "id": "output/notallowed_modal",
+      "label": "notallowed_modal",
+      "type": "view",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Rendered View"
+    },
+    {
+      "id": "output/notallowed",
+      "label": "notallowed",
+      "type": "view",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Rendered View"
+    },
+    {
+      "id": "page_missing/index",
+      "label": "index",
+      "type": "view",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Rendered View"
+    },
+    {
+      "id": "output/form_modal",
+      "label": "form_modal",
+      "type": "view",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Rendered View"
+    },
+    {
+      "id": "output/form",
+      "label": "form",
+      "type": "view",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Rendered View"
+    },
+    {
+      "id": "output/view_modal",
+      "label": "view_modal",
+      "type": "view",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Rendered View"
+    },
+    {
+      "id": "output/view",
+      "label": "view",
+      "type": "view",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Rendered View"
+    },
+    {
+      "id": "security",
+      "label": "security",
+      "type": "library",
+      "filepath": "",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 2,
+      "outDegree": 0,
+      "description": "CI Library"
+    },
+    {
+      "id": "db:NILAI",
+      "label": "NILAI",
+      "type": "database_table",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (NILAI)"
+    },
+    {
+      "id": "db:FAILED",
+      "label": "FAILED",
+      "type": "database_table",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (FAILED)"
+    },
+    {
+      "id": "MX_Lang",
+      "label": "MX_Lang",
+      "type": "script",
+      "filepath": "application/third_party/MX/Lang.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [
+        "load"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "SCRIPT class in General & Infrastructure"
+    },
+    {
+      "id": "CI_Lang",
+      "label": "CI_Lang",
+      "type": "core",
+      "filepath": "",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Framework Base Class"
+    },
+    {
+      "id": "CI_Loader",
+      "label": "CI_Loader",
+      "type": "core",
+      "filepath": "",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Framework Base Class"
+    },
+    {
+      "id": "Modules",
+      "label": "Modules",
+      "type": "script",
+      "filepath": "application/third_party/MX/Modules.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "SCRIPT class in General & Infrastructure"
+    },
+    {
+      "id": "db:config",
+      "label": "config",
+      "type": "database_table",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (config)"
+    },
+    {
+      "id": "db:module",
+      "label": "module",
+      "type": "database_table",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (module)"
+    },
+    {
+      "id": "CI_Router",
+      "label": "CI_Router",
+      "type": "core",
+      "filepath": "",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Framework Base Class"
+    },
+    {
+      "id": "application/views/errors/cli/error_404.php",
+      "label": "error_404.php",
+      "type": "view",
+      "filepath": "application/views/errors/cli/error_404.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/errors/cli/error_db.php",
+      "label": "error_db.php",
+      "type": "view",
+      "filepath": "application/views/errors/cli/error_db.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/errors/cli/error_exception.php",
+      "label": "error_exception.php",
+      "type": "view",
+      "filepath": "application/views/errors/cli/error_exception.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/errors/cli/error_general.php",
+      "label": "error_general.php",
+      "type": "view",
+      "filepath": "application/views/errors/cli/error_general.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/errors/cli/error_php.php",
+      "label": "error_php.php",
+      "type": "view",
+      "filepath": "application/views/errors/cli/error_php.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/errors/html/error_404.php",
+      "label": "error_404.php",
+      "type": "view",
+      "filepath": "application/views/errors/html/error_404.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/errors/html/error_db.php",
+      "label": "error_db.php",
+      "type": "view",
+      "filepath": "application/views/errors/html/error_db.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/errors/html/error_exception.php",
+      "label": "error_exception.php",
+      "type": "view",
+      "filepath": "application/views/errors/html/error_exception.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/errors/html/error_general.php",
+      "label": "error_general.php",
+      "type": "view",
+      "filepath": "application/views/errors/html/error_general.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/errors/html/error_php.php",
+      "label": "error_php.php",
+      "type": "view",
+      "filepath": "application/views/errors/html/error_php.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/form.php",
+      "label": "form.php",
+      "type": "view",
+      "filepath": "application/views/output/form.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/form2.php",
+      "label": "form2.php",
+      "type": "view",
+      "filepath": "application/views/output/form2.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/form_modal.php",
+      "label": "form_modal.php",
+      "type": "view",
+      "filepath": "application/views/output/form_modal.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/index.php",
+      "label": "index.php",
+      "type": "view",
+      "filepath": "application/views/output/index.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/js.php",
+      "label": "js.php",
+      "type": "view",
+      "filepath": "application/views/output/js.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "application/views/output/list.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/notallowed.php",
+      "label": "notallowed.php",
+      "type": "view",
+      "filepath": "application/views/output/notallowed.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/notallowed_modal.php",
+      "label": "notallowed_modal.php",
+      "type": "view",
+      "filepath": "application/views/output/notallowed_modal.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/search.php",
+      "label": "search.php",
+      "type": "view",
+      "filepath": "application/views/output/search.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/view.php",
+      "label": "view.php",
+      "type": "view",
+      "filepath": "application/views/output/view.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/view2.php",
+      "label": "view2.php",
+      "type": "view",
+      "filepath": "application/views/output/view2.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/output/view_modal.php",
+      "label": "view_modal.php",
+      "type": "view",
+      "filepath": "application/views/output/view_modal.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/page_missing/index.php",
+      "label": "index.php",
+      "type": "view",
+      "filepath": "application/views/page_missing/index.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/registrasi/form.php",
+      "label": "form.php",
+      "type": "view",
+      "filepath": "application/views/registrasi/form.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/assets/plugins/ckeditor/samples/old/assets/posteddata.php",
+      "label": "posteddata.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/assets/plugins/ckeditor/samples/old/assets/posteddata.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/assets/plugins/ckeditor/samples/old/sample_posteddata.php",
+      "label": "sample_posteddata.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/assets/plugins/ckeditor/samples/old/sample_posteddata.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/assets/plugins/datatables/extensions/Scroller/examples/data/ssp.php",
+      "label": "ssp.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/assets/plugins/datatables/extensions/Scroller/examples/data/ssp.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/breadcrumbs.php",
+      "label": "breadcrumbs.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/breadcrumbs.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/content.php",
+      "label": "content.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/content.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/footer.old.php",
+      "label": "footer.old.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/footer.old.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/footer.php",
+      "label": "footer.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/footer.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/header.old.php",
+      "label": "header.old.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/header.old.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/header.php",
+      "label": "header.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/header.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/menu.old.php",
+      "label": "menu.old.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/menu.old.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/menu.php",
+      "label": "menu.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/menu.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 5,
+      "inDegree": 0,
+      "outDegree": 5,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "db:app_m_unor",
+      "label": "app_m_unor",
+      "type": "database_table",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 21,
+      "inDegree": 21,
+      "outDegree": 0,
+      "description": "Database Table (app_m_unor)"
+    },
+    {
+      "id": "db:kepeg_m_unor",
+      "label": "kepeg_m_unor",
+      "type": "database_table",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 12,
+      "inDegree": 12,
+      "outDegree": 0,
+      "description": "Database Table (kepeg_m_unor)"
+    },
+    {
+      "id": "db:app_notification",
+      "label": "app_notification",
+      "type": "database_table",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 10,
+      "inDegree": 10,
+      "outDegree": 0,
+      "description": "Database Table (app_notification)"
+    },
+    {
+      "id": "db:app_t_usulan",
+      "label": "app_t_usulan",
+      "type": "database_table",
+      "filepath": "",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 17,
+      "inDegree": 17,
+      "outDegree": 0,
+      "description": "Database Table (app_t_usulan)"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/modal.php",
+      "label": "modal.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/modal.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/sidebar-static.php",
+      "label": "sidebar-static.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/sidebar-static.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template/sidebar.php",
+      "label": "sidebar.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template/sidebar.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/AdminLTE-2.3.11/template.php",
+      "label": "template.php",
+      "type": "view",
+      "filepath": "application/views/themes/AdminLTE-2.3.11/template.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/default/template/breadcrumbs.php",
+      "label": "breadcrumbs.php",
+      "type": "view",
+      "filepath": "application/views/themes/default/template/breadcrumbs.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/default/template/content.php",
+      "label": "content.php",
+      "type": "view",
+      "filepath": "application/views/themes/default/template/content.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/default/template/footer.php",
+      "label": "footer.php",
+      "type": "view",
+      "filepath": "application/views/themes/default/template/footer.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/default/template/header.php",
+      "label": "header.php",
+      "type": "view",
+      "filepath": "application/views/themes/default/template/header.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/default/template/menu.php",
+      "label": "menu.php",
+      "type": "view",
+      "filepath": "application/views/themes/default/template/menu.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/default/template/modal.php",
+      "label": "modal.php",
+      "type": "view",
+      "filepath": "application/views/themes/default/template/modal.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/default/template/sidebar.php",
+      "label": "sidebar.php",
+      "type": "view",
+      "filepath": "application/views/themes/default/template/sidebar.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/default/template.php",
+      "label": "template.php",
+      "type": "view",
+      "filepath": "application/views/themes/default/template.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin/template/breadcrumbs.php",
+      "label": "breadcrumbs.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin/template/breadcrumbs.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin/template/content.php",
+      "label": "content.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin/template/content.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin/template/footer.php",
+      "label": "footer.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin/template/footer.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin/template/header.php",
+      "label": "header.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin/template/header.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin/template/menu.php",
+      "label": "menu.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin/template/menu.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin/template/sidebar-static.php",
+      "label": "sidebar-static.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin/template/sidebar-static.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin/template/sidebar.php",
+      "label": "sidebar.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin/template/sidebar.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin/template.php",
+      "label": "template.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin/template.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin-2/template/breadcrumbs.php",
+      "label": "breadcrumbs.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin-2/template/breadcrumbs.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin-2/template/content.php",
+      "label": "content.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin-2/template/content.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin-2/template/footer.php",
+      "label": "footer.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin-2/template/footer.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin-2/template/header.php",
+      "label": "header.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin-2/template/header.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin-2/template/menu.php",
+      "label": "menu.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin-2/template/menu.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin-2/template/modal.php",
+      "label": "modal.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin-2/template/modal.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin-2/template/sidebar-static.php",
+      "label": "sidebar-static.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin-2/template/sidebar-static.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin-2/template/sidebar.php",
+      "label": "sidebar.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin-2/template/sidebar.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sb-admin-2/template.php",
+      "label": "template.php",
+      "type": "view",
+      "filepath": "application/views/themes/sb-admin-2/template.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sidebar/template/breadcrumbs.php",
+      "label": "breadcrumbs.php",
+      "type": "view",
+      "filepath": "application/views/themes/sidebar/template/breadcrumbs.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sidebar/template/content.php",
+      "label": "content.php",
+      "type": "view",
+      "filepath": "application/views/themes/sidebar/template/content.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sidebar/template/footer.php",
+      "label": "footer.php",
+      "type": "view",
+      "filepath": "application/views/themes/sidebar/template/footer.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sidebar/template/header.php",
+      "label": "header.php",
+      "type": "view",
+      "filepath": "application/views/themes/sidebar/template/header.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sidebar/template/menu.php",
+      "label": "menu.php",
+      "type": "view",
+      "filepath": "application/views/themes/sidebar/template/menu.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sidebar/template/sidebar.php",
+      "label": "sidebar.php",
+      "type": "view",
+      "filepath": "application/views/themes/sidebar/template/sidebar.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/sidebar/template.php",
+      "label": "template.php",
+      "type": "view",
+      "filepath": "application/views/themes/sidebar/template.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "application/views/themes/template.php",
+      "label": "template.php",
+      "type": "view",
+      "filepath": "application/views/themes/template.php",
+      "community": "General & Infrastructure",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "Index",
+      "label": "Index",
+      "type": "controller",
+      "filepath": "modules/dashboard/controllers/Index.8423.php",
+      "community": "Dashboard & Analytics",
+      "isBackup": true,
+      "methods": [
+        "index"
+      ],
+      "degree": 7,
+      "inDegree": 0,
+      "outDegree": 7,
+      "description": "CONTROLLER class in Dashboard & Analytics"
+    },
+    {
+      "id": "MX_Controller",
+      "label": "MX_Controller",
+      "type": "core",
+      "filepath": "",
+      "community": "System Core",
+      "isBackup": false,
+      "methods": [],
+      "degree": 78,
+      "inDegree": 78,
+      "outDegree": 0,
+      "description": "Framework Base Class"
+    },
+    {
+      "id": "d/chart",
+      "label": "chart",
+      "type": "view",
+      "filepath": "",
+      "community": "Dashboard & Analytics",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Rendered View"
+    },
+    {
+      "id": "db:app_m_jabatan",
+      "label": "app_m_jabatan",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Dashboard & Analytics",
+      "isBackup": false,
+      "methods": [],
+      "degree": 27,
+      "inDegree": 27,
+      "outDegree": 0,
+      "description": "Database Table (app_m_jabatan)"
+    },
+    {
+      "id": "db:app_t_usulan_pegawai",
+      "label": "app_t_usulan_pegawai",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Dashboard & Analytics",
+      "isBackup": false,
+      "methods": [],
+      "degree": 30,
+      "inDegree": 30,
+      "outDegree": 0,
+      "description": "Database Table (app_t_usulan_pegawai)"
+    },
+    {
+      "id": "db:app_m_informasi",
+      "label": "app_m_informasi",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Dashboard & Analytics",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (app_m_informasi)"
+    },
+    {
+      "id": "db:menggantikan",
+      "label": "menggantikan",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Dashboard & Analytics",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 2,
+      "outDegree": 0,
+      "description": "Database Table (menggantikan)"
+    },
+    {
+      "id": "modules/dashboard/views/d/chart.php",
+      "label": "chart.php",
+      "type": "view",
+      "filepath": "modules/dashboard/views/d/chart.php",
+      "community": "Dashboard & Analytics",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/dashboard/views/d/index.php",
+      "label": "index.php",
+      "type": "view",
+      "filepath": "modules/dashboard/views/d/index.php",
+      "community": "Dashboard & Analytics",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "Lookup_unor",
+      "label": "Lookup_unor",
+      "type": "controller",
+      "filepath": "modules/kepegawaian/controllers/Lookup_unor.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Kepegawaian (HR & Staff)"
+    },
+    {
+      "id": "M_golongan",
+      "label": "M_golongan",
+      "type": "controller",
+      "filepath": "modules/kepegawaian/controllers/M_golongan.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Kepegawaian (HR & Staff)"
+    },
+    {
+      "id": "rest",
+      "label": "rest",
+      "type": "library",
+      "filepath": "",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [],
+      "degree": 7,
+      "inDegree": 7,
+      "outDegree": 0,
+      "description": "CI Library"
+    },
+    {
+      "id": "M_jabatan",
+      "label": "M_jabatan",
+      "type": "controller",
+      "filepath": "modules/kepegawaian/controllers/M_jabatan.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Kepegawaian (HR & Staff)"
+    },
+    {
+      "id": "M_jenis_jabatan",
+      "label": "M_jenis_jabatan",
+      "type": "controller",
+      "filepath": "modules/kepegawaian/controllers/M_jenis_jabatan.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Kepegawaian (HR & Staff)"
+    },
+    {
+      "id": "M_kepegawaian_unor",
+      "label": "M_kepegawaian_unor",
+      "type": "controller",
+      "filepath": "modules/kepegawaian/controllers/M_kepegawaian_unor.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Kepegawaian (HR & Staff)"
+    },
+    {
+      "id": "db:getRekursifUnit",
+      "label": "getRekursifUnit",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 2,
+      "outDegree": 0,
+      "description": "Database Table (getRekursifUnit)"
+    },
+    {
+      "id": "M_pegawai",
+      "label": "M_pegawai",
+      "type": "controller",
+      "filepath": "modules/kepegawaian/controllers/M_pegawai.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 8,
+      "inDegree": 0,
+      "outDegree": 8,
+      "description": "CONTROLLER class in Kepegawaian (HR & Staff)"
+    },
+    {
+      "id": "db:cte",
+      "label": "cte",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (cte)"
+    },
+    {
+      "id": "db:kepeg_m_golongan",
+      "label": "kepeg_m_golongan",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 5,
+      "inDegree": 5,
+      "outDegree": 0,
+      "description": "Database Table (kepeg_m_golongan)"
+    },
+    {
+      "id": "db:kepeg_m_jabatan",
+      "label": "kepeg_m_jabatan",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 6,
+      "inDegree": 6,
+      "outDegree": 0,
+      "description": "Database Table (kepeg_m_jabatan)"
+    },
+    {
+      "id": "db:kepeg_m_pegawai",
+      "label": "kepeg_m_pegawai",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 11,
+      "inDegree": 11,
+      "outDegree": 0,
+      "description": "Database Table (kepeg_m_pegawai)"
+    },
+    {
+      "id": "M_tarik_pegawai",
+      "label": "M_tarik_pegawai",
+      "type": "controller",
+      "filepath": "modules/kepegawaian/controllers/M_tarik_pegawai.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Kepegawaian (HR & Staff)"
+    },
+    {
+      "id": "M_unor_mapping",
+      "label": "M_unor_mapping",
+      "type": "controller",
+      "filepath": "modules/kepegawaian/controllers/M_unor_mapping.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Kepegawaian (HR & Staff)"
+    },
+    {
+      "id": "modules/kepegawaian/views/pegawai/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/kepegawaian/views/pegawai/list.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/kepegawaian/views/pegawai/pegawai.php",
+      "label": "pegawai.php",
+      "type": "view",
+      "filepath": "modules/kepegawaian/views/pegawai/pegawai.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/kepegawaian/views/unor/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/kepegawaian/views/unor/list.php",
+      "community": "Kepegawaian (HR & Staff)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "Konfirmasi",
+      "label": "Konfirmasi",
+      "type": "controller",
+      "filepath": "modules/nologin/controllers/Konfirmasi copy.php",
+      "community": "Public & Auth Actions",
+      "isBackup": true,
+      "methods": [
+        "index",
+        "save"
+      ],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Public & Auth Actions"
+    },
+    {
+      "id": "Reset_password",
+      "label": "Reset_password",
+      "type": "controller",
+      "filepath": "modules/nologin/controllers/Reset_password.php",
+      "community": "Public & Auth Actions",
+      "isBackup": false,
+      "methods": [
+        "before_render_update",
+        "index",
+        "save"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Public & Auth Actions"
+    },
+    {
+      "id": "email",
+      "label": "email",
+      "type": "library",
+      "filepath": "",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "CI Library"
+    },
+    {
+      "id": "modules/nologin/views/reset_password/form.php",
+      "label": "form.php",
+      "type": "view",
+      "filepath": "modules/nologin/views/reset_password/form.php",
+      "community": "Public & Auth Actions",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/nologin/views/reset_password/notallowed.php",
+      "label": "notallowed.php",
+      "type": "view",
+      "filepath": "modules/nologin/views/reset_password/notallowed.php",
+      "community": "Public & Auth Actions",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "Cetak_sk_satker",
+      "label": "Cetak_sk_satker",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Cetak_sk_satker.8423.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:app_t_usulan_sk",
+      "label": "app_t_usulan_sk",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 7,
+      "inDegree": 7,
+      "outDegree": 0,
+      "description": "Database Table (app_t_usulan_sk)"
+    },
+    {
+      "id": "Cetak_sk_satker2",
+      "label": "Cetak_sk_satker2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Cetak_sk_satker2.8423.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Croscek_data",
+      "label": "Croscek_data",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Croscek_data.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Croscek_data2",
+      "label": "Croscek_data2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Croscek_data2.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Daftar_sk_kemdikbud",
+      "label": "Daftar_sk_kemdikbud",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Daftar_sk_kemdikbud.260421.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Detail_info",
+      "label": "Detail_info",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_info.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "detail_info1a",
+      "label": "detail_info1a",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_info1a.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "detail_info1b",
+      "label": "detail_info1b",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_info1b.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Detail_info2",
+      "label": "Detail_info2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_info2.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Detail_info3",
+      "label": "Detail_info3",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_info3.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 7,
+      "inDegree": 0,
+      "outDegree": 7,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Detail_laporan1",
+      "label": "Detail_laporan1",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_laporan1.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Detail_laporan2",
+      "label": "Detail_laporan2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_laporan2.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Detail_laporan3",
+      "label": "Detail_laporan3",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_laporan3.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Detail_laporan4",
+      "label": "Detail_laporan4",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_laporan4.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Detail_laporan_dashboard",
+      "label": "Detail_laporan_dashboard",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_laporan_dashboard.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Detail_rekap_pejabat",
+      "label": "Detail_rekap_pejabat",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_rekap_pejabat - 281122.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Detail_sk_kemdikbud",
+      "label": "Detail_sk_kemdikbud",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_sk_kemdikbud.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 9,
+      "inDegree": 0,
+      "outDegree": 9,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:app_m_perubahan",
+      "label": "app_m_perubahan",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 3,
+      "outDegree": 0,
+      "description": "Database Table (app_m_perubahan)"
+    },
+    {
+      "id": "Detail_sk_kpa",
+      "label": "Detail_sk_kpa",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Detail_sk_kpa.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 6,
+      "inDegree": 0,
+      "outDegree": 6,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Ews",
+      "label": "Ews",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Ews.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 6,
+      "inDegree": 0,
+      "outDegree": 6,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "History_pejabat_perbend",
+      "label": "History_pejabat_perbend",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/History_pejabat_perbend.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "History_pejabat_perbend2",
+      "label": "History_pejabat_perbend2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/History_pejabat_perbend2.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Laporan1",
+      "label": "Laporan1",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Laporan1.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 5,
+      "inDegree": 0,
+      "outDegree": 5,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Laporan2",
+      "label": "Laporan2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Laporan2.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Laporan3",
+      "label": "Laporan3",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Laporan3.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Laporan4",
+      "label": "Laporan4",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Laporan4.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Laporan_dashboard",
+      "label": "Laporan_dashboard",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Laporan_dashboard.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Lookup_m_pelatihan",
+      "label": "Lookup_m_pelatihan",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Lookup_m_pelatihan.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Lookup_satker",
+      "label": "Lookup_satker",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Lookup_satker.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Mapping_unor",
+      "label": "Mapping_unor",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Mapping_unor.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "updateBox_app_m_unor_daftar"
+      ],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Mapping_unor2",
+      "label": "Mapping_unor2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Mapping_unor2.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "updateBox_kepeg_m_unor_daftar"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "M_informasi",
+      "label": "M_informasi",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/M_informasi.8423.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [
+        "after_update_processor"
+      ],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "M_pelatihan",
+      "label": "M_pelatihan",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/M_pelatihan.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "M_perubahan",
+      "label": "M_perubahan",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/M_perubahan.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor",
+        "listBox_app_m_perubahan_cjabid2",
+        "insertBox_app_m_perubahan_cjabid2",
+        "updateBox_app_m_perubahan_cjabid2",
+        "viewBox_app_m_perubahan_cjabid2",
+        "before_insert_processor",
+        "before_update_processor"
+      ],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "M_status",
+      "label": "M_status",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/M_status.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "M_ttd",
+      "label": "M_ttd",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/M_ttd.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "M_unor",
+      "label": "M_unor",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/M_unor.7423.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:kode",
+      "label": "kode",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (kode)"
+    },
+    {
+      "id": "M_unor_rekening",
+      "label": "M_unor_rekening",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/M_unor_rekening.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 5,
+      "inDegree": 0,
+      "outDegree": 5,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:app_m_tipe_rekening",
+      "label": "app_m_tipe_rekening",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (app_m_tipe_rekening)"
+    },
+    {
+      "id": "db:app_m_cluster_rekening",
+      "label": "app_m_cluster_rekening",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (app_m_cluster_rekening)"
+    },
+    {
+      "id": "db:app_t_rekening_sprint",
+      "label": "app_t_rekening_sprint",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 2,
+      "outDegree": 0,
+      "description": "Database Table (app_t_rekening_sprint)"
+    },
+    {
+      "id": "M_upload_rekening",
+      "label": "M_upload_rekening",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/M_upload_rekening.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:app_m_unor_rekening",
+      "label": "app_m_unor_rekening",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (app_m_unor_rekening)"
+    },
+    {
+      "id": "Per_jenis_jabatan",
+      "label": "Per_jenis_jabatan",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Per_jenis_jabatan.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Per_jenis_jabatan2",
+      "label": "Per_jenis_jabatan2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Per_jenis_jabatan2.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Progress_usulan_satker",
+      "label": "Progress_usulan_satker",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Progress_usulan_satker.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Rekap_pejabat",
+      "label": "Rekap_pejabat",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Rekap_pejabat - 281122.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Rekap_pejabat2",
+      "label": "Rekap_pejabat2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Rekap_pejabat2.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "Set_tahun",
+      "label": "Set_tahun",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/Set_tahun.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "manipulate_url_save"
+      ],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "T_alasan_penolakan",
+      "label": "T_alasan_penolakan",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_alasan_penolakan.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_update_processor",
+        "after_update_processor"
+      ],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:status",
+      "label": "status",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 8,
+      "inDegree": 8,
+      "outDegree": 0,
+      "description": "Database Table (status)"
+    },
+    {
+      "id": "T_sprint",
+      "label": "T_sprint",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_sprint.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:Oleh",
+      "label": "Oleh",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (Oleh)"
+    },
+    {
+      "id": "T_terbit_sk",
+      "label": "T_terbit_sk",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_terbit_sk - 041222.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [],
+      "degree": 11,
+      "inDegree": 0,
+      "outDegree": 11,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:app_t_history_usulan_pegawai",
+      "label": "app_t_history_usulan_pegawai",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (app_t_history_usulan_pegawai)"
+    },
+    {
+      "id": "T_terbit_sk_upload",
+      "label": "T_terbit_sk_upload",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_terbit_sk_upload - 051222.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [
+        "updateBox_app_t_usulan_sk_lampiran",
+        "updateBox_app_t_usulan_sk_lampiran2",
+        "before_update_processor",
+        "manipulate_url_save"
+      ],
+      "degree": 9,
+      "inDegree": 0,
+      "outDegree": 9,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:statua",
+      "label": "statua",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (statua)"
+    },
+    {
+      "id": "db:berdasarkan",
+      "label": "berdasarkan",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 4,
+      "inDegree": 4,
+      "outDegree": 0,
+      "description": "Database Table (berdasarkan)"
+    },
+    {
+      "id": "T_unggah",
+      "label": "T_unggah",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_unggah-rev.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:usulan",
+      "label": "usulan",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (usulan)"
+    },
+    {
+      "id": "T_usulan_approval",
+      "label": "T_usulan_approval",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_approval.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "updateBox_app_t_usulan_lampiran",
+        "viewBox_app_t_usulan_lampiran"
+      ],
+      "degree": 7,
+      "inDegree": 0,
+      "outDegree": 7,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "T_usulan_daftar",
+      "label": "T_usulan_daftar",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_daftar.8423.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor",
+        "manipulate_url_save"
+      ],
+      "degree": 9,
+      "inDegree": 0,
+      "outDegree": 9,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "T_usulan_daftar2",
+      "label": "T_usulan_daftar2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_daftar2.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor",
+        "manipulate_url_save",
+        "copy_data_tahun_lalu"
+      ],
+      "degree": 9,
+      "inDegree": 0,
+      "outDegree": 9,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "T_usulan_nosk",
+      "label": "T_usulan_nosk",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_nosk.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "T_usulan_pelatihan",
+      "label": "T_usulan_pelatihan",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_pelatihan.280821.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 6,
+      "inDegree": 0,
+      "outDegree": 6,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:app_t_pelatihan_peserta",
+      "label": "app_t_pelatihan_peserta",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (app_t_pelatihan_peserta)"
+    },
+    {
+      "id": "T_usulan_pelatihan_daftar",
+      "label": "T_usulan_pelatihan_daftar",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_pelatihan_daftar.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "modules/perbend/controllers/T_usulan_satker.040321.php",
+      "label": "T_usulan_satker.040321.php",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_satker.040321.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONTROLLER template file"
+    },
+    {
+      "id": "T_usulan_satker",
+      "label": "T_usulan_satker",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_satker.8423.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor",
+        "viewBox_app_t_usulan_lampiran2",
+        "updateBox_app_t_usulan_lampiran2",
+        "insertBox_app_t_usulan_lampiran2",
+        "insertBox_app_t_usulan_lampiran",
+        "updateBox_app_t_usulan_lampiran",
+        "viewBox_app_t_usulan_lampiran",
+        "before_insert_processor",
+        "before_update_processor",
+        "manipulate_update_button",
+        "insertBox_app_t_usulan_daftarnama",
+        "updateBox_app_t_usulan_daftarnama",
+        "viewBox_app_t_usulan_daftarnama",
+        "manipulate_url_save"
+      ],
+      "degree": 14,
+      "inDegree": 0,
+      "outDegree": 14,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "T_usulan_satker2",
+      "label": "T_usulan_satker2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_satker2.8423.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": true,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor",
+        "insertBox_app_t_usulan_lampiran",
+        "updateBox_app_t_usulan_lampiran",
+        "viewBox_app_t_usulan_lampiran",
+        "before_insert_processor",
+        "before_update_processor",
+        "manipulate_update_button",
+        "insertBox_app_t_usulan_daftarnama",
+        "updateBox_app_t_usulan_daftarnama",
+        "viewBox_app_t_usulan_daftarnama",
+        "manipulate_url_save",
+        "uploadfiles"
+      ],
+      "degree": 7,
+      "inDegree": 0,
+      "outDegree": 7,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "db:detail",
+      "label": "detail",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (detail)"
+    },
+    {
+      "id": "T_usulan_verifikator",
+      "label": "T_usulan_verifikator",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_verifikator.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor",
+        "insertBox_app_t_usulan_lampiran",
+        "updateBox_app_t_usulan_lampiran",
+        "viewBox_app_t_usulan_lampiran",
+        "before_insert_processor",
+        "before_update_processor",
+        "manipulate_update_button",
+        "viewBox_app_t_usulan_daftarnama"
+      ],
+      "degree": 7,
+      "inDegree": 0,
+      "outDegree": 7,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "T_usulan_verifikator2",
+      "label": "T_usulan_verifikator2",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_usulan_verifikator2.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor",
+        "insertBox_app_t_usulan_lampiran",
+        "updateBox_app_t_usulan_lampiran",
+        "viewBox_app_t_usulan_lampiran",
+        "before_insert_processor",
+        "before_update_processor",
+        "manipulate_update_button",
+        "viewBox_app_t_usulan_daftarnama"
+      ],
+      "degree": 7,
+      "inDegree": 0,
+      "outDegree": 7,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "T_verifikasi_usulan_pelatihan",
+      "label": "T_verifikasi_usulan_pelatihan",
+      "type": "controller",
+      "filepath": "modules/perbend/controllers/T_verifikasi_usulan_pelatihan.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [
+        "after_insert_processor",
+        "after_update_processor",
+        "insertBox_app_t_usulan_pelatihan_lampiran",
+        "updateBox_app_t_usulan_pelatihan_lampiran",
+        "viewBox_app_t_usulan_pelatihan_lampiran",
+        "before_insert_processor",
+        "before_update_processor",
+        "manipulate_update_button"
+      ],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "CONTROLLER class in Perbendaharaan (Treasury & SK)"
+    },
+    {
+      "id": "modules/perbend/views/detail_info/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend/views/detail_info/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend/views/ews/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend/views/ews/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend/views/laporan/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend/views/laporan/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend/views/terbit_sk/form_modal.php",
+      "label": "form_modal.php",
+      "type": "view",
+      "filepath": "modules/perbend/views/terbit_sk/form_modal.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend/views/terbit_sk/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend/views/terbit_sk/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "db:SINDE",
+      "label": "SINDE",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (SINDE)"
+    },
+    {
+      "id": "modules/perbend.asli/controllers/T_usulan_satker.040321.php",
+      "label": "T_usulan_satker.040321.php",
+      "type": "controller",
+      "filepath": "modules/perbend.asli/controllers/T_usulan_satker.040321.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONTROLLER template file"
+    },
+    {
+      "id": "db:t_usulan_pegawai",
+      "label": "t_usulan_pegawai",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 2,
+      "outDegree": 0,
+      "description": "Database Table (t_usulan_pegawai)"
+    },
+    {
+      "id": "modules/perbend.asli/views/detail_info/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend.asli/views/detail_info/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend.asli/views/ews/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend.asli/views/ews/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend.asli/views/laporan/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend.asli/views/laporan/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend.asli/views/terbit_sk/form_modal.php",
+      "label": "form_modal.php",
+      "type": "view",
+      "filepath": "modules/perbend.asli/views/terbit_sk/form_modal.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend.asli/views/terbit_sk/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend.asli/views/terbit_sk/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend.local/controllers/T_usulan_satker.040321.php",
+      "label": "T_usulan_satker.040321.php",
+      "type": "controller",
+      "filepath": "modules/perbend.local/controllers/T_usulan_satker.040321.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "CONTROLLER template file"
+    },
+    {
+      "id": "modules/perbend.local/views/detail_info/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend.local/views/detail_info/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend.local/views/ews/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend.local/views/ews/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend.local/views/laporan/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend.local/views/laporan/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend.local/views/terbit_sk/form_modal.php",
+      "label": "form_modal.php",
+      "type": "view",
+      "filepath": "modules/perbend.local/views/terbit_sk/form_modal.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/perbend.local/views/terbit_sk/list.php",
+      "label": "list.php",
+      "type": "view",
+      "filepath": "modules/perbend.local/views/terbit_sk/list.php",
+      "community": "Perbendaharaan (Treasury & SK)",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "Approval_pengguna",
+      "label": "Approval_pengguna",
+      "type": "controller",
+      "filepath": "modules/privileges/controllers/Approval_pengguna.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [
+        "index",
+        "approve",
+        "approve_all",
+        "reject"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Privileges & User Mgmt"
+    },
+    {
+      "id": "Change_password",
+      "label": "Change_password",
+      "type": "controller",
+      "filepath": "modules/privileges/controllers/Change_password.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [
+        "after_update_processor"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Privileges & User Mgmt"
+    },
+    {
+      "id": "Group",
+      "label": "Group",
+      "type": "controller",
+      "filepath": "modules/privileges/controllers/Group.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [
+        "_addField",
+        "updateBox_priv_t_group_vname",
+        "searchBox_priv_t_group_ldeleted",
+        "listBox_priv_t_group_ldeleted",
+        "listBox_priv_t_group_vname",
+        "insertBox_priv_t_group_ldeleted",
+        "updateBox_priv_t_group_ldeleted",
+        "viewBox_priv_t_group_ldeleted",
+        "insertBox_priv_t_group_menu",
+        "updateBox_priv_t_group_menu",
+        "viewBox_priv_t_group_menu",
+        "menu",
+        "after_insert_processor",
+        "after_update_processor",
+        "after_delete_processor"
+      ],
+      "degree": 4,
+      "inDegree": 0,
+      "outDegree": 4,
+      "description": "CONTROLLER class in Privileges & User Mgmt"
+    },
+    {
+      "id": "db:priv_t_group",
+      "label": "priv_t_group",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 2,
+      "outDegree": 0,
+      "description": "Database Table (priv_t_group)"
+    },
+    {
+      "id": "db:priv_t_menu_group_privileges",
+      "label": "priv_t_menu_group_privileges",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (priv_t_menu_group_privileges)"
+    },
+    {
+      "id": "db:priv_",
+      "label": "priv_",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (priv_)"
+    },
+    {
+      "id": "Menu",
+      "label": "Menu",
+      "type": "controller",
+      "filepath": "modules/privileges/controllers/Menu.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [
+        "searchBox_priv_t_menu_ldeleted",
+        "listBox_priv_t_menu_ldeleted",
+        "listBox_priv_t_menu_iparentid",
+        "viewBox_priv_t_menu_iparentid",
+        "viewBox_priv_t_menu_ldeleted",
+        "insertBox_priv_t_menu_iparentid",
+        "updateBox_priv_t_menu_iparentid",
+        "insertBox_priv_t_menu_ldeleted",
+        "updateBox_priv_t_menu_ldeleted",
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Privileges & User Mgmt"
+    },
+    {
+      "id": "db:priv_t_menu",
+      "label": "priv_t_menu",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (priv_t_menu)"
+    },
+    {
+      "id": "Sysparam",
+      "label": "Sysparam",
+      "type": "controller",
+      "filepath": "modules/privileges/controllers/Sysparam.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [
+        "updateBox_sysparam_vname",
+        "searchBox_sysparam_ldeleted",
+        "listBox_sysparam_ldeleted",
+        "insertBox_sysparam_ldeleted",
+        "updateBox_sysparam_ldeleted",
+        "viewBox_sysparam_ldeleted",
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 2,
+      "inDegree": 0,
+      "outDegree": 2,
+      "description": "CONTROLLER class in Privileges & User Mgmt"
+    },
+    {
+      "id": "db:sysparam",
+      "label": "sysparam",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 2,
+      "inDegree": 2,
+      "outDegree": 0,
+      "description": "Database Table (sysparam)"
+    },
+    {
+      "id": "User",
+      "label": "User",
+      "type": "controller",
+      "filepath": "modules/privileges/controllers/User.251122.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [
+        "updateBox_priv_t_user_username",
+        "listBox_priv_t_user_igroupid",
+        "insertBox_priv_t_user_igroupid",
+        "updateBox_priv_t_user_igroupid",
+        "viewBox_priv_t_user_igroupid",
+        "insertBox_priv_t_user_password",
+        "updateBox_priv_t_user_password",
+        "viewBox_priv_t_user_password",
+        "insertBox_priv_t_user_passwordr",
+        "updateBox_priv_t_user_passwordr",
+        "viewBox_priv_t_user_passwordr",
+        "searchBox_priv_t_user_igroupid",
+        "listBox_priv_t_user_ldeleted",
+        "insertBox_priv_t_user_ldeleted",
+        "updateBox_priv_t_user_ldeleted",
+        "viewBox_priv_t_user_ldeleted",
+        "insertBox_priv_t_user_isuperuser",
+        "updateBox_priv_t_user_isuperuser",
+        "viewBox_priv_t_user_isuperuser",
+        "insertCheck_priv_t_user_username",
+        "updateCheck_priv_t_user_username",
+        "before_update_check",
+        "before_insert_processor",
+        "before_update_processor",
+        "after_insert_processor",
+        "after_update_processor"
+      ],
+      "degree": 3,
+      "inDegree": 0,
+      "outDegree": 3,
+      "description": "CONTROLLER class in Privileges & User Mgmt"
+    },
+    {
+      "id": "User_authentication",
+      "label": "User_authentication",
+      "type": "controller",
+      "filepath": "modules/privileges/controllers/User_authentication.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [
+        "index",
+        "formLogin",
+        "doLogin",
+        "doLogin",
+        "doLogout"
+      ],
+      "degree": 7,
+      "inDegree": 0,
+      "outDegree": 7,
+      "description": "CONTROLLER class in Privileges & User Mgmt"
+    },
+    {
+      "id": "form_validation",
+      "label": "form_validation",
+      "type": "library",
+      "filepath": "",
+      "community": "Shared Utilities",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "CI Library"
+    },
+    {
+      "id": "db:login_attempts",
+      "label": "login_attempts",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (login_attempts)"
+    },
+    {
+      "id": "db:captcha",
+      "label": "captcha",
+      "type": "database_table",
+      "filepath": "",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 1,
+      "outDegree": 0,
+      "description": "Database Table (captcha)"
+    },
+    {
+      "id": "modules/privileges/views/approval_pengguna/index.php",
+      "label": "index.php",
+      "type": "view",
+      "filepath": "modules/privileges/views/approval_pengguna/index.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/privileges/views/menu/error.php",
+      "label": "error.php",
+      "type": "view",
+      "filepath": "modules/privileges/views/menu/error.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/privileges/views/menu/ts.php",
+      "label": "ts.php",
+      "type": "view",
+      "filepath": "modules/privileges/views/menu/ts.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 0,
+      "inDegree": 0,
+      "outDegree": 0,
+      "description": "VIEW template file"
+    },
+    {
+      "id": "modules/privileges/views/user/form_login.php",
+      "label": "form_login.php",
+      "type": "view",
+      "filepath": "modules/privileges/views/user/form_login.php",
+      "community": "Privileges & User Mgmt",
+      "isBackup": false,
+      "methods": [],
+      "degree": 1,
+      "inDegree": 0,
+      "outDegree": 1,
+      "description": "VIEW template file"
+    }
+  ],
+  "edges": [
+    {
+      "source": "Extension",
+      "target": "db:consideration",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Extension",
+      "target": "db:account",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Extension",
+      "target": "db:which",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Errors",
+      "target": "CI_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "Registrasi",
+      "target": "CI_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "Registrasi",
+      "target": "registrasi/form",
+      "relation": "renders_view",
+      "weight": 1
+    },
+    {
+      "source": "Registrasi",
+      "target": "db:app_t_registrasi_kpa",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Registrasi",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "MY_Controller",
+      "target": "CI_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "MY_Loader",
+      "target": "MX_Loader",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "MY_Router",
+      "target": "MX_Router",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "REST",
+      "target": "db:the",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "REST",
+      "target": "db:start",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "and",
+      "target": "db:the",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "which",
+      "target": "db:the",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "MX_Config",
+      "target": "CI_Config",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "MX_Config",
+      "target": "db:the",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "for",
+      "target": "output/notallowed_modal",
+      "relation": "renders_view",
+      "weight": 4
+    },
+    {
+      "source": "for",
+      "target": "output/notallowed",
+      "relation": "renders_view",
+      "weight": 6
+    },
+    {
+      "source": "for",
+      "target": "page_missing/index",
+      "relation": "renders_view",
+      "weight": 8
+    },
+    {
+      "source": "for",
+      "target": "output/form_modal",
+      "relation": "renders_view",
+      "weight": 1
+    },
+    {
+      "source": "for",
+      "target": "output/form",
+      "relation": "renders_view",
+      "weight": 1
+    },
+    {
+      "source": "for",
+      "target": "output/view_modal",
+      "relation": "renders_view",
+      "weight": 1
+    },
+    {
+      "source": "for",
+      "target": "output/view",
+      "relation": "renders_view",
+      "weight": 1
+    },
+    {
+      "source": "for",
+      "target": "security",
+      "relation": "loads_library",
+      "weight": 1
+    },
+    {
+      "source": "for",
+      "target": "db:the",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "for",
+      "target": "db:NILAI",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "for",
+      "target": "db:FAILED",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "MX_Lang",
+      "target": "CI_Lang",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "MX_Lang",
+      "target": "db:the",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "MX_Loader",
+      "target": "CI_Loader",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "MX_Loader",
+      "target": "db:the",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Modules",
+      "target": "db:config",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Modules",
+      "target": "db:the",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Modules",
+      "target": "db:module",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "MX_Router",
+      "target": "CI_Router",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "MX_Router",
+      "target": "db:the",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "application/views/themes/AdminLTE-2.3.11/template/menu.php",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "application/views/themes/AdminLTE-2.3.11/template/menu.php",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "application/views/themes/AdminLTE-2.3.11/template/menu.php",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "application/views/themes/AdminLTE-2.3.11/template/menu.php",
+      "target": "db:app_notification",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "application/views/themes/AdminLTE-2.3.11/template/menu.php",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Index",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 2
+    },
+    {
+      "source": "Index",
+      "target": "d/chart",
+      "relation": "renders_view",
+      "weight": 2
+    },
+    {
+      "source": "Index",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Index",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Index",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "Index",
+      "target": "db:app_m_informasi",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "Index",
+      "target": "db:menggantikan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "modules/dashboard/views/d/index.php",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Lookup_unor",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "M_golongan",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "M_golongan",
+      "target": "rest",
+      "relation": "loads_library",
+      "weight": 1
+    },
+    {
+      "source": "M_jabatan",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 4
+    },
+    {
+      "source": "M_jabatan",
+      "target": "rest",
+      "relation": "loads_library",
+      "weight": 1
+    },
+    {
+      "source": "M_jabatan",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "M_jenis_jabatan",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "M_jenis_jabatan",
+      "target": "rest",
+      "relation": "loads_library",
+      "weight": 1
+    },
+    {
+      "source": "M_kepegawaian_unor",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "M_kepegawaian_unor",
+      "target": "rest",
+      "relation": "loads_library",
+      "weight": 1
+    },
+    {
+      "source": "M_kepegawaian_unor",
+      "target": "db:getRekursifUnit",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "M_kepegawaian_unor",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 5
+    },
+    {
+      "source": "M_pegawai",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "M_pegawai",
+      "target": "rest",
+      "relation": "loads_library",
+      "weight": 2
+    },
+    {
+      "source": "M_pegawai",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 16
+    },
+    {
+      "source": "M_pegawai",
+      "target": "db:cte",
+      "relation": "queries_table",
+      "weight": 8
+    },
+    {
+      "source": "M_pegawai",
+      "target": "db:kepeg_m_golongan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "M_pegawai",
+      "target": "db:kepeg_m_jabatan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "M_pegawai",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "M_pegawai",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "M_tarik_pegawai",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "M_tarik_pegawai",
+      "target": "db:kepeg_m_golongan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "M_tarik_pegawai",
+      "target": "db:kepeg_m_jabatan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "M_tarik_pegawai",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "M_unor_mapping",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "Konfirmasi",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 2
+    },
+    {
+      "source": "Reset_password",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "Reset_password",
+      "target": "email",
+      "relation": "loads_library",
+      "weight": 1
+    },
+    {
+      "source": "Cetak_sk_satker",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 4
+    },
+    {
+      "source": "Cetak_sk_satker",
+      "target": "db:app_t_usulan_sk",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Cetak_sk_satker2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 4
+    },
+    {
+      "source": "Cetak_sk_satker2",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Croscek_data",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Croscek_data2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "Croscek_data2",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Daftar_sk_kemdikbud",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 7
+    },
+    {
+      "source": "Daftar_sk_kemdikbud",
+      "target": "db:app_t_usulan_sk",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Detail_info",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "detail_info1a",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 2
+    },
+    {
+      "source": "detail_info1b",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 2
+    },
+    {
+      "source": "Detail_info2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Detail_info3",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Detail_info3",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Detail_info3",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Detail_info3",
+      "target": "db:app_t_usulan_sk",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Detail_info3",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Detail_info3",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Detail_info3",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Detail_laporan1",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Detail_laporan1",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 9
+    },
+    {
+      "source": "Detail_laporan1",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "Detail_laporan1",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 18
+    },
+    {
+      "source": "Detail_laporan2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Detail_laporan2",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Detail_laporan2",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Detail_laporan2",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Detail_laporan3",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Detail_laporan3",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Detail_laporan3",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Detail_laporan3",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Detail_laporan4",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Detail_laporan4",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Detail_laporan4",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Detail_laporan4",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Detail_laporan_dashboard",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Detail_laporan_dashboard",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 9
+    },
+    {
+      "source": "Detail_laporan_dashboard",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Detail_laporan_dashboard",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 18
+    },
+    {
+      "source": "Detail_rekap_pejabat",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 4
+    },
+    {
+      "source": "Detail_rekap_pejabat",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Detail_rekap_pejabat",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Detail_rekap_pejabat",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 16
+    },
+    {
+      "source": "Detail_sk_kemdikbud",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 6
+    },
+    {
+      "source": "Detail_sk_kemdikbud",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 41
+    },
+    {
+      "source": "Detail_sk_kemdikbud",
+      "target": "db:app_m_perubahan",
+      "relation": "queries_table",
+      "weight": 13
+    },
+    {
+      "source": "Detail_sk_kemdikbud",
+      "target": "db:app_t_usulan_sk",
+      "relation": "queries_table",
+      "weight": 28
+    },
+    {
+      "source": "Detail_sk_kemdikbud",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 84
+    },
+    {
+      "source": "Detail_sk_kemdikbud",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 17
+    },
+    {
+      "source": "Detail_sk_kemdikbud",
+      "target": "db:kepeg_m_jabatan",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Detail_sk_kemdikbud",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 8
+    },
+    {
+      "source": "Detail_sk_kemdikbud",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Detail_sk_kpa",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 6
+    },
+    {
+      "source": "Detail_sk_kpa",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 19
+    },
+    {
+      "source": "Detail_sk_kpa",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Detail_sk_kpa",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 54
+    },
+    {
+      "source": "Detail_sk_kpa",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Detail_sk_kpa",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Ews",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Ews",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 5
+    },
+    {
+      "source": "Ews",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 5
+    },
+    {
+      "source": "Ews",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 7
+    },
+    {
+      "source": "Ews",
+      "target": "db:kepeg_m_jabatan",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Ews",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "History_pejabat_perbend",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "History_pejabat_perbend",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "History_pejabat_perbend2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "History_pejabat_perbend2",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Laporan1",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Laporan1",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Laporan1",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Laporan1",
+      "target": "db:menggantikan",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Laporan1",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Laporan2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Laporan2",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Laporan2",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Laporan2",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Laporan3",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Laporan3",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Laporan3",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Laporan3",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Laporan4",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Laporan4",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Laporan4",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Laporan4",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Laporan_dashboard",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Laporan_dashboard",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Laporan_dashboard",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Laporan_dashboard",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Lookup_m_pelatihan",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Lookup_satker",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Lookup_satker",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Mapping_unor",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Mapping_unor",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Mapping_unor",
+      "target": "db:getRekursifUnit",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Mapping_unor2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Mapping_unor2",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "M_informasi",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 4
+    },
+    {
+      "source": "M_pelatihan",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "M_perubahan",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "M_status",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "M_ttd",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "M_unor",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 5
+    },
+    {
+      "source": "M_unor",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 30
+    },
+    {
+      "source": "M_unor",
+      "target": "db:kode",
+      "relation": "queries_table",
+      "weight": 5
+    },
+    {
+      "source": "M_unor_rekening",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 2
+    },
+    {
+      "source": "M_unor_rekening",
+      "target": "db:app_m_tipe_rekening",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "M_unor_rekening",
+      "target": "db:app_m_cluster_rekening",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "M_unor_rekening",
+      "target": "db:app_t_rekening_sprint",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "M_unor_rekening",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "M_upload_rekening",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "M_upload_rekening",
+      "target": "db:app_m_unor_rekening",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Per_jenis_jabatan",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Per_jenis_jabatan",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 15
+    },
+    {
+      "source": "Per_jenis_jabatan",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Per_jenis_jabatan2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Per_jenis_jabatan2",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Per_jenis_jabatan2",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Progress_usulan_satker",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Progress_usulan_satker",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "Rekap_pejabat",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 4
+    },
+    {
+      "source": "Rekap_pejabat",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 12
+    },
+    {
+      "source": "Rekap_pejabat",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 16
+    },
+    {
+      "source": "Rekap_pejabat2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "Rekap_pejabat2",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "Rekap_pejabat2",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 15
+    },
+    {
+      "source": "Set_tahun",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "T_alasan_penolakan",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "T_alasan_penolakan",
+      "target": "db:app_notification",
+      "relation": "queries_table",
+      "weight": 9
+    },
+    {
+      "source": "T_alasan_penolakan",
+      "target": "db:status",
+      "relation": "queries_table",
+      "weight": 18
+    },
+    {
+      "source": "T_alasan_penolakan",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_sprint",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 2
+    },
+    {
+      "source": "T_sprint",
+      "target": "db:Oleh",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "T_sprint",
+      "target": "db:app_t_rekening_sprint",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 11
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "rest",
+      "relation": "loads_library",
+      "weight": 5
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "db:app_t_usulan_sk",
+      "relation": "queries_table",
+      "weight": 67
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 37
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "db:kepeg_m_golongan",
+      "relation": "queries_table",
+      "weight": 21
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "db:kepeg_m_jabatan",
+      "relation": "queries_table",
+      "weight": 13
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 18
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 13
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "db:app_t_history_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 9
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "db:status",
+      "relation": "queries_table",
+      "weight": 8
+    },
+    {
+      "source": "T_terbit_sk",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 27
+    },
+    {
+      "source": "T_terbit_sk_upload",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 4
+    },
+    {
+      "source": "T_terbit_sk_upload",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_terbit_sk_upload",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 21
+    },
+    {
+      "source": "T_terbit_sk_upload",
+      "target": "db:app_notification",
+      "relation": "queries_table",
+      "weight": 8
+    },
+    {
+      "source": "T_terbit_sk_upload",
+      "target": "db:app_m_perubahan",
+      "relation": "queries_table",
+      "weight": 9
+    },
+    {
+      "source": "T_terbit_sk_upload",
+      "target": "db:statua",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_terbit_sk_upload",
+      "target": "db:status",
+      "relation": "queries_table",
+      "weight": 8
+    },
+    {
+      "source": "T_terbit_sk_upload",
+      "target": "db:berdasarkan",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_terbit_sk_upload",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_unggah",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 9
+    },
+    {
+      "source": "T_unggah",
+      "target": "db:usulan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_approval",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_approval",
+      "target": "db:app_notification",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "T_usulan_approval",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "T_usulan_approval",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 15
+    },
+    {
+      "source": "T_usulan_approval",
+      "target": "db:berdasarkan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_approval",
+      "target": "db:status",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_approval",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_daftar",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 5
+    },
+    {
+      "source": "T_usulan_daftar",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 17
+    },
+    {
+      "source": "T_usulan_daftar",
+      "target": "db:app_notification",
+      "relation": "queries_table",
+      "weight": 10
+    },
+    {
+      "source": "T_usulan_daftar",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 20
+    },
+    {
+      "source": "T_usulan_daftar",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 19
+    },
+    {
+      "source": "T_usulan_daftar",
+      "target": "db:status",
+      "relation": "queries_table",
+      "weight": 5
+    },
+    {
+      "source": "T_usulan_daftar",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 16
+    },
+    {
+      "source": "T_usulan_daftar",
+      "target": "db:kepeg_m_golongan",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_usulan_daftar",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 5
+    },
+    {
+      "source": "T_usulan_daftar2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_daftar2",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 9
+    },
+    {
+      "source": "T_usulan_daftar2",
+      "target": "db:app_notification",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "T_usulan_daftar2",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 14
+    },
+    {
+      "source": "T_usulan_daftar2",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 13
+    },
+    {
+      "source": "T_usulan_daftar2",
+      "target": "db:status",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_daftar2",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "T_usulan_daftar2",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_daftar2",
+      "target": "db:the",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "T_usulan_nosk",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_nosk",
+      "target": "db:app_t_usulan_sk",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "T_usulan_pelatihan",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 10
+    },
+    {
+      "source": "T_usulan_pelatihan",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "T_usulan_pelatihan",
+      "target": "db:app_t_pelatihan_peserta",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_usulan_pelatihan",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_usulan_pelatihan",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_usulan_pelatihan",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_usulan_pelatihan_daftar",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_pelatihan_daftar",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_pelatihan_daftar",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 8
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "rest",
+      "relation": "loads_library",
+      "weight": 8
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 83
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:app_notification",
+      "relation": "queries_table",
+      "weight": 8
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 16
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:kepeg_m_pegawai",
+      "relation": "queries_table",
+      "weight": 114
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:kepeg_m_golongan",
+      "relation": "queries_table",
+      "weight": 46
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:kepeg_m_jabatan",
+      "relation": "queries_table",
+      "weight": 37
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:app_t_usulan_sk",
+      "relation": "queries_table",
+      "weight": 18
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 31
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 16
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:app_m_perubahan",
+      "relation": "queries_table",
+      "weight": 15
+    },
+    {
+      "source": "T_usulan_satker2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 5
+    },
+    {
+      "source": "T_usulan_satker2",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 13
+    },
+    {
+      "source": "T_usulan_satker2",
+      "target": "db:app_notification",
+      "relation": "queries_table",
+      "weight": 5
+    },
+    {
+      "source": "T_usulan_satker2",
+      "target": "db:detail",
+      "relation": "queries_table",
+      "weight": 6
+    },
+    {
+      "source": "T_usulan_satker2",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 5
+    },
+    {
+      "source": "T_usulan_satker2",
+      "target": "db:app_m_jabatan",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_verifikator",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_verifikator",
+      "target": "db:app_notification",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_verifikator",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 7
+    },
+    {
+      "source": "T_usulan_verifikator",
+      "target": "db:berdasarkan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "T_usulan_verifikator",
+      "target": "db:status",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "T_usulan_verifikator",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "T_usulan_verifikator",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "T_usulan_verifikator2",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_verifikator2",
+      "target": "db:app_notification",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_verifikator2",
+      "target": "db:app_t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 7
+    },
+    {
+      "source": "T_usulan_verifikator2",
+      "target": "db:berdasarkan",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "T_usulan_verifikator2",
+      "target": "db:status",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "T_usulan_verifikator2",
+      "target": "db:app_t_usulan",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "T_usulan_verifikator2",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "T_verifikasi_usulan_pelatihan",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_nosk",
+      "target": "db:SINDE",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "T_usulan_satker",
+      "target": "db:t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 3
+    },
+    {
+      "source": "T_usulan_satker2",
+      "target": "db:t_usulan_pegawai",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Approval_pengguna",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "Approval_pengguna",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Change_password",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "Change_password",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Group",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "Group",
+      "target": "db:priv_t_group",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "Group",
+      "target": "db:priv_t_menu_group_privileges",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "Group",
+      "target": "db:priv_",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "Menu",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "Menu",
+      "target": "db:priv_t_menu",
+      "relation": "queries_table",
+      "weight": 10
+    },
+    {
+      "source": "Sysparam",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 1
+    },
+    {
+      "source": "Sysparam",
+      "target": "db:sysparam",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "User",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 2
+    },
+    {
+      "source": "User",
+      "target": "db:priv_t_user",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "User",
+      "target": "db:app_m_unor",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "User_authentication",
+      "target": "MX_Controller",
+      "relation": "extends",
+      "weight": 4
+    },
+    {
+      "source": "User_authentication",
+      "target": "security",
+      "relation": "loads_library",
+      "weight": 4
+    },
+    {
+      "source": "User_authentication",
+      "target": "form_validation",
+      "relation": "loads_library",
+      "weight": 4
+    },
+    {
+      "source": "User_authentication",
+      "target": "db:login_attempts",
+      "relation": "queries_table",
+      "weight": 1
+    },
+    {
+      "source": "User_authentication",
+      "target": "db:captcha",
+      "relation": "queries_table",
+      "weight": 2
+    },
+    {
+      "source": "User_authentication",
+      "target": "db:priv_t_group",
+      "relation": "queries_table",
+      "weight": 8
+    },
+    {
+      "source": "User_authentication",
+      "target": "db:kepeg_m_unor",
+      "relation": "queries_table",
+      "weight": 4
+    },
+    {
+      "source": "modules/privileges/views/user/form_login.php",
+      "target": "db:sysparam",
+      "relation": "queries_table",
+      "weight": 1
+    }
+  ]
+}

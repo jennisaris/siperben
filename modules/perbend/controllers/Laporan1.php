@@ -299,7 +299,6 @@ class Laporan1 extends MX_Controller {
     //$sql .= " and p.inoskid IS NOT NULL and p.inoskid != 0 ";
 	//$sql .= " and p.isnonaktif = 0 ";
     $sql .= " Group by p.ijabid2";
-    //echo $sql;exit;
               
     $rows = $this->db->query($sql)->result();
     foreach($rows as $r) {

@@ -118,6 +118,13 @@ class T_usulan_daftar extends MX_Controller {
 		$this->_changeType($this->table, 'istatus', 'combobox', 
 		$this->session->sysparam->status_daftar_pegawai);
 
+		$ar_golid = array();
+		$rows_gol = $this->getall('', 'kepeg_m_golongan', '*');
+		foreach($rows_gol as $r) {
+			$ar_golid[$r->id] = $r->pangkat.", ".$r->nama;
+		}
+		$this->_changeType($this->table, 'cgolid', 'combobox', $ar_golid);
+
 		$this->_changeType($this->table, 'isbrubah', 'combobox', 
 		$this->session->sysparam->status_perubahan);
 
@@ -434,9 +441,7 @@ class T_usulan_daftar extends MX_Controller {
 							$('#app_t_usulan_pegawai_vname').val(item.value);
 							$('#app_t_usulan_pegawai_vname').attr('readonly', true);
 
-							$('#app_t_usulan_pegawai_cgolid').val(item.golid);
-							$('#app_t_usulan_pegawai_cgolid_txt').val(item.pktnm);
-							$('#app_t_usulan_pegawai_cgolid_txt').attr('readonly', true);
+							$('#app_t_usulan_pegawai_cgolid').val(item.golid).trigger('change');
 
 							$('#app_t_usulan_pegawai_ckduker').val(item.kduker);
 
@@ -525,8 +530,7 @@ class T_usulan_daftar extends MX_Controller {
 							var o = jQuery.parseJSON(getHTML3(url_, kriteria, 0));
 							$('#{$this->table}_cnip').val(o.nip);
 							$('#{$this->table}_vname').val(o.name);
-							$('#{$this->table}_cgolid').val(o.golid);
-							$('#{$this->table}_cgolid_txt').val(o.pktnm);
+							$('#{$this->table}_cgolid').val(o.golid).trigger('change');
 							$('#{$this->table}_cnipold').val(o.nip);
 						 	$('#{$this->table}_cnipold_txt').val('');
 					   } else {
@@ -538,8 +542,7 @@ class T_usulan_daftar extends MX_Controller {
 							$('#{$this->table}_cnosertifikat').val('');
 							$('#{$this->table}_cnipold').val('');
 							$('#{$this->table}_cnipold_txt').val('');
-							$('#{$this->table}_cgolid').val('');
-							$('#{$this->table}_cgolid_txt').val('');
+							$('#{$this->table}_cgolid').val('').trigger('change');
 					   }
 					   
 					  });
@@ -702,27 +705,7 @@ class T_usulan_daftar extends MX_Controller {
 		return $name_txt;
 	}
 	
-	function insertBox_app_t_usulan_pegawai_cgolid($name) {
-	  return $this->updateBox_app_t_usulan_pegawai_cgolid($name, '', '');
-	}
 
-	function updateBox_app_t_usulan_pegawai_cgolid($name, $value, $datas) {
-		$readonly = 'readonly';
-	  	$input = "<input type='hidden' 
-	            placeholder='Masukkan Golongan'
-	            name='{$name}' id='{$name}' 
-	            class='form-control {$name}' 
-	            value='{$value}'/>";
-
-		$name_txt = $this->getrow('', 'kepeg_m_golongan', 'concat(pangkat,\', \', nama) as nama_pangkat', array('id'=>$value))->nama_pangkat;
-		$input .= "<input {$readonly} type='text' 
-			placeholder='Masukkan Golongan'
-			name='{$name}_txt' id='{$name}_txt' 
-			class='form-control {$name}_txt' 
-			value='{$name_txt}'/>";
-	            
-	 return $input;
-	}
 
 	function viewBox_app_t_usulan_pegawai_cgolid($name, $value, $datas) {
 		$name_txt = $this->getrow('', 'kepeg_m_golongan', 'concat(pangkat,\', \', nama) as nama_pangkat', array('id'=>$value))->nama_pangkat;
@@ -757,7 +740,6 @@ class T_usulan_daftar extends MX_Controller {
 					WHERE a.id = b.iusulanid and b.ijabid2 = {$value} and b.iusulanid!={$post->app_t_usulan_pegawai_iusulanid} 
 					and b.istatus2 != 2 and b.ispelatihan=0 and b.itipe = 0 and a.iunorid='{$iunorid}' and a.istatus !=7 
 					and a.ctahun = '{$this->session->settahun}'";
-				//echo $sql;exit;
 				$row = $this->db->query($sql)->row();
 				if ( $row ) {
 					$data['status']  = false;
@@ -1127,7 +1109,6 @@ class T_usulan_daftar extends MX_Controller {
 			a.cgolid as golid, (select concat(pangkat, ', ',nama) from kepeg_m_golongan where id = a.cgolid) as nama_pangkat 
 		    from kepeg_m_pegawai a LEFT JOIN app_t_usulan_pegawai c ON a.cnip = c.cnip {$add_filter}
   			where c.inoskid != 0 and c.inoskid IS NOT NULL and c.isnonaktif = 0 {$add_filter3} {$add_filter2}";
-		//echo $sql;exit;
 		$line = $this->db->query($sql)->row();
 		$data['name']  = ucwords(trim(strtolower($line->nama)));
 		$data['nip']   = trim($line->nip);
@@ -1160,7 +1141,6 @@ class T_usulan_daftar extends MX_Controller {
   			ORDER BY a.vname ASC";// and b.\"EXPIRED_DATE\" IS NULL
 		
 
-		//echo $sql;exit;
 		$query = $this->db->query($sql);
 		if ( $query ) {
 		  //print_r($query->result_array());

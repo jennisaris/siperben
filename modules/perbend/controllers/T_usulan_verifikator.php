@@ -554,7 +554,6 @@ class T_usulan_verifikator extends MX_Controller {
     }
 
 	function save_verifikasi1() {
-        //print_r($_POST);
         //exit;
 
 		$istatus = 'istatus';
@@ -754,9 +753,6 @@ class T_usulan_verifikator extends MX_Controller {
     		}
         }
 
-        //print_r($query);
-		//print_r($query2);
-		//print_r($query3);
         //exit;
 
 		$this->db->trans_start();

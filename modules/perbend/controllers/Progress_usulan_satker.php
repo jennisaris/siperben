@@ -108,7 +108,6 @@ class Progress_usulan_satker extends MX_Controller {
   		$sql = "Select id, ijns, iunorid, cnousul, dtglusul, istatusid, tcreated, ijnsprubhnid, istatus 
 		  		from app_t_usulan where ijns = 1  {$qq} 
 				and ctahun = '{$this->session->settahun}'"; //and istatus != 7
-		//echo $sql;exit;
   		
   		if (!$this->session->superuser) {
   		  $orgs = [];
@@ -120,7 +119,6 @@ class Progress_usulan_satker extends MX_Controller {
   		  $sql .=" and iunorid in ({$orgs})";
   		}
   		
-  			//echo $sql;exit;
     		$query = $this->db->query($sql);
     
 		if ( !$reports ) {

@@ -9,6 +9,8 @@
     var color_success = '#078236';
     var color_failed  = '#940d0d';
 
+
+
     /*setInterval(async () => {
         const result = await checkOnlineStatus();
         const statusDisplay = document.getElementById("network_status");
@@ -16,112 +18,113 @@
     }, 3000); // probably too often, try 30000 for every 30 seconds*/
 
     function getHTML2(url_, kriteria, page) {
-	    return $.ajax({
-		    type: 'POST',
-		    url: url_+'/'+page,
-		    data:kriteria,
-		    async: false
-
-	    }).responseText
+        var request_url = (typeof page !== 'undefined' && page !== null && page !== '') ? url_+'/'+page : url_;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', request_url, false);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        var data_to_send = null;
+        if (kriteria) {
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            if (typeof kriteria === 'object') {
+                data_to_send = $.param(kriteria);
+            } else {
+                data_to_send = kriteria;
+            }
+        }
+        try {
+            xhr.send(data_to_send);
+        } catch (e) {
+            console.error("XMLHttpRequest failed: ", e);
+        }
+        return xhr.responseText;
     }
 
     function getHTML3(url_, kriteria, page) {
-      var btn_save_label = $('.btn_save').html();
-	    return $.ajax({
-		    type: 'POST',
-		    url: url_+'/'+page,
-		    data:kriteria,
-		    async: false,
-		    beforeSend: function() {
-                // alert('sending data');
-                // do some loading options
-			    //alert('test');
-			    
-                if ( isloading==true ) $("#divLoading").addClass('show');
-                if ( !debug ) {
-                    $('button').attr('disabled', true);
-                    $('.btn_save').html("<i class='fas fa-cog fa-spin'> </i> Mohon Tunggu...");
-                }
-            },
-            success: function(data) {
-            	hasil = data;
-            	if ( hasil == '' ) {
-            		bootbox.alert('Sesi anda sudah habis. Silahkan login kembali. ');
-            		if ( !debug ) location.reload(true);
-            	}
-                if ( isloading==true ) $("#divLoading").removeClass('show');
-			    if ( !debug ) {
-				    $('button').removeAttr('disabled');
-				    //$('.btn_save').html("<i class='fa fa-save' aria-hidden='true'> </i> Simpan");
-				    $('.btn_save').html(btn_save_label);
-			    }
-            },
-
-            error: function(xhr, status, error) {
-                bootbox.alert(xhr.responseText); // error occur
-			    if ( !debug ){
-				    $('button').removeAttr('disabled');
-				    //$('.btn_save').html("<i class='fa fa-save' aria-hidden='true'> </i> Simpan");
-				    $('.btn_save').html(btn_save_label);
-			    }
+        var btn_save_label = $('.btn_save').html();
+        var request_url = (typeof page !== 'undefined' && page !== null && page !== '') ? url_+'/'+page : url_;
+        if (typeof isloading !== 'undefined' && isloading == true) {
+            $("#divLoading").addClass('show');
+        }
+        if (typeof debug !== 'undefined' && !debug) {
+            $('button').attr('disabled', true);
+            $('.btn_save').html("<i class='fas fa-cog fa-spin'> </i> Mohon Tunggu...");
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', request_url, false);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        var data_to_send = null;
+        if (kriteria) {
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            if (typeof kriteria === 'object') {
+                data_to_send = $.param(kriteria);
+            } else {
+                data_to_send = kriteria;
             }
-	    }).responseText
+        }
+        try {
+            xhr.send(data_to_send);
+        } catch (e) {
+            console.error("XMLHttpRequest failed: ", e);
+        }
+        var hasil = xhr.responseText;
+        if (hasil == '') {
+            bootbox.alert('Sesi anda sudah habis. Silahkan login kembali. ');
+            if (typeof debug !== 'undefined' && !debug) {
+                location.reload(true);
+            }
+        }
+        if (typeof isloading !== 'undefined' && isloading == true) {
+            $("#divLoading").removeClass('show');
+        }
+        if (typeof debug !== 'undefined' && !debug) {
+            $('button').removeAttr('disabled');
+            $('.btn_save').html(btn_save_label);
+        }
+        return hasil;
     }
 
     function getHTML(url_, kriteria, page, isloading=true) {
-      var btn_save_label = $('.btn_save').html();
-	    var hasil = '';
-        $.ajax({
-		    type: 'POST',
-		    url: url_+'/'+page,
-		    data:kriteria,
-		    async: false,
-		    beforeSend: function() {
-                // alert('sending data');
-                // do some loading options
-		    //	alert('test');
-          if ( isloading==true ) $("#divLoading").addClass('show');
-			    if ( !debug ) {
-				    $('button').attr('disabled', true);
-				    $('.btn_save').html("<i class='fas fa-cog fa-spin'> </i> Mohon Tunggu...");
-			    }
-            },
-            success: function(data) {
-            	//alert('success');
-                //callback(data); // return data in callback
-                //alert(url+'/'+page);
-                //alert(data);
-            	hasil = data;
-            	if ( hasil == '' ) {
-            		bootbox.alert('Sesi anda sudah habis. Silahkan login kembali. ');
-            		if ( !debug ) location.reload(true);
-            	}
-                if ( isloading==true ) $("#divLoading").removeClass('show');
-                if ( !debug ) {
-									    $('button').removeAttr('disabled');
-									    //$('.btn_save').html("<i class='fa fa-save' aria-hidden='true'> </i> Simpan");
-									    $('.btn_save').html(btn_save_label);
-						    }
-            },
-
-            complete: function() {
-            	//alert('complete');
-                // alert('ajax call complete');
-                // success alerts
-			    if ( !debug ) $('button').removeAttr('disabled');
-            },
-
-            error: function(xhr, status, error) {
-                bootbox.alert(xhr.responseText); // error occur
-			    if ( !debug ){
-				    $('button').removeAttr('disabled');
-				    //$('.btn_save').html("<i class='fa fa-save' aria-hidden='true'> </i> Simpan");
-				    $('.btn_save').html(btn_save_label);
-			    }
+        var btn_save_label = $('.btn_save').html();
+        var request_url = (typeof page !== 'undefined' && page !== null && page !== '') ? url_+'/'+page : url_;
+        if (isloading == true) {
+            $("#divLoading").addClass('show');
+        }
+        if (typeof debug !== 'undefined' && !debug) {
+            $('button').attr('disabled', true);
+            $('.btn_save').html("<i class='fas fa-cog fa-spin'> </i> Mohon Tunggu...");
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', request_url, false);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        var data_to_send = null;
+        if (kriteria) {
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            if (typeof kriteria === 'object') {
+                data_to_send = $.param(kriteria);
+            } else {
+                data_to_send = kriteria;
             }
-
-	    });
-       return hasil;
+        }
+        try {
+            xhr.send(data_to_send);
+        } catch (e) {
+            console.error("XMLHttpRequest failed: ", e);
+        }
+        var hasil = xhr.responseText;
+        if (hasil == '') {
+            bootbox.alert('Sesi anda sudah habis. Silahkan login kembali. ');
+            if (typeof debug !== 'undefined' && !debug) {
+                location.reload(true);
+            }
+        }
+        if (isloading == true) {
+            $("#divLoading").removeClass('show');
+        }
+        if (typeof debug !== 'undefined' && !debug) {
+            $('button').removeAttr('disabled');
+            $('.btn_save').html(btn_save_label);
+        }
+        return hasil;
     }
 	
 	function save_confirm(url_, form, pesan, table_id, _ismodal=false, callback, _isOldFashion=false) {

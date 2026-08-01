@@ -167,7 +167,6 @@ class T_alasan_penolakan extends MX_Controller {
 							$this->db->update('app_notification', $datas);
 						
 							//$sql = $this->db->set($datas)->get_compiled_update('app_notification');
-							//echo $sql;exit;
 							//echo 'b';
 							//exit;
 							//
@@ -202,7 +201,6 @@ class T_alasan_penolakan extends MX_Controller {
 			$this->db->where('id', $post->app_t_usulan_pegawai_iusulanid);
 			$this->db->update($this->prefix.'_t_usulan', $new_post);
 			//$sql = $this->db->set($new_post)->get_compiled_update($this->prefix.'_t_usulan');
-			//echo $sql;exit;
 			//echo $this->db->last_query();exit;
 		}
 	}
@@ -284,7 +282,6 @@ class T_alasan_penolakan extends MX_Controller {
 					$this->db->update('app_notification', $datas);
         		
         		//$sql = $this->db->set($datas)->get_compiled_update('app_notification');
-            	//echo $sql;exit;
 			        //echo 'b';
 			        //exit;
 			        //

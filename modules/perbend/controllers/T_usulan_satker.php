@@ -303,29 +303,33 @@ class T_usulan_satker extends MX_Controller {
 		return $html;
 	} */
 
-	function insertBox_app_t_usulan_daftar($name, $params) {
+	function insertBox_app_t_usulan_daftar($name, $params, $satker_code = '') {
+		if (empty($satker_code)) {
+			$satker_code = trim($this->session->username);
+		}
 		$html = "<div id='tab_history'>
 			  </div>";
 			  
 	  	$html .= "<script type='text/javascript'>
 				  $(document).ready(function() {
-					  //tab 1
-					  //alert($('.app_t_usulan_id').val());
-					  url = '".base_url()."perbend/history_pejabat_perbend/index';
+					  var satker = '{$satker_code}';
+					  if ($('#app_t_usulan_iunorid').val()) {
+						  satker = $('#app_t_usulan_iunorid').val();
+					  }
+					  var url = '".base_url()."perbend/history_pejabat_perbend/index/' + satker;
 					  $('#tab_history').html(getHTML(url, '', 0, false));
 				  });
-				  
 				</script>";				
 			  
 	  return $html;	
 	}
 
 	function updateBox_app_t_usulan_daftar($name, $value, $datas, $params) {
-		return $this->insertBox_app_t_usulan_daftar($name,$params);
+		return $this->insertBox_app_t_usulan_daftar($name, $params, $datas->iunorid);
 	}
 
 	function viewBox_app_t_usulan_daftar($name, $value, $datas, $params) {
-		return $this->insertBox_app_t_usulan_daftar($name,$params);
+		return $this->insertBox_app_t_usulan_daftar($name, $params, $datas->iunorid);
 	}
 
   	function searchBox_app_t_usulan_iunorid($name) {
@@ -588,7 +592,6 @@ class T_usulan_satker extends MX_Controller {
 					FROM kepeg_m_pegawai WHERE ckduker2 = '{$post->app_t_usulan_iunorid}' AND cjabid2 IN (1,2,3) 
 					group by cjabid2"; */
 
-			//echo $sql;exit;
 			$this->db->query($sql);
 
 			//update
@@ -666,7 +669,6 @@ class T_usulan_satker extends MX_Controller {
 					FROM app_t_usulan_pegawai b, kepeg_m_pegawai c 
 					where b.cnip = c.cnip and b.iusulanid = {$id}";
 
-			//echo $sql;exit;
 			$rowsP = $this->db->query($sql)->result();
 
 			$norut = 1;
@@ -1217,7 +1219,6 @@ class T_usulan_satker extends MX_Controller {
 						and a.istatusid={$post->app_t_usulan_istatusid} 
 						and a.ijnsprubhnid = '{$post->app_t_usulan_ijnsprubhnid}' 
 						and a.istatus != 7";
-    			//echo $sql;exit;
     			$total = $this->db->query($sql)->row()->total;
     			if ( $total > 0 ) {
     				$data['status']  = false;
@@ -1647,7 +1648,6 @@ class T_usulan_satker extends MX_Controller {
 					where b.cnip = c.cnip and b.iusulanid = {$id} 
 					order by b.ijabid2 asc";
 
-			//echo $sql;exit;
 			$rowsP = $this->db->query($sql)->result();
 
 			$norut = 1;
