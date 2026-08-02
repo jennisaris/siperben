@@ -67,6 +67,8 @@ class Detail_sk_kpa extends MX_Controller {
   			$this->kriteria[$krit] = $this->input->post($k);
   		}
   		$this->kriteria = (object)$this->kriteria;
+
+  		$tab = !empty($this->kriteria->tab) ? $this->kriteria->tab : ($tab_param ?: ($this->input->get('tab', TRUE) ?: 'sudah'));
   		
   		if ($reports) $style='border=1';
   		else $style='';
@@ -77,16 +79,30 @@ class Detail_sk_kpa extends MX_Controller {
   		    $html .= "
   		    <ul class='nav nav-tabs' style='margin-bottom:15px;'>
   		      <li class='{$tab_sudah_active}'>
-  		        <a href='javascript:void(0);' onclick='reload_grid(\"".base_url()."perbend/detail_sk_kpa/lists/0/0/\"+$(\"#q_app_t_usulan_iunorid\").val()+\"?tab=sudah\", \"detail_sk_kpa\");'>
+  		        <a href='javascript:void(0);' onclick='switch_tab_kpa(\"sudah\");'>
   		          <i class='fa fa-check-circle text-success'></i> <strong>Satuan Kerja Sudah Input SK KPA</strong>
   		        </a>
   		      </li>
   		      <li class='{$tab_belum_active}'>
-  		        <a href='javascript:void(0);' onclick='reload_grid(\"".base_url()."perbend/detail_sk_kpa/lists/0/0/\"+$(\"#q_app_t_usulan_iunorid\").val()+\"?tab=belum\", \"detail_sk_kpa\");'>
+  		        <a href='javascript:void(0);' onclick='switch_tab_kpa(\"belum\");'>
   		          <i class='fa fa-exclamation-triangle text-danger'></i> <strong>Satuan Kerja Belum Input SK KPA</strong>
   		        </a>
   		      </li>
-  		    </ul>";
+  		    </ul>
+  		    <script type='text/javascript'>
+  		      if (typeof window.switch_tab_kpa !== 'function') {
+  		        window.switch_tab_kpa = function(t) {
+  		          var \$f = $('#detail_sk_kpa_form_search');
+  		          if (\$f.length === 0) \$f = \$('form');
+  		          if (\$f.find('#q_tab').length === 0) {
+  		            \$f.append('<input type=\"hidden\" name=\"q_tab\" id=\"q_tab\" value=\"' + t + '\">');
+  		          } else {
+  		            \$f.find('#q_tab').val(t);
+  		          }
+  		          reload_grid(\"".base_url()."perbend/detail_sk_kpa/lists\", \"detail_sk_kpa\");
+  		        };
+  		      }
+  		    </script>";
   		}
 
   		if ($tab === 'belum') {
