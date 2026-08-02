@@ -77,18 +77,25 @@ class Detail_sk_kpa extends MX_Controller {
   		    $tab_sudah_active = ($tab === 'sudah' ? 'active' : '');
   		    $tab_belum_active = ($tab === 'belum' ? 'active' : '');
   		    $html .= "
-  		    <ul class='nav nav-tabs' style='margin-bottom:15px;'>
-  		      <li class='{$tab_sudah_active}'>
-  		        <a href='javascript:void(0);' onclick='switch_tab_kpa(\"sudah\");'>
-  		          <i class='fa fa-check-circle text-success'></i> <strong>Satuan Kerja Sudah Input SK KPA</strong>
-  		        </a>
-  		      </li>
-  		      <li class='{$tab_belum_active}'>
-  		        <a href='javascript:void(0);' onclick='switch_tab_kpa(\"belum\");'>
-  		          <i class='fa fa-exclamation-triangle text-danger'></i> <strong>Satuan Kerja Belum Input SK KPA</strong>
-  		        </a>
-  		      </li>
-  		    </ul>
+  		    <div style='margin-bottom:15px; overflow:hidden;'>
+  		      <div class='pull-right'>
+  		        <button class='btn btn-success btn-sm' type='button' onclick='download(\"".base_url()."perbend/detail_sk_kpa/lists/0/1/\"+$(\"#q_app_t_usulan_iunorid\").val()+\"?tab=\"+(\$(\"#q_tab\").val()||\"{$tab}\"));'>
+  		          <i class='fa fa-file-excel-o'></i> Download Excel (".($tab === 'belum' ? 'Belum Input' : 'Sudah Input').")
+  		        </button>
+  		      </div>
+  		      <ul class='nav nav-tabs' style='margin-bottom:0;'>
+  		        <li class='{$tab_sudah_active}'>
+  		          <a href='javascript:void(0);' onclick='switch_tab_kpa(\"sudah\");'>
+  		            <i class='fa fa-check-circle text-success'></i> <strong>Satuan Kerja Sudah Input SK KPA</strong>
+  		          </a>
+  		        </li>
+  		        <li class='{$tab_belum_active}'>
+  		          <a href='javascript:void(0);' onclick='switch_tab_kpa(\"belum\");'>
+  		            <i class='fa fa-exclamation-triangle text-danger'></i> <strong>Satuan Kerja Belum Input SK KPA</strong>
+  		          </a>
+  		        </li>
+  		      </ul>
+  		    </div>
   		    <script type='text/javascript'>
   		      if (typeof window.switch_tab_kpa !== 'function') {
   		        window.switch_tab_kpa = function(t) {
@@ -99,6 +106,7 @@ class Detail_sk_kpa extends MX_Controller {
   		          } else {
   		            \$f.find('#q_tab').val(t);
   		          }
+  		          $('#btn_download').attr('onclick', \"download('\" + \"".base_url()."perbend/detail_sk_kpa/lists/0/1/\" + $('#q_app_t_usulan_iunorid').val() + \"?tab=\" + t + \"')\");
   		          reload_grid(\"".base_url()."perbend/detail_sk_kpa/lists\", \"detail_sk_kpa\");
   		        };
   		      }
