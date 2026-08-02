@@ -45,8 +45,9 @@ class Detail_sk_kpa extends MX_Controller {
 		$this->session->set_userdata($header_controller);
 	}
 	
-	function lists($page_ke=0, $reports=false, $kodeatasan='') {
+	function lists($page_ke=0, $reports=false, $kodeatasan='', $tab_param='') {
   		$html = '';
+  		$tab = $tab_param ?: ($this->input->get('tab', TRUE) ?: ($this->input->post('tab', TRUE) ?: 'sudah'));
   		
   		if ( $page_ke == 0 ) {
   			 $this->session->{$this->table.'_page'} = 1;
@@ -59,173 +60,216 @@ class Detail_sk_kpa extends MX_Controller {
   		}
   		
   		$page = $this->session->{$this->table.'_page'};
-  
   		$offset = ($page - 1) * $this->limit;
-  
+
   		foreach ($_POST as $k=>$v) {			
   			$krit = str_replace("q_", "", $k);
   			$this->kriteria[$krit] = $this->input->post($k);
   		}
   		$this->kriteria = (object)$this->kriteria;
-  		//print_r($this->kriteria);
   		
   		if ($reports) $style='border=1';
   		else $style='';
   		
-  		$html .= "<table {$style} class='table bordered'>";
-		if ( $reports ) {
-			$html .= "<tr>";
-			$html .= "<td colspan='9'><b><u>Unit Utama : ".(empty(trim($kodeatasan)) ? 'ALL' : $this->ar_units[trim($kodeatasan)])."</u></b></td>";
-			$html .= "</tr>";
-		}
-  		$html .= "<tr>";
-  		$html .= "<th>No.</th>";
-  		$html .= "<th>Unit Utama</th>";
-		$html .= "<th>Kode Satker</th>";
-		$html .= "<th>Nama Satker</th>";
-		$html .= "<th>Nomor SK KPA</th>";
-		$html .= "<th>Tanggal SK KPA</th>";
-		$html .= "<th>BPP</th>";
-		$html .= "<th>PPSPM</th>";
-		$html .= "<th>PPK</th>";
-		$html .= "<th>PPABP</th>";
-  		$html .= "</tr>";
-  		
-  		
-  		//$kodeunitutamas = $this->session->kodeunitutamas;
-  		//if (!$reports) $kodeatasan = $this->kriteria->{$this->table.'_iunorid'};
-		
-
-  		$sql = "select a.id, a.cnousul as no_sk, a.dtglusul as tgl_sk,
-				(select nama from app_m_unor 
-				where kode = (select kode_atasan 
-				from app_m_unor where kode = a.iunorid)) as nama_unitutama,
-				a.iunorid, (select nama from app_m_unor 
-				where kode = a.iunorid) as nama_satker,
-				a.cnousul, a.dtglusul 
-				from app_t_usulan a
-				where a.istatus = '7' 
-				and a.ijns = 2 and a.ctahun = '{$this->session->settahun}' 
-				and (select COUNT(*) from app_m_unor where kode=a.iunorid and deleted=0) > 0"; // 
-				
-		if ( !$this->session->isadmin ) {			
-			$sql .= " AND a.iunorid = '".trim($this->session->username)."'";
-		} else {
-			if (empty($kodeatasan)) {
-				if ( empty(trim($this->kriteria->app_t_usulan_iunorid)) ) {
-					$groupids = explode(',', $this->session->groupid);
-						if ( in_array($this->session->sysparam->group_superuser[0], $groupids) ) {
-							$ar_unor = array();
-							foreach($this->getall('', 'app_m_unor', 'kode, nama', ['deleted'=>0]) as $r) {
-								$ar_unor[$r->kode] = $r->nama; 
-							}
-						} else {
-							$ar_unor = $this->session->orgs;
-						}
-
-						foreach($ar_unor as $k=>$v) {
-							$ar_unor_[] = $k; 
-						}
-
-						$ar_unor_ = "'".implode("','", $ar_unor_)."'";
-						$sql .= " AND a.iunorid in ({$ar_unor_})";
-				} else {
-					$ar_unor = array();
-					foreach($this->getall('', 'app_m_unor', 'kode, nama', ['kode_atasan'=>trim($this->kriteria->app_t_usulan_iunorid), 
-					'deleted'=>0]) as $r) {
-						$ar_unor[$r->kode] = $r->nama; 
-					}
-					foreach($ar_unor as $k=>$v) {
-						$ar_unor_[] = $k; 
-					}
-					$ar_unor_ = "'".implode("','", $ar_unor_)."'";
-					$sql .= " AND a.iunorid in ({$ar_unor_})";
-				}
-			} else {
-				$ar_unor = array();
-				foreach($this->getall('', 'app_m_unor', 'kode, nama', ['kode_atasan'=>trim($kodeatasan),'deleted'=>0]) as $r) {
-					$ar_unor[$r->kode] = $r->nama; 
-				}
-				foreach($ar_unor as $k=>$v) {
-					$ar_unor_[] = $k; 
-				}
-				$ar_unor_ = "'".implode("','", $ar_unor_)."'";
-				$sql .= " AND a.iunorid in ({$ar_unor_})";
-			}
-		}
-  		
-		$query = $this->db->query($sql);
-
-		$this->session->jum_rec  = $query->num_rows();
-		$this->session->jum_page = ceil($this->session->jum_rec/$this->limit);
-    
-        if (!$reports) {
-          $sql .= " limit {$this->limit} offset {$offset}";
-    		  $query = $this->db->query($sql);
-        } //else { echo $sql;exit; }
-  		//exit;
-  		
-  		//$m_unor = new M_unor;
-  		
-  		$no = 1;
-  		if ($query) {
-  		  $rows = $query->result();
-  		  if (sizeOf($rows) > 0) {
-  		//foreach($kodeunitutamas as $kode) {
-  		foreach($rows as $kode) {
-        //print_r($orgs);
-		
-			if ( $offset == 0 ) $norut = $no;
-			else $norut = ($no+$offset);
-			
-			/*
-			,
-				(select vname from app_t_usulan_pegawai 
-				where ckduker = a.iunorid and isnonaktif = 0 
-				and ijabid2 = 6 and iusulanid=a.id and cnip is not null and istatus2=1 order by id desc limit 1) as bpp,
-				(select vname from app_t_usulan_pegawai 
-				where ckduker = a.iunorid and isnonaktif = 0 
-				and ijabid2 = 4 and iusulanid=a.id and cnip is not null and istatus2=1 order by id desc limit 1) as ppspm,
-				(select vname from app_t_usulan_pegawai 
-				where ckduker = a.iunorid and isnonaktif = 0 
-				and ijabid2 = 5 and iusulanid=a.id and cnip is not null and istatus2 = 1 order by id desc limit 1) as ppk,
-				(select vname from app_t_usulan_pegawai 
-				where ckduker = a.iunorid and isnonaktif = 0 
-				and ijabid2 = 7 and iusulanid=a.id and cnip is not null 
-				and istatus2 = 1 order by id desc limit 1) as ppabp
-			*/
-				  
-			  $html .= "<tr>";
-			  $html .= "<td valign='top'>".$norut."</td>";
-			  $html .= "<td valign='top'>".$kode->nama_unitutama."</td>";
-			  $html .= "<td valign='top'>".$kode->iunorid."</td>"; 
-			  $html .= "<td valign='top'>".$kode->nama_satker."</td>";
-			  $html .= "<td valign='top'>".$kode->no_sk."</td>";
-			  $html .= "<td valign='top' align='center'>".($kode->tgl_sk != null ? date('d-m-Y', strtotime($kode->tgl_sk)) : '')."</td>";
-			  $html .= "<td valign='top'>".$this->get_list_nama_pemangku($kode->id, 6, $reports)."</td>";
-			  $html .= "<td valign='top'>".$this->get_list_nama_pemangku($kode->id, 4, $reports)."</td>";
-			  $html .= "<td valign='top'>".$this->get_list_nama_pemangku($kode->id, 5, $reports)."</td>";
-			  $html .= "<td valign='top'>".$this->get_list_nama_pemangku($kode->id, 7, $reports)."</td>";
-			  
-			  $html .= "</tr>";
-			  
-			  $no++;
+  		if (!$reports) {
+  		    $tab_sudah_active = ($tab === 'sudah' ? 'active' : '');
+  		    $tab_belum_active = ($tab === 'belum' ? 'active' : '');
+  		    $html .= "
+  		    <ul class='nav nav-tabs' style='margin-bottom:15px;'>
+  		      <li class='{$tab_sudah_active}'>
+  		        <a href='javascript:void(0);' onclick='reload_grid(\"".base_url()."perbend/detail_sk_kpa/lists/0/0/\"+$(\"#q_app_t_usulan_iunorid\").val()+\"?tab=sudah\", \"detail_sk_kpa\");'>
+  		          <i class='fa fa-check-circle text-success'></i> <strong>Satuan Kerja Sudah Input SK KPA</strong>
+  		        </a>
+  		      </li>
+  		      <li class='{$tab_belum_active}'>
+  		        <a href='javascript:void(0);' onclick='reload_grid(\"".base_url()."perbend/detail_sk_kpa/lists/0/0/\"+$(\"#q_app_t_usulan_iunorid\").val()+\"?tab=belum\", \"detail_sk_kpa\");'>
+  		          <i class='fa fa-exclamation-triangle text-danger'></i> <strong>Satuan Kerja Belum Input SK KPA</strong>
+  		        </a>
+  		      </li>
+  		    </ul>";
   		}
-  		
+
+  		if ($tab === 'belum') {
+  		    $html .= "<table {$style} class='table bordered'>";
+  		    if ( $reports ) {
+  		        $html .= "<tr><td colspan='5'><b><u>Laporan Satuan Kerja Belum Input SK KPA | Unit Utama : ".(empty(trim($kodeatasan)) ? 'ALL' : $this->ar_units[trim($kodeatasan)])."</u></b></td></tr>";
+  		    }
+  		    $html .= "<tr>";
+  		    $html .= "<th style='width:50px;' class='text-center'>No.</th>";
+  		    $html .= "<th>Unit Utama</th>";
+  		    $html .= "<th style='width:120px;'>Kode Satker</th>";
+  		    $html .= "<th>Nama Satker</th>";
+  		    $html .= "<th style='width:180px;' class='text-center'>Status Penginputan</th>";
+  		    $html .= "</tr>";
+
+  		    $sql = "SELECT u.kode AS iunorid, u.nama AS nama_satker,
+  		            COALESCE((SELECT nama FROM app_m_unor WHERE kode = u.kode_atasan), 'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi') AS nama_unitutama
+  		            FROM app_m_unor u
+  		            WHERE (u.deleted = 0 OR u.deleted IS NULL)
+  		              AND u.nama IS NOT NULL AND TRIM(u.nama) <> ''
+  		              AND u.kode NOT IN (
+  		                  SELECT DISTINCT a.iunorid 
+  		                  FROM app_t_usulan a 
+  		                  WHERE a.ijns = 2 AND a.ctahun = '{$this->session->settahun}'
+  		              )";
+  		    
+  		    if (!empty($this->kriteria->app_t_usulan_iunorid)) {
+  		        $sql .= " AND (u.kode_atasan = '".trim($this->kriteria->app_t_usulan_iunorid)."' OR u.kode = '".trim($this->kriteria->app_t_usulan_iunorid)."')";
+  		    } elseif (!empty($kodeatasan)) {
+  		        $sql .= " AND (u.kode_atasan = '".trim($kodeatasan)."' OR u.kode = '".trim($kodeatasan)."')";
+  		    }
+  		    $sql .= " ORDER BY nama_unitutama ASC, u.nama ASC";
+
+  		    $query = $this->db->query($sql);
+  		    $this->session->jum_rec  = $query->num_rows();
+  		    $this->session->jum_page = ceil($this->session->jum_rec/$this->limit);
+
+  		    if (!$reports) {
+  		        $sql .= " limit {$this->limit} offset {$offset}";
+  		        $query = $this->db->query($sql);
+  		    }
+
+  		    $no = 1;
+  		    if ($query && $query->num_rows() > 0) {
+  		        foreach ($query->result() as $kode) {
+  		            $norut = ($offset == 0) ? $no : ($no + $offset);
+  		            $html .= "<tr>";
+  		            $html .= "<td valign='top' align='center'>".$norut."</td>";
+  		            $html .= "<td valign='top'>".html_escape($kode->nama_unitutama)."</td>";
+  		            $html .= "<td valign='top'>".html_escape($kode->iunorid)."</td>";
+  		            $html .= "<td valign='top'>".html_escape($kode->nama_satker)."</td>";
+  		            $html .= "<td valign='top' align='center'><span class='label label-danger'><i class='fa fa-times-circle'></i> Belum Input SK KPA</span></td>";
+  		            $html .= "</tr>";
+  		            $no++;
+  		        }
+  		    } else {
+  		        $html .= "<tr><td colspan='5' class='text-center'><b>Seluruh Satuan Kerja sudah menginput SK KPA</b></td></tr>";
+  		    }
+
+  		    $html .= "</table>";
+  		    $pagination = $this->_ajaxPagination(base_url()."perbend/detail_sk_kpa/lists", $this->kriteria, 'detail_sk_kpa');
   		} else {
-  		  $html .= "<tr><td colspan='6'><b>Data tidak ditemukan</b></td></tr>";
-  		}
-	}
-  		
-  		$html .= "</table>";
-  		$pagination = $this->_ajaxPagination(base_url()."perbend/detail_sk_kpa/lists", $this->kriteria, 'detail_sk_kpa');
-  		if ($reports) {
-  		  $filename = "bendahara_" . date('Ymd') . ".xls";
+  		    // Tab 'sudah' (default)
+  		    $html .= "<table {$style} class='table bordered'>";
+  		    if ( $reports ) {
+  		        $html .= "<tr>";
+  		        $html .= "<td colspan='10'><b><u>Unit Utama : ".(empty(trim($kodeatasan)) ? 'ALL' : $this->ar_units[trim($kodeatasan)])."</u></b></td>";
+  		        $html .= "</tr>";
+  		    }
+  		    $html .= "<tr>";
+  		    $html .= "<th>No.</th>";
+  		    $html .= "<th>Unit Utama</th>";
+  		    $html .= "<th>Kode Satker</th>";
+  		    $html .= "<th>Nama Satker</th>";
+  		    $html .= "<th>Nomor SK KPA</th>";
+  		    $html .= "<th>Tanggal SK KPA</th>";
+  		    $html .= "<th>BPP</th>";
+  		    $html .= "<th>PPSPM</th>";
+  		    $html .= "<th>PPK</th>";
+  		    $html .= "<th>PPABP</th>";
+  		    $html .= "</tr>";
 
-        header("Content-Disposition: attachment; filename=\"$filename\"");
-        header("Content-Type: application/vnd.ms-excel");
-        echo $html;
-        exit;
+  		    $sql = "select a.id, a.cnousul as no_sk, a.dtglusul as tgl_sk,
+  		            (select nama from app_m_unor 
+  		            where kode = (select kode_atasan 
+  		            from app_m_unor where kode = a.iunorid)) as nama_unitutama,
+  		            a.iunorid, (select nama from app_m_unor 
+  		            where kode = a.iunorid) as nama_satker,
+  		            a.cnousul, a.dtglusul 
+  		            from app_t_usulan a
+  		            where a.istatus = '7' 
+  		            and a.ijns = 2 and a.ctahun = '{$this->session->settahun}' 
+  		            and (select COUNT(*) from app_m_unor where kode=a.iunorid and deleted=0) > 0";
+  		            
+  		    if ( !$this->session->isadmin ) {			
+  		        $sql .= " AND a.iunorid = '".trim($this->session->username)."'";
+  		    } else {
+  		        if (empty($kodeatasan)) {
+  		            if ( empty(trim($this->kriteria->app_t_usulan_iunorid)) ) {
+  		                $groupids = explode(',', $this->session->groupid);
+  		                if ( in_array($this->session->sysparam->group_superuser[0], $groupids) ) {
+  		                    $ar_unor = array();
+  		                    foreach($this->getall('', 'app_m_unor', 'kode, nama', ['deleted'=>0]) as $r) {
+  		                        $ar_unor[$r->kode] = $r->nama; 
+  		                    }
+  		                } else {
+  		                    $ar_unor = $this->session->orgs;
+  		                }
+
+  		                foreach($ar_unor as $k=>$v) {
+  		                    $ar_unor_[] = $k; 
+  		                }
+
+  		                $ar_unor_ = "'".implode("','", $ar_unor_)."'";
+  		                $sql .= " AND a.iunorid in ({$ar_unor_})";
+  		            } else {
+  		                $ar_unor = array();
+  		                foreach($this->getall('', 'app_m_unor', 'kode, nama', ['kode_atasan'=>trim($this->kriteria->app_t_usulan_iunorid), 
+  		                'deleted'=>0]) as $r) {
+  		                    $ar_unor[$r->kode] = $r->nama; 
+  		                }
+  		                foreach($ar_unor as $k=>$v) {
+  		                    $ar_unor_[] = $k; 
+  		                }
+  		                $ar_unor_ = "'".implode("','", $ar_unor_)."'";
+  		                $sql .= " AND a.iunorid in ({$ar_unor_})";
+  		            }
+  		        } else {
+  		            $ar_unor = array();
+  		            foreach($this->getall('', 'app_m_unor', 'kode, nama', ['kode_atasan'=>trim($kodeatasan),'deleted'=>0]) as $r) {
+  		                $ar_unor[$r->kode] = $r->nama; 
+  		            }
+  		            foreach($ar_unor as $k=>$v) {
+  		                $ar_unor_[] = $k; 
+  		            }
+  		            $ar_unor_ = "'".implode("','", $ar_unor_)."'";
+  		            $sql .= " AND a.iunorid in ({$ar_unor_})";
+  		        }
+  		    }
+  		    
+  		    $query = $this->db->query($sql);
+  		    $this->session->jum_rec  = $query->num_rows();
+  		    $this->session->jum_page = ceil($this->session->jum_rec/$this->limit);
+
+  		    if (!$reports) {
+  		        $sql .= " limit {$this->limit} offset {$offset}";
+  		        $query = $this->db->query($sql);
+  		    }
+
+  		    $no = 1;
+  		    if ($query && $query->num_rows() > 0) {
+  		        $rows = $query->result();
+  		        foreach($rows as $kode) {
+  		            $norut = ($offset == 0) ? $no : ($no+$offset);
+  		            $html .= "<tr>";
+  		            $html .= "<td valign='top'>".$norut."</td>";
+  		            $html .= "<td valign='top'>".$kode->nama_unitutama."</td>";
+  		            $html .= "<td valign='top'>".$kode->iunorid."</td>"; 
+  		            $html .= "<td valign='top'>".$kode->nama_satker."</td>";
+  		            $html .= "<td valign='top'>".$kode->no_sk."</td>";
+  		            $html .= "<td valign='top' align='center'>".($kode->tgl_sk != null ? date('d-m-Y', strtotime($kode->tgl_sk)) : '')."</td>";
+  		            $html .= "<td valign='top'>".$this->get_list_nama_pemangku($kode->id, 6, $reports)."</td>";
+  		            $html .= "<td valign='top'>".$this->get_list_nama_pemangku($kode->id, 4, $reports)."</td>";
+  		            $html .= "<td valign='top'>".$this->get_list_nama_pemangku($kode->id, 5, $reports)."</td>";
+  		            $html .= "<td valign='top'>".$this->get_list_nama_pemangku($kode->id, 7, $reports)."</td>";
+  		            $html .= "</tr>";
+  		            $no++;
+  		        }
+  		    } else {
+  		        $html .= "<tr><td colspan='10'><b>Data tidak ditemukan</b></td></tr>";
+  		    }
+
+  		    $html .= "</table>";
+  		    $pagination = $this->_ajaxPagination(base_url()."perbend/detail_sk_kpa/lists", $this->kriteria, 'detail_sk_kpa');
+  		}
+
+  		if ($reports) {
+  		    $prefix_file = ($tab === 'belum') ? "satker_belum_input_sk_kpa_" : "sk_kpa_";
+  		    $filename = $prefix_file . date('Ymd') . ".xls";
+  		    header("Content-Disposition: attachment; filename=\"$filename\"");
+  		    header("Content-Type: application/vnd.ms-excel");
+  		    echo $html;
+  		    exit;
   		}
   		$hasil['html'] = array('html'=>$html);
   		$hasil['pagination'] = $pagination;
@@ -418,6 +462,7 @@ class Detail_sk_kpa extends MX_Controller {
   
   function manipulate_list_button($buttons) {
     unset($buttons);
+    $tab = $this->input->get('tab', TRUE) ?: 'sudah';
     $input = "<div class='modal fade' id='myModal_browse' role='dialog' aria-labelledby='myModalLabel' data-backdrop='static' data-keyboard='false'>
 							<div class='modal-dialog' role='document' style='width:75%;'>
 							<div class='modal-content'>
@@ -435,7 +480,7 @@ class Detail_sk_kpa extends MX_Controller {
 						
 		$buttons['modal'] = $input;
 		
-		$buttons['download'] = "<button class='btn btn-primary' type='button' name='btn_download' id='btn_download' onclick='download(\"".base_url()."perbend/detail_sk_kpa/lists/0/1/\"+$(\"#q_app_t_usulan_iunorid\").val());'><i class='fas fa-download'></i> Download</button>";
+		$buttons['download'] = "<button class='btn btn-primary' type='button' name='btn_download' id='btn_download' onclick='download(\"".base_url()."perbend/detail_sk_kpa/lists/0/1/\"+$(\"#q_app_t_usulan_iunorid\").val()+\"?tab=".$tab."\");'><i class='fas fa-download'></i> Download</button>";
 		
 		
 		$buttons['kembali']  = "<button type='button' class='btn btn-default' data-dismiss='modal'

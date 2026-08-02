@@ -5,13 +5,13 @@ class Approval_pengguna extends MX_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->database();
-        $this->load->helper(array('url','html'));
+        $this->load->helper(array('url','html','audit_log'));
         $this->load->library(array('session','email'));
     }
 
     public function index() {
         $this->ensure_login();
-        $rows = $this->db->order_by('created_at','DESC')->get('app_t_registrasi_kpa')->result();
+        $rows = $this->db->order_by('created_at','DESC')->get('app_t_registrasi')->result();
         $active_operator = array();
         foreach ($rows as $r) {
             $satker = !empty($r->satker_kode) ? $r->satker_kode : $this->extract_satker_code($r->satuan_kerja);
@@ -29,29 +29,77 @@ class Approval_pengguna extends MX_Controller {
 
     public function approve($id) {
         $this->ensure_login();
-        $r = $this->db->where('id',(int)$id)->get('app_t_registrasi_kpa')->row();
+        $r = $this->db->where('id',(int)$id)->get('app_t_registrasi')->row();
         if (!$r || $r->status !== 'baru') { $this->flash_back('Data registrasi tidak ditemukan atau sudah diproses.'); return; }
         $res = $this->approve_row($r);
+        log_activity('APPROVE_REGISTRASI', 'Approval_pengguna', 'Approve ID #' . $id . ' Satker: ' . $r->satker_kode);
         $this->flash_back($res);
     }
 
     public function approve_all() {
         $this->ensure_login();
-        $rows = $this->db->where('status','baru')->order_by('created_at','ASC')->get('app_t_registrasi_kpa')->result();
+        $rows = $this->db->where('status','baru')->order_by('created_at','ASC')->get('app_t_registrasi')->result();
         $ok=0; $skip=0; $msgs=array();
         foreach ($rows as $r) {
             $res = $this->approve_row($r, true);
             if (strpos($res,'Berhasil') !== false) $ok++; else { $skip++; $msgs[] = '#'.$r->id.': '.$res; }
         }
+        log_activity('APPROVE_ALL_REGISTRASI', 'Approval_pengguna', 'Approve semua registrasi baru. Berhasil: ' . $ok . ', Gagal/Skip: ' . $skip);
         $this->flash_back('Approve semua selesai. Berhasil: '.$ok.', dilewati/gagal: '.$skip.'. '.implode(' | ', array_slice($msgs,0,5)));
     }
 
     public function reject($id) {
         $this->ensure_login();
-        $this->db->where('id',(int)$id)->where('status','baru')->update('app_t_registrasi_kpa', array(
+        $this->db->where('id',(int)$id)->where('status','baru')->update('app_t_registrasi', array(
             'status'=>'ditolak', 'rejected_at'=>date('Y-m-d H:i:s'), 'rejected_by'=>$this->session->userdata('username'), 'updated_at'=>date('Y-m-d H:i:s')
         ));
+        log_activity('REJECT_REGISTRASI', 'Approval_pengguna', 'Menolak registrasi ID #' . $id);
         $this->flash_back('Registrasi ditolak.');
+    }
+
+    public function resend_email($id) {
+        $this->ensure_login();
+        $r = $this->db->where('id', (int)$id)->get('app_t_registrasi')->row();
+        if (!$r || $r->status !== 'disetujui' || empty($r->password_plain)) {
+            $this->flash_back('Data registrasi disetujui dengan password tidak ditemukan.');
+            return;
+        }
+        $satker = $r->satker_kode ?: $this->extract_satker_code($r->satuan_kerja);
+        $email_error = $this->send_password_email($r, $satker, $r->password_plain);
+        $now = date('Y-m-d H:i:s');
+        $this->db->where('id', $r->id)->update('app_t_registrasi', array(
+            'email_sent_at' => $email_error ? null : $now,
+            'email_error' => $email_error,
+            'updated_at' => $now
+        ));
+        log_activity('RESEND_EMAIL', 'Approval_pengguna', 'Kirim ulang email password ID #' . $id . ' Status: ' . ($email_error ? 'Gagal' : 'Sukses'));
+        if ($email_error) {
+            $this->flash_back('Pengiriman ulang email gagal: ' . $email_error);
+        } else {
+            $this->flash_back('Email berisi akun & password berhasil dikirim ke ' . $r->email);
+        }
+    }
+
+    public function download_pdf($id) {
+        $this->ensure_login();
+        $r = $this->db->where('id', (int)$id)->get('app_t_registrasi')->row();
+        if (!$r || empty($r->surat_persetujuan_kpa_file)) {
+            show_404();
+            return;
+        }
+        $file_path = FCPATH . ltrim($r->surat_persetujuan_kpa_file, '/\\');
+        if (!file_exists($file_path)) {
+            show_404();
+            return;
+        }
+        $filename = !empty($r->surat_persetujuan_kpa_original) ? $r->surat_persetujuan_kpa_original : basename($file_path);
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="' . $filename . '"');
+        header('Content-Length: ' . filesize($file_path));
+        header('Cache-Control: private, max-age=0, must-revalidate');
+        header('Pragma: public');
+        readfile($file_path);
+        exit;
     }
 
     private function approve_row($r, $silent=false) {
@@ -91,7 +139,7 @@ class Approval_pengguna extends MX_Controller {
             $user_id = $this->db->insert_id();
         }
         $email_error = $this->send_password_email($r, $satker, $password);
-        $this->db->where('id',$r->id)->update('app_t_registrasi_kpa', array(
+        $this->db->where('id',$r->id)->update('app_t_registrasi', array(
             'satker_kode'=>$satker,
             'status'=>'disetujui',
             'password_plain'=>$password,
@@ -146,7 +194,13 @@ class Approval_pengguna extends MX_Controller {
         $msg .= '<p>Username/Kode Satker: <strong>'.html_escape($satker).'</strong><br>Password: <strong>'.html_escape($password).'</strong></p>';
         $msg .= '<p>Silakan login dan segera ubah password setelah masuk.</p>';
         $this->email->message($msg);
-        if (!$this->email->send(false)) return strip_tags($this->email->print_debugger(array('headers')));
+        if (!$this->email->send(false)) {
+            $raw_dbg = strip_tags($this->email->print_debugger(array('headers')));
+            if (preg_match('/(Failed to authenticate|authentication failure|Could not connect|SMTP server error)/i', $raw_dbg, $m)) {
+                return 'Gagal dikirim (' . $m[1] . ')';
+            }
+            return 'Gagal dikirim (periksa SMTP sysparam)';
+        }
         return null;
     }
 

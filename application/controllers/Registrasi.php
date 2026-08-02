@@ -7,7 +7,7 @@ class Registrasi extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->database();
-        $this->load->helper(array('url'));
+        $this->load->helper(array('url','audit_log'));
         $this->load->library(array('upload','session'));
     }
 
@@ -24,6 +24,7 @@ class Registrasi extends CI_Controller {
         if ($this->input->method(TRUE) === 'POST') {
             $result = $this->handle_submit();
             if (!empty($result['success'])) {
+                log_activity('SUBMIT_REGISTRASI', 'Registrasi', 'Registrasi operator baru dikirim ID #' . $result['registration_id']);
                 $this->session->set_flashdata('registrasi_success', 'Registrasi berhasil dikirim. Silakan tunggu approval admin. Password akan dikirim ke email setelah disetujui.');
                 redirect(base_url().'privileges/user_authentication?registrasi=success');
                 return;
@@ -135,7 +136,7 @@ class Registrasi extends CI_Controller {
             'ip_address' => $this->input->ip_address(),
             'user_agent' => substr((string)$this->input->user_agent(), 0, 255),
         );
-        $this->db->insert('app_t_registrasi_kpa', $insert);
+        $this->db->insert('app_t_registrasi', $insert);
         $id = $this->db->insert_id();
 
         return array('errors' => array(), 'old' => array(), 'success' => true, 'registration_id' => $id);
@@ -165,7 +166,7 @@ class Registrasi extends CI_Controller {
     private function pending_registration_exists($satker_kode, $nip) {
         if (!$satker_kode) return false;
         return $this->db
-            ->from('app_t_registrasi_kpa')
+            ->from('app_t_registrasi')
             ->where('satker_kode', $satker_kode)
             ->where('nip <>', $nip)
             ->where('status', 'baru')
