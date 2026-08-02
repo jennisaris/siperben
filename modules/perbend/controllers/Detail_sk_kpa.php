@@ -114,27 +114,33 @@ class Detail_sk_kpa extends MX_Controller {
   		}
 
   		if ($tab === 'belum') {
+  		    $tahun = !empty($this->session->settahun) ? $this->session->settahun : date('Y');
   		    $html .= "<table {$style} class='table bordered'>";
   		    if ( $reports ) {
-  		        $html .= "<tr><td colspan='5'><b><u>Laporan Satuan Kerja Belum Input SK KPA | Unit Utama : ".(empty(trim($kodeatasan)) ? 'ALL' : $this->ar_units[trim($kodeatasan)])."</u></b></td></tr>";
+  		        $html .= "<tr><td colspan='6'><b><u>Laporan Satuan Kerja Belum Lengkap / Belum Input SK KPA (Pejabat Perbendaharaan Lainnya) Tahun {$tahun} | Unit Utama : ".(empty(trim($kodeatasan)) ? 'ALL' : $this->ar_units[trim($kodeatasan)])."</u></b></td></tr>";
   		    }
   		    $html .= "<tr>";
-  		    $html .= "<th style='width:50px;' class='text-center'>No.</th>";
+  		    $html .= "<th style='width:40px;' class='text-center'>No.</th>";
   		    $html .= "<th>Unit Utama</th>";
-  		    $html .= "<th style='width:120px;'>Kode Satker</th>";
+  		    $html .= "<th style='width:110px;'>Kode Satker</th>";
   		    $html .= "<th>Nama Satker</th>";
-  		    $html .= "<th style='width:180px;' class='text-center'>Status Penginputan</th>";
+  		    $html .= "<th style='width:220px;'>Rincian Terinput (Tahun {$tahun})</th>";
+  		    $html .= "<th style='width:200px;' class='text-center'>Status Kelengkapan</th>";
   		    $html .= "</tr>";
 
   		    $sql = "SELECT u.kode AS iunorid, u.nama AS nama_satker,
-  		            COALESCE((SELECT nama FROM app_m_unor WHERE kode = u.kode_atasan), 'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi') AS nama_unitutama
+  		            COALESCE((SELECT nama FROM app_m_unor WHERE kode = u.kode_atasan), 'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi') AS nama_unitutama,
+  		            (SELECT COUNT(DISTINCT p.cnip) FROM app_t_usulan_pegawai p JOIN app_t_usulan us ON p.iusulanid = us.id WHERE us.iunorid = u.kode AND us.ctahun = '{$tahun}' AND p.ijabid2 = 5 AND (p.isnonaktif = 0 OR p.isnonaktif IS NULL)) AS has_ppk,
+  		            (SELECT COUNT(DISTINCT p.cnip) FROM app_t_usulan_pegawai p JOIN app_t_usulan us ON p.iusulanid = us.id WHERE us.iunorid = u.kode AND us.ctahun = '{$tahun}' AND p.ijabid2 = 4 AND (p.isnonaktif = 0 OR p.isnonaktif IS NULL)) AS has_ppspm,
+  		            (SELECT COUNT(DISTINCT p.cnip) FROM app_t_usulan_pegawai p JOIN app_t_usulan us ON p.iusulanid = us.id WHERE us.iunorid = u.kode AND us.ctahun = '{$tahun}' AND p.ijabid2 = 6 AND (p.isnonaktif = 0 OR p.isnonaktif IS NULL)) AS has_bpp,
+  		            (SELECT COUNT(DISTINCT p.cnip) FROM app_t_usulan_pegawai p JOIN app_t_usulan us ON p.iusulanid = us.id WHERE us.iunorid = u.kode AND us.ctahun = '{$tahun}' AND p.ijabid2 = 7 AND (p.isnonaktif = 0 OR p.isnonaktif IS NULL)) AS has_ppabp
   		            FROM app_m_unor u
   		            WHERE (u.deleted = 0 OR u.deleted IS NULL)
   		              AND u.nama IS NOT NULL AND TRIM(u.nama) <> ''
-  		              AND u.kode NOT IN (
-  		                  SELECT DISTINCT a.iunorid 
-  		                  FROM app_t_usulan a 
-  		                  WHERE a.ijns = 2 AND a.ctahun = '{$this->session->settahun}'
+  		              AND (
+  		                  (SELECT COUNT(DISTINCT p.cnip) FROM app_t_usulan_pegawai p JOIN app_t_usulan us ON p.iusulanid = us.id WHERE us.iunorid = u.kode AND us.ctahun = '{$tahun}' AND p.ijabid2 = 5 AND (p.isnonaktif = 0 OR p.isnonaktif IS NULL)) = 0
+  		                  OR
+  		                  (SELECT COUNT(DISTINCT p.cnip) FROM app_t_usulan_pegawai p JOIN app_t_usulan us ON p.iusulanid = us.id WHERE us.iunorid = u.kode AND us.ctahun = '{$tahun}' AND p.ijabid2 = 4 AND (p.isnonaktif = 0 OR p.isnonaktif IS NULL)) = 0
   		              )";
   		    
   		    if (!empty($this->kriteria->app_t_usulan_iunorid)) {
@@ -157,17 +163,51 @@ class Detail_sk_kpa extends MX_Controller {
   		    if ($query && $query->num_rows() > 0) {
   		        foreach ($query->result() as $kode) {
   		            $norut = ($offset == 0) ? $no : ($no + $offset);
+  		            $total_pejabat = $kode->has_ppk + $kode->has_ppspm + $kode->has_bpp + $kode->has_ppabp;
+
+  		            if ($reports) {
+  		                if ($total_pejabat == 0) {
+  		                    $status_str = "Belum Input Sama Sekali";
+  		                } elseif ($kode->has_ppk == 0 && $kode->has_ppspm == 0) {
+  		                    $status_str = "Belum Ada PPK & PPSPM";
+  		                } elseif ($kode->has_ppk == 0) {
+  		                    $status_str = "Belum Lengkap (Kurang PPK)";
+  		                } else {
+  		                    $status_str = "Belum Lengkap (Kurang PPSPM)";
+  		                }
+  		                $rincian_str = "PPK: {$kode->has_ppk} | PPSPM: {$kode->has_ppspm} | BPP: {$kode->has_bpp} | PPABP: {$kode->has_ppabp}";
+  		            } else {
+  		                if ($total_pejabat == 0) {
+  		                    $status_badge = "<span class='label label-danger'><i class='fa fa-times-circle'></i> Belum Input Sama Sekali</span>";
+  		                } elseif ($kode->has_ppk == 0 && $kode->has_ppspm == 0) {
+  		                    $status_badge = "<span class='label label-danger'><i class='fa fa-exclamation-triangle'></i> Kurang PPK & PPSPM</span>";
+  		                } elseif ($kode->has_ppk == 0) {
+  		                    $status_badge = "<span class='label label-warning'><i class='fa fa-exclamation-circle'></i> Belum Lengkap (Kurang PPK)</span>";
+  		                } else {
+  		                    $status_badge = "<span class='label label-warning'><i class='fa fa-exclamation-circle'></i> Belum Lengkap (Kurang PPSPM)</span>";
+  		                }
+
+  		                $rincian_arr = array();
+  		                $rincian_arr[] = "PPK: " . ($kode->has_ppk > 0 ? "<strong>{$kode->has_ppk}</strong>" : "<span class='text-danger'>0</span>");
+  		                $rincian_arr[] = "PPSPM: " . ($kode->has_ppspm > 0 ? "<strong>{$kode->has_ppspm}</strong>" : "<span class='text-danger'>0</span>");
+  		                $rincian_arr[] = "BPP: " . $kode->has_bpp;
+  		                $rincian_arr[] = "PPABP: " . $kode->has_ppabp;
+  		                $rincian_str = implode(" | ", $rincian_arr);
+  		                $status_str = $status_badge;
+  		            }
+
   		            $html .= "<tr>";
   		            $html .= "<td valign='top' align='center'>".$norut."</td>";
   		            $html .= "<td valign='top'>".html_escape($kode->nama_unitutama)."</td>";
   		            $html .= "<td valign='top'>".html_escape($kode->iunorid)."</td>";
   		            $html .= "<td valign='top'>".html_escape($kode->nama_satker)."</td>";
-  		            $html .= "<td valign='top' align='center'><span class='label label-danger'><i class='fa fa-times-circle'></i> Belum Input SK KPA</span></td>";
+  		            $html .= "<td valign='top'>".$rincian_str."</td>";
+  		            $html .= "<td valign='top' align='center'>".$status_str."</td>";
   		            $html .= "</tr>";
   		            $no++;
   		        }
   		    } else {
-  		        $html .= "<tr><td colspan='5' class='text-center'><b>Seluruh Satuan Kerja sudah menginput SK KPA</b></td></tr>";
+  		        $html .= "<tr><td colspan='6' class='text-center'><b>Seluruh Satuan Kerja telah melengkapi PPK & PPSPM untuk tahun {$tahun}</b></td></tr>";
   		    }
 
   		    $html .= "</table>";
