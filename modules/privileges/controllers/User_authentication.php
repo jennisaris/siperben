@@ -414,7 +414,21 @@ if ($row->count == 0) {
 						$this->db->where_in('id', $igroupids);
 						$this->db->where('isadmin', 1);
 						$sess_data['isadmin'] = $this->db->get()->row()->isadmin;
-						
+
+						// Cek kelengkapan data registrasi operator
+						$reg = $this->db
+							->from('app_t_registrasi')
+							->group_start()
+								->where('approved_user_id', $r->id)
+								->or_where('satker_kode', $r->username)
+								->or_where('nip', $r->username)
+							->group_end()
+							->where('status', 'disetujui')
+							->order_by('id', 'DESC')
+							->get()
+							->row();
+
+						$sess_data['registration_completed'] = ($reg && !empty($reg->nip) && !empty($reg->nama_lengkap) && !empty($reg->satuan_kerja) && !empty($reg->pangkat_golongan) && !empty($reg->no_hp) && !empty($reg->email));
 
 						//get menu
 						if ( $this->theme == 'sb-admin-2' ) {
@@ -475,7 +489,20 @@ if ($row->count == 0) {
 							$m_unor = new M_unor;
 							$m_unor->getRekursifUnit(trim($username), $orgs);
 						}
-						
+
+						// Jika bukan superuser, tambahkan/pastikan satker dari DAFTAR SATKER.xlsx sesuai unit eselon 1
+						if (!$sess_data['superuser']) {
+							$excel_satkers = get_excel_satkers_by_eselon(trim($username));
+							if (empty($excel_satkers) && !empty($kodeunit)) {
+								$excel_satkers = get_excel_satkers_by_eselon(trim($kodeunit));
+							}
+							if (!empty($excel_satkers)) {
+								foreach ($excel_satkers as $esat) {
+									$orgs[trim($esat)] = trim($esat);
+								}
+							}
+						}
+
 						$sess_data['orgs'] = $orgs;
 						$sess_data['kodeunits'] = $kodeunits;
 						$sess_data['kodeunit'] = $kodeunit;
@@ -531,9 +558,37 @@ if ($row->count == 0) {
 								AND id NOT IN (".$unor_not_in_.") 
 								{$qwhere} 
 								order by id asc";
-						//echo $sql;exit;
 						$kodeunitutamas = $this->db->query($sql)->result();
-						//print_r($kodeunitutamas);exit;
+
+						if (!$sess_data['superuser']) {
+							$excel_eselon_satkers = get_excel_satkers_by_eselon(trim($username));
+							if (empty($excel_eselon_satkers) && !empty($kodeunit)) {
+								$excel_eselon_satkers = get_excel_satkers_by_eselon(trim($kodeunit));
+							}
+							if (!empty($excel_eselon_satkers)) {
+								$str_satkers = implode(',', array_map(array($this->db, 'escape'), $excel_eselon_satkers));
+								$db_satkers = $this->db->query("SELECT id, kode, nama, kode_satker, abbrv FROM kepeg_m_unor WHERE (kode_satker IN ({$str_satkers}) OR kode IN ({$str_satkers})) ORDER BY nama ASC")->result();
+
+								$unique_utamas = array();
+								$seen_codes = array();
+								if (!empty($db_satkers)) {
+									foreach ($db_satkers as $u) {
+										$ksat = !empty($u->kode_satker) ? trim($u->kode_satker) : trim($u->kode);
+										if (!isset($seen_codes[$ksat])) {
+											$seen_codes[$ksat] = true;
+											$full_name = get_excel_satker_name($ksat, $u->nama);
+											$u->nama = $full_name;
+											$u->abbrv = $full_name;
+											$unique_utamas[] = $u;
+										}
+									}
+								}
+								if (!empty($unique_utamas)) {
+									$kodeunitutamas = $unique_utamas;
+								}
+							}
+						}
+
 						$sess_data['kodeunitutamas'] = $kodeunitutamas;
 					} else { 
 						$sess_data['success'] = 2;

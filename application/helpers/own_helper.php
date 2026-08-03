@@ -72,4 +72,321 @@ if ( ! function_exists('write_log')) {
 	    }
     }   
 }
+
+if (!function_exists('get_app_notifications')) {
+    function get_app_notifications() {
+        $CI =& get_instance();
+        if (empty($CI->session->userdata('logged_in'))) {
+            return array();
+        }
+
+        $is_admin = (!empty($CI->session->isadmin) || !empty($CI->session->superuser) || (isset($CI->session->groupid) && $CI->session->groupid == 1));
+        $username = (string)$CI->session->userdata('username');
+        $tahun_berjalan = !empty($CI->session->settahun) ? $CI->session->settahun : date('Y');
+
+        $notifs = array();
+
+        if ($is_admin) {
+            // === SUPERADMIN NOTIFICATIONS ===
+
+            // 1. Progress Usulan Bendahara yang belum selesai selama tahun berjalan
+            //    Mengikuti logika Progress_usulan_satker: ijns=1, ctahun berjalan, istatus != 7 (belum selesai)
+            $sql_usulan = "SELECT COUNT(*) AS total_usulan
+                           FROM app_t_usulan u
+                           WHERE u.ijns = 1
+                             AND u.ctahun = ?
+                             AND u.istatus != 7";
+            $q_usulan = $CI->db->query($sql_usulan, array($tahun_berjalan))->row();
+            $total_incomp = !empty($q_usulan) ? (int)$q_usulan->total_usulan : 0;
+            if ($total_incomp > 0) {
+                $notifs[] = array(
+                    'icon'  => 'fas fa-file-invoice text-warning',
+                    'title' => 'Usulan Perubahan SK',
+                    'msg'   => "Ada $total_incomp usulan SK satker yang sedang diajukan / belum selesai.",
+                    // Mengarah ke halaman Progress Usulan Satker (tabel progress per satker)
+                    'url'   => base_url('perbend/progress_usulan_satker'),
+                    'badge' => 'label-warning'
+                );
+            }
+
+            // 2. Satker dengan status Proses Tanda Tangan SK (istatus = 6, total 4 satker)
+            $sql_sk = "SELECT COUNT(DISTINCT u.iunorid) AS total_sk_unuploaded
+                       FROM app_t_usulan u
+                       WHERE u.ctahun = ? AND u.istatus = 6";
+            $q_sk = $CI->db->query($sql_sk, array($tahun_berjalan))->row();
+            $tot_sk_unuploaded = !empty($q_sk) ? (int)$q_sk->total_sk_unuploaded : 0;
+            if ($tot_sk_unuploaded > 0) {
+                $notifs[] = array(
+                    'icon'  => 'fas fa-cloud-upload-alt text-danger',
+                    'title' => 'SK Menteri Belum Unggah',
+                    'msg'   => "Ada $tot_sk_unuploaded satker yang SK Menterinya belum diunggah.",
+                    // Mengarah ke halaman Terbit SK (daftar satker terfilter status 6: Proses Tanda Tangan SK)
+                    'url'   => base_url('perbend/t_terbit_sk') . '?link=notif_unggah_sk',
+                    'badge' => 'label-danger'
+                );
+            }
+
+
+        } else {
+            // === OPERATOR SATKER NOTIFICATIONS ===
+            // 1. Usulan yang belum selesai (masih draft / belum simpan kirim)
+            $sql_draft = "SELECT id, cnousul FROM app_t_usulan 
+                          WHERE (iunorid = ? OR ccreatedby = ?) AND istatus = 0 
+                          ORDER BY id DESC LIMIT 10";
+            $q_draft = $CI->db->query($sql_draft, array($username, $username))->result();
+            if (!empty($q_draft)) {
+                $tot_draft = count($q_draft);
+                $notifs[] = array(
+                    'icon'  => 'fas fa-edit text-warning',
+                    'title' => 'Usulan Belum Dikirim',
+                    'msg'   => "Ada $tot_draft usulan yang belum selesai (masih draft / belum simpan kirim).",
+                    'url'   => base_url('perbend/t_usulan_satker'),
+                    'badge' => 'label-warning'
+                );
+            }
+
+            // 2. Belum input data pejabat perbendaharaan di tahun berjalan (2026)
+            $sql_pejabat = "SELECT COUNT(*) AS total FROM app_t_usulan 
+                            WHERE (iunorid = ? OR ccreatedby = ?) AND ctahun = ?";
+            $q_pej = $CI->db->query($sql_pejabat, array($username, $username, $tahun_berjalan))->row();
+            $tot_pej = !empty($q_pej) ? (int)$q_pej->total : 0;
+
+            if ($tot_pej == 0) {
+                $notifs[] = array(
+                    'icon'  => 'fas fa-exclamation-triangle text-danger',
+                    'title' => "Pejabat Tahun $tahun_berjalan",
+                    'msg'   => "Anda belum menginput data pejabat perbendaharaan untuk tahun $tahun_berjalan.",
+                    'url'   => base_url('perbend/t_usulan_satker'),
+                    'badge' => 'label-danger'
+                );
+            }
+
+            // 3. SK Menteri baru di-upload
+            $sql_sk_new = "SELECT id, cnosk FROM app_t_usulan_sk 
+                           WHERE (iunorid = ? OR ccreatedby = ?) AND ctahun = ? 
+                           AND tfile IS NOT NULL AND tfile != '' 
+                           ORDER BY id DESC LIMIT 5";
+            $q_sk_new = $CI->db->query($sql_sk_new, array($username, $username, $tahun_berjalan))->result();
+            if (!empty($q_sk_new)) {
+                $tot_sk_new = count($q_sk_new);
+                $notifs[] = array(
+                    'icon'  => 'fas fa-file-pdf text-success',
+                    'title' => 'SK Menteri Baru',
+                    'msg'   => "Ada $tot_sk_new SK Menteri yang sudah diunggah untuk satker Anda.",
+                    'url'   => base_url('perbend/detail_sk_kemdikbud'),
+                    'badge' => 'label-success'
+                );
+            }
+        }
+
+        return $notifs;
+    }
+}
+
+if (!function_exists('get_active_excel_satker_codes')) {
+    function get_active_excel_satker_codes() {
+        static $cached_codes = null;
+        if ($cached_codes !== null) return $cached_codes;
+
+        $filepath = (defined('FCPATH') ? FCPATH : 'C:/xampp/htdocs/siperben/') . 'db' . DIRECTORY_SEPARATOR . 'DAFTAR SATKER.xlsx';
+        $satker_codes = array();
+
+        if (file_exists($filepath)) {
+            $zip = new ZipArchive;
+            if ($zip->open($filepath) === TRUE) {
+                $sharedStrings = array();
+                if (($xml = $zip->getFromName('xl/sharedStrings.xml')) !== false) {
+                    $sx = @simplexml_load_string($xml);
+                    if ($sx && isset($sx->si)) {
+                        foreach ($sx->si as $val) {
+                            if (isset($val->t)) $sharedStrings[] = (string)$val->t;
+                            elseif (isset($val->r)) {
+                                $t = '';
+                                foreach ($val->r as $r) $t .= (string)$r->t;
+                                $sharedStrings[] = $t;
+                            }
+                        }
+                    }
+                }
+
+                if (($xmlSheet = $zip->getFromName('xl/worksheets/sheet1.xml')) !== false) {
+                    $sxSheet = @simplexml_load_string($xmlSheet);
+                    if ($sxSheet && isset($sxSheet->sheetData->row)) {
+                        $isFirst = true;
+                        foreach ($sxSheet->sheetData->row as $r) {
+                            if ($isFirst) { $isFirst = false; continue; }
+                            $cells = array();
+                            foreach ($r->c as $c) {
+                                $v = (string)$c->v;
+                                $t = (string)$c['t'];
+                                $val = ($t === 's' && isset($sharedStrings[(int)$v])) ? $sharedStrings[(int)$v] : $v;
+                                $cells[] = trim($val);
+                            }
+                            if (isset($cells[3])) {
+                                $kode = str_replace("'", "", $cells[3]);
+                                if (!empty($kode)) $satker_codes[] = $kode;
+                            }
+                        }
+                    }
+                }
+                $zip->close();
+            }
+        }
+
+        $cached_codes = !empty($satker_codes) ? $satker_codes : array();
+        return $cached_codes;
+    }
+}
+
+if (!function_exists('get_excel_eselon_satker_map')) {
+    function get_excel_eselon_satker_map() {
+        static $map = null;
+        if ($map !== null) return $map;
+
+        $filepath = (defined('FCPATH') ? FCPATH : 'C:/xampp/htdocs/siperben/') . 'db' . DIRECTORY_SEPARATOR . 'DAFTAR SATKER.xlsx';
+        $map = array();
+
+        if (file_exists($filepath)) {
+            $zip = new ZipArchive;
+            if ($zip->open($filepath) === TRUE) {
+                $sharedStrings = array();
+                if (($xml = $zip->getFromName('xl/sharedStrings.xml')) !== false) {
+                    $sx = @simplexml_load_string($xml);
+                    if ($sx && isset($sx->si)) {
+                        foreach ($sx->si as $val) {
+                            if (isset($val->t)) $sharedStrings[] = (string)$val->t;
+                            elseif (isset($val->r)) {
+                                $t = '';
+                                foreach ($val->r as $r) $t .= (string)$r->t;
+                                $sharedStrings[] = $t;
+                            }
+                        }
+                    }
+                }
+
+                if (($xmlSheet = $zip->getFromName('xl/worksheets/sheet1.xml')) !== false) {
+                    $sxSheet = @simplexml_load_string($xmlSheet);
+                    if ($sxSheet && isset($sxSheet->sheetData->row)) {
+                        $isFirst = true;
+                        foreach ($sxSheet->sheetData->row as $r) {
+                            if ($isFirst) { $isFirst = false; continue; }
+                            $cells = array();
+                            foreach ($r->c as $c) {
+                                $v = (string)$c->v;
+                                $t = (string)$c['t'];
+                                $val = ($t === 's' && isset($sharedStrings[(int)$v])) ? $sharedStrings[(int)$v] : $v;
+                                $cells[] = trim($val);
+                            }
+                            if (isset($cells[3])) {
+                                $kode_satker = str_replace("'", "", $cells[3]);
+                                $kode_eselon = isset($cells[1]) ? trim($cells[1]) : '';
+                                $nama_eselon = isset($cells[2]) ? trim($cells[2]) : '';
+
+                                if (!empty($kode_satker) && !empty($kode_eselon)) {
+                                    $map[$kode_eselon][] = $kode_satker;
+
+                                    $abbrv = '';
+                                    if (strpos($nama_eselon, 'SEKRETARIAT JENDERAL') !== false) $abbrv = 'SETJEN';
+                                    elseif (strpos($nama_eselon, 'INSPEKTORAT JENDERAL') !== false) $abbrv = 'ITJEN';
+                                    elseif (strpos($nama_eselon, 'BAHASA') !== false) $abbrv = 'BAHASA';
+                                    elseif (strpos($nama_eselon, 'VOKASI') !== false) $abbrv = 'VOKASI';
+                                    elseif (strpos($nama_eselon, 'STANDAR') !== false) $abbrv = 'BSKAP';
+                                    elseif (strpos($nama_eselon, 'ANAK USIA DINI') !== false) $abbrv = 'PAUD, DIKDASMEN';
+                                    elseif (strpos($nama_eselon, 'TENAGA KEPENDIDIKAN') !== false) $abbrv = 'GTK';
+
+                                    if (!empty($abbrv)) {
+                                        $map[$abbrv][] = $kode_satker;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                $zip->close();
+            }
+        }
+
+        return $map;
+    }
+}
+
+if (!function_exists('get_excel_satkers_by_eselon')) {
+    function get_excel_satkers_by_eselon($eselon_key) {
+        $map = get_excel_eselon_satker_map();
+        $key = trim($eselon_key);
+        if (isset($map[$key])) {
+            return array_values(array_unique($map[$key]));
+        }
+        return array();
+    }
+}
+
+if (!function_exists('get_excel_satker_name_map')) {
+    function get_excel_satker_name_map() {
+        static $name_map = null;
+        if ($name_map !== null) return $name_map;
+
+        $filepath = (defined('FCPATH') ? FCPATH : 'C:/xampp/htdocs/siperben/') . 'db' . DIRECTORY_SEPARATOR . 'DAFTAR SATKER.xlsx';
+        $name_map = array();
+
+        if (file_exists($filepath)) {
+            $zip = new ZipArchive;
+            if ($zip->open($filepath) === TRUE) {
+                $sharedStrings = array();
+                if (($xml = $zip->getFromName('xl/sharedStrings.xml')) !== false) {
+                    $sx = @simplexml_load_string($xml);
+                    if ($sx && isset($sx->si)) {
+                        foreach ($sx->si as $val) {
+                            if (isset($val->t)) $sharedStrings[] = (string)$val->t;
+                            elseif (isset($val->r)) {
+                                $t = '';
+                                foreach ($val->r as $r) $t .= (string)$r->t;
+                                $sharedStrings[] = $t;
+                            }
+                        }
+                    }
+                }
+
+                if (($xmlSheet = $zip->getFromName('xl/worksheets/sheet1.xml')) !== false) {
+                    $sxSheet = @simplexml_load_string($xmlSheet);
+                    if ($sxSheet && isset($sxSheet->sheetData->row)) {
+                        $isFirst = true;
+                        foreach ($sxSheet->sheetData->row as $r) {
+                            if ($isFirst) { $isFirst = false; continue; }
+                            $cells = array();
+                            foreach ($r->c as $c) {
+                                $v = (string)$c->v;
+                                $t = (string)$c['t'];
+                                $val = ($t === 's' && isset($sharedStrings[(int)$v])) ? $sharedStrings[(int)$v] : $v;
+                                $cells[] = trim($val);
+                            }
+                            if (isset($cells[3]) && isset($cells[5])) {
+                                $kode = str_replace("'", "", $cells[3]);
+                                $nama = str_replace("'", "", $cells[5]);
+                                if (!empty($kode) && !empty($nama)) {
+                                    $name_map[$kode] = $nama;
+                                }
+                            }
+                        }
+                    }
+                }
+                $zip->close();
+            }
+        }
+
+        return $name_map;
+    }
+}
+
+if (!function_exists('get_excel_satker_name')) {
+    function get_excel_satker_name($kode_satker, $fallback_name = '') {
+        $map = get_excel_satker_name_map();
+        $code = trim($kode_satker);
+        if (!empty($code) && isset($map[$code])) {
+            return $map[$code];
+        }
+        return !empty($fallback_name) ? $fallback_name : $code;
+    }
+}
 ?>
+

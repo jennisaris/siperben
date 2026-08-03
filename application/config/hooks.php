@@ -11,3 +11,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |	https://codeigniter.com/user_guide/general/hooks.html
 |
 */
+
+$hook['post_controller_constructor'][] = array(
+    'class'    => 'Operator_registration_check',
+    'function' => 'check_registration_status',
+    'filename' => 'Operator_registration_check.php',
+    'filepath' => 'hooks'
+);
+

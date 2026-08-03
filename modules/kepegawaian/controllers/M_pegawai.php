@@ -36,14 +36,8 @@ class M_pegawai extends MX_Controller {
 		$this->_addField($table, 'ikduker3', 'Unit Kerja (Sharing)', false);
 		//$this->_addField($table, 'vnmuker', 'Nama Unit Kerja', true);
 		$this->_addField($table, 'cnobnt', 'No. BNT', false);
-		$this->_addField($table, 'dtglbnt', 'Tgl. Sertifikat BNT', false);
-		$this->_addField($table, 'dkadaluarsabnt', 'Tgl. Kadaluarsa BNT', false);
 		$this->_addField($table, 'cnosnt', 'No. SNT', false);
-		$this->_addField($table, 'dtglsnt', 'Tgl. Sertifikat SNT', false);
-		$this->_addField($table, 'dkadaluarsasnt', 'Tgl. Kadaluarsa SNT', false);
 		$this->_addField($table, 'cnopnt', 'No. PNT', false);
-		$this->_addField($table, 'dtglpnt', 'Tgl. Sertifikat PNT', false);
-		$this->_addField($table, 'dkadaluarsapnt', 'Tgl. Kadaluarsa PNT', false);
 		$this->_addField($table, 'istatus', 'Kedudukan Hukum', true);
 		$this->_addField($table, 'tcreated', 'Waktu dibuat', false, true);
 		$this->_addField($table, 'ccreatedby', 'Dibuat oleh', false, true);
@@ -51,7 +45,7 @@ class M_pegawai extends MX_Controller {
 		$this->_addField($table, 'cupdatedby', 'Diubah oleh', false, true);
 
 		//$this->_add2ListField($table, 'ifrom, cnip, vname, vgolnm, vjabnm, vnmuker, tupdated, cupdatedby');
-		$this->_add2ListField($table, 'ifrom, cnip, vname, cgolid, ijabid, ikduker, ikduker3, cnobnt, dtglbnt, dkadaluarsabnt, cnosnt, dtglsnt, dkadaluarsasnt, cnopnt, dtglpnt, dkadaluarsapnt, istatus,tupdated, cupdatedby');
+		$this->_add2ListField($table, 'ifrom, cnip, vname, cgolid, ijabid, ikduker, ikduker3, cnobnt, cnosnt, cnopnt, istatus, tupdated, cupdatedby');
 		
 		$this->_changeType($table, 'ifrom', 'combobox', 
 		$this->session->sysparam->ifrom);
@@ -72,10 +66,10 @@ class M_pegawai extends MX_Controller {
 		$this->_changeType($table, 'cgolid', 'combobox2', 
 		$this->ar_m_golongan);
 		
-		$rows = $this->getall('', $this->prefix.'_m_unor', 'id, kode, nama', array('date_expired'=>NULL));//, array('kode'=>'8ae483a67355ebc601736a3c0cf35654'));
+		/* $rows = $this->getall('', $this->prefix.'_m_unor', 'id, kode, nama', array('date_expired'=>NULL));//, array('kode'=>'8ae483a67355ebc601736a3c0cf35654'));
 		foreach($rows as $r) {
-		$this->ar_m_unor[$r->id] = $r->id.' - '.$r->nama;
-		}
+			$this->ar_m_unor[$r->id] = $r->id.' - '.$r->nama;
+		} */
 
 		$rows = $this->getall('', $this->prefix.'_m_kedudukan_hukum', 'id, keterangan');
 		foreach($rows as $r) {
@@ -85,12 +79,6 @@ class M_pegawai extends MX_Controller {
 		$this->_changeType($table, 'istatus', 'combobox2', 
 		$this->ar_m_kedudukan_hukum);
 
-		$this->_changeType($table, 'dtglbnt', 'date', 'd-m-Y');
-		$this->_changeType($table, 'dkadaluarsabnt', 'date', 'd-m-Y');
-		$this->_changeType($table, 'dtglsnt', 'date', 'd-m-Y');
-		$this->_changeType($table, 'dkadaluarsasnt', 'date', 'd-m-Y');
-		$this->_changeType($table, 'dtglpnt', 'date', 'd-m-Y');
-		$this->_changeType($table, 'dkadaluarsapnt', 'date', 'd-m-Y');
 		
 		//$this->_changeType($table, 'ikduker', 'combobox2', 
 		//$this->ar_m_unor);
@@ -125,7 +113,7 @@ class M_pegawai extends MX_Controller {
 			/* foreach($this->session->kodeunits as $k=>$v) {
 				$ar_unor_[] = $v->id;
 			} */
-			if ( sizeOf($this->session->orgs2) > 0 ) {
+			if (!empty($this->session->orgs2) && is_array($this->session->orgs2) && count($this->session->orgs2) > 0) {
 				$orgs = "'".implode("','", $this->session->orgs2)."'";
 				$this->_addQuery($table, "ikduker in (".$orgs.")", 'and', '', true);
 			}
@@ -617,7 +605,7 @@ class M_pegawai extends MX_Controller {
 			</button>";
 		}
 
-		$start = 0;
+		/* $start = 0;
 		$end = 200000;
 		$penambah = 1000;
 		$chkbox = "<select id='start' 
@@ -631,10 +619,11 @@ class M_pegawai extends MX_Controller {
 		$buttons['impor'] = $chkbox."<button type='button' class='btn_save_sinkronisasi btn btn-primary' 
 					onclick='save_sinkronisasi(\"".base_url()."kepegawaian/m_pegawai\", \"m_pegawai\", \"Sinkronisasi Master Pegawai. Anda yakin ?\", false, \"\", false, true, false, false, \"Sinkronisasi berhasil\");'>
 							<i class='fas fa-users'></i> Sinkronisasi ke SIMPEG-DIKBUHR
-						</button>";
+						</button>"; */
 
 		return $buttons;
 	}
+
 	
 	function save_sinkronisasi() {
 	   //ini_set('display_errors', 1);

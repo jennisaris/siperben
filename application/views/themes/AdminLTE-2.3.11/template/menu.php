@@ -21,37 +21,8 @@ if (empty($display_name)) $display_name = $CI->session->userdata('satker_name');
 if (empty($display_name)) $display_name = $CI->session->userdata('realname');
 
 //notifications-menu
-//print_r($this->session->groupid);
-$groupsid = ($CI->session->groupid == '' ? "''" : $CI->session->groupid);
-
-$sql = "Select * from app_notification 
-		  where groupid in ({$groupsid}) 
-		  and isread = 0 and usulanid IS NOT NULL";
-//echo $sql;exit;
-$notifs = $CI->db->query($sql)->result();
-$total_notifs =sizeOf($notifs);
-//print_r($notifs);
-//exit;
-//kita groups
-$groups = [];
-foreach($notifs as $k=>$n) {
-  //print_r($n);
-  //echo $n->groupid;
-  //print_r($groups);
-  //eho "<br/>";
-  if (array_key_exists($n->groupid, $groups)) {
-    $groups[$n->groupid]['total'] +=1;
-	//$groups[$n->groupid]['url'] = $n->url;
-  } else {
-     $groups[$n->groupid]['total'] = 1; 
-     $groups[$n->groupid]['msg'] = $n->msg;
-     $groups[$n->groupid]['url'] = $n->url;
-  }
-  // print_r($groups);
-  // echo "<br/>";
-}
-//print_r($groups);
-//exit;
+$app_notifs = get_app_notifications();
+$total_notifs = count($app_notifs);
 ?>
 <body class="hold-transition skin-blue sidebar-mini">
 	
@@ -95,62 +66,45 @@ foreach($notifs as $k=>$n) {
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           
-          <!--
-          dropdown.less -->
+          <!-- Notifications Menu -->
           <li class="dropdown notifications-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-bell"></i>
-              <?php if ( $total_notifs > 0 ) {?>
-              <span class="label label-warning"><?=$total_notifs;?></span>
+              <?php if ( $total_notifs > 0 ) { ?>
+              <span class="label label-warning" style="position: absolute; top: 9px; right: 7px; text-align: center; font-size: 10px; padding: 2px 5px; line-height: .9; border-radius: .25em;"><?= $total_notifs; ?></span>
               <?php } ?>
             </a>
-            <ul class="dropdown-menu">
-              <?php if ( $total_notifs > 0 ) {?>
-              <li class="header">You have <?=$total_notifs;?> notifications</li>
+            <ul class="dropdown-menu" style="width: 320px;">
+              <li class="header" style="background-color: #f4f4f4; border-bottom: 1px solid #eee; padding: 10px 15px; font-weight: bold; font-size: 13px; color: #333;">
+                <?php if ( $total_notifs > 0 ) { ?>
+                  Anda memiliki <?= $total_notifs; ?> notifikasi
+                <?php } else { ?>
+                  Tidak ada notifikasi baru
+                <?php } ?>
+              </li>
               <li>
-              <?php } ?>
                 <!-- inner menu: contains the actual data -->
-
-                <ul class="menu">
-                  <!--<li>
-                    <a href="#">
-                      <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                    </a>
-                  </li>-->
-                  <?php
-                    foreach($groups as $g) {
-                  ?>
-                  <li>
-                    <a href="<?=$g['url'];?>">
-                      <i class="fas fa-check-square"></i> <span class='color:black'> <?=$g['total'].' '.$g['msg'];?></span>
+                <ul class="menu" style="max-height: 320px; margin: 0; padding: 0; list-style: none; overflow-x: hidden; overflow-y: auto;">
+                  <?php if ( !empty($app_notifs) ) {
+                    foreach($app_notifs as $n) { ?>
+                  <li style="border-bottom: 1px solid #f4f4f4;">
+                    <a href="<?= $n['url']; ?>" style="color: #444; font-size: 12px; padding: 10px 15px; display: block; white-space: normal; line-height: 1.4;">
+                      <i class="<?= $n['icon']; ?>" style="margin-right: 6px;"></i>
+                      <strong style="color: #222;"><?= $n['title']; ?>:</strong> <?= $n['msg']; ?>
                     </a>
                   </li>
-                  <?php 
-                    }
-                  ?>
-                  <!--<li>
-                    <a href="#">
-                      <i class="fa fa-users text-red"></i> 5 new members joined
-                    </a>
+                  <?php }
+                  } else { ?>
+                  <li style="padding: 20px; text-align: center; color: #777;">
+                    <i class="fas fa-check-circle text-success" style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
+                    Semua tugas telah diselesaikan.
                   </li>
-                  <li>
-                    <a href="#">
-                      <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i class="fa fa-user text-red"></i> You changed your username
-                    </a>
-                  </li>-->
+                  <?php } ?>
                 </ul>
               </li>
-              <?php if ( $total_notifs > 0 ) {?>
-              <!--<li class="footer"><a href="#">View all</a></li>--><?php } ?>
             </ul>
-
           </li>
-          <!-- -->
+
           <!-- User Account Menu -->
           <li class="dropdown user user-menu">
             <!-- Menu Toggle Button -->

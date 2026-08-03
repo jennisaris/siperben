@@ -80,45 +80,49 @@ $controller = 'index';
     }
 
     .dashboard-modern .small-box {
-        border-radius: 20px;
+        border-radius: 14px;
         overflow: hidden;
-        min-height: 142px;
+        min-height: 92px;
         border: 1px solid rgba(255,255,255,.45);
-        box-shadow: 0 16px 35px rgba(15, 23, 42, .12);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, .08);
         transition: transform .18s ease, box-shadow .18s ease;
+        margin-bottom: 15px;
     }
     .dashboard-modern .small-box:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 22px 45px rgba(15, 23, 42, .18);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(15, 23, 42, .14);
     }
     .dashboard-modern .small-box .inner {
         position: relative;
         z-index: 1;
-        padding: 22px 20px;
+        padding: 12px 14px;
         text-align: left;
     }
     .dashboard-modern .small-box .inner p {
-        font-size: 13px;
+        font-size: 11px;
         text-transform: uppercase;
-        letter-spacing: .45px;
+        letter-spacing: .35px;
         opacity: .95;
-        margin-bottom: 12px;
+        margin-bottom: 4px;
+        font-weight: 600;
     }
     .dashboard-modern .small-box .inner h3 {
         margin: 0;
-        font-size: 34px;
+        font-size: 22px;
         font-weight: 800;
-        letter-spacing: -.6px;
+        letter-spacing: -.4px;
     }
     .dashboard-modern .small-box .icon {
-        top: 18px;
-        right: 18px;
-        opacity: .18;
+        top: 10px;
+        right: 12px;
+        font-size: 42px;
+        opacity: .20;
         transition: transform .18s ease;
     }
     .dashboard-modern .small-box:hover .icon { transform: scale(1.08) rotate(-4deg); }
     .dashboard-modern .small-box-footer {
-        padding: 10px 14px;
+        padding: 4px 10px;
+        font-size: 11px;
         background: rgba(255,255,255,.18) !important;
         text-align: left;
         font-weight: 600;
@@ -131,37 +135,40 @@ $controller = 'index';
     .dashboard-modern .bg-red { background: linear-gradient(135deg, #f43f5e, #be123c) !important; }
     .dashboard-modern .bg-navy { background: linear-gradient(135deg, #1e3a8a, #0f172a) !important; }
     .dashboard-modern .bg-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9) !important; }
+    .dashboard-modern .bg-teal { background: linear-gradient(135deg, #14b8a6, #0d9488) !important; }
 
     .dashboard-modern .box {
         border: 0;
-        border-radius: 20px;
+        border-radius: 16px;
         overflow: hidden;
-        background: rgba(255,255,255,.92);
-        box-shadow: 0 16px 36px rgba(15, 23, 42, .10);
+        background: rgba(255,255,255,.94);
+        box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+        margin-bottom: 20px;
     }
     .dashboard-modern .box-header.with-border {
         border-bottom: 1px solid #e0f2fe;
-        padding: 16px 18px;
+        padding: 12px 16px;
         background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
     }
     .dashboard-modern .box-title {
         font-weight: 700;
+        font-size: 14px;
         color: #0f172a;
     }
     .dashboard-modern .box-title:before {
         content: '';
         display: inline-block;
-        width: 9px;
-        height: 9px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
-        margin-right: 9px;
+        margin-right: 8px;
         background: #38bdf8;
-        box-shadow: 0 0 0 5px rgba(56,189,248,.16);
+        box-shadow: 0 0 0 4px rgba(56,189,248,.16);
         vertical-align: middle;
     }
-    .dashboard-modern .box-body { padding: 18px; }
+    .dashboard-modern .box-body { padding: 15px; }
     .dashboard-modern .form-control {
-        border-radius: 12px;
+        border-radius: 10px;
         border-color: #bae6fd;
         box-shadow: none;
     }
@@ -170,12 +177,12 @@ $controller = 'index';
         box-shadow: 0 0 0 3px rgba(56,189,248,.18);
     }
     .dashboard-modern table {
-        border-radius: 12px;
+        border-radius: 10px;
         overflow: hidden;
     }
     .dashboard-modern .modal-content {
         border: 0;
-        border-radius: 18px !important;
+        border-radius: 16px !important;
         box-shadow: 0 22px 50px rgba(15,23,42,.18);
     }
     .dashboard-modern .modal-header {
@@ -183,48 +190,435 @@ $controller = 'index';
     }
 
     @media (max-width: 767px) {
-        .dashboard-hero { padding: 20px 18px; border-radius: 18px; }
-        .dashboard-hero h2 { font-size: 22px; }
-        .dashboard-modern .small-box .inner h3 { font-size: 30px; }
+        .dashboard-hero { padding: 16px 14px; border-radius: 14px; }
+        .dashboard-hero h2 { font-size: 18px; }
+        .dashboard-modern .small-box .inner h3 { font-size: 18px; }
     }
 </style>
+
+<!-- Load Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .card-flex-row {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        overflow-x: auto;
+        margin-bottom: 12px;
+        padding-bottom: 4px;
+    }
+    .card-flex-row::-webkit-scrollbar {
+        height: 4px;
+    }
+    .card-flex-row::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    .card-flex-item {
+        flex: 1 1 0;
+        min-width: 120px;
+    }
+</style>
+
 <div class="dashboard-modern">
-  <div class="dashboard-hero">
-    <div class="dashboard-hero-content">
-      <span class="dashboard-eyebrow">SIPERBEN Dashboard</span>
-      <h2>Ringkasan Perbendaharaan</h2>
-      <p>Pantau jumlah bendahara, progres usulan, dan status sertifikasi dalam tampilan yang lebih bersih dan mudah dibaca.</p>
+
+  <!-- ROW 1: KPI Ringkasan Usulan SK Tahun Berjalan (1 Baris Compact) -->
+  <?php if (!empty($summary_info['kpi'])) { $kpi = $summary_info['kpi']; ?>
+  <div class="card-flex-row">
+    <div class="card-flex-item">
+      <div class="small-box bg-blue">
+        <div class="inner">
+          <p>Total Usulan</p>
+          <h3><?= number_format($kpi['total_usulan']); ?></h3>
+        </div>
+        <div class="icon"><i class="fa fa-file-text-o"></i></div>
+        <a href="<?= base_url('perbend/progress_usulan_satker'); ?>" class="small-box-footer">Usulan <i class="fa fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <div class="card-flex-item">
+      <div class="small-box bg-yellow">
+        <div class="inner">
+          <p>Dalam Proses</p>
+          <h3><?= number_format($kpi['total_proses']); ?></h3>
+        </div>
+        <div class="icon"><i class="fa fa-hourglass-half"></i></div>
+        <a href="<?= base_url('perbend/progress_usulan_satker'); ?>" class="small-box-footer">Progres <i class="fa fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <div class="card-flex-item">
+      <div class="small-box bg-red">
+        <div class="inner">
+          <p>SK Belum Unggah</p>
+          <h3><?= number_format($kpi['sk_pending']); ?></h3>
+        </div>
+        <div class="icon"><i class="fa fa-exclamation-triangle"></i></div>
+        <a href="<?= base_url('perbend/t_terbit_sk?link=notif_unggah_sk'); ?>" class="small-box-footer">Upload SK <i class="fa fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <div class="card-flex-item">
+      <div class="small-box bg-green">
+        <div class="inner">
+          <p>Usulan Selesai</p>
+          <h3><?= number_format($kpi['total_selesai']); ?></h3>
+        </div>
+        <div class="icon"><i class="fa fa-check-circle-o"></i></div>
+        <a href="<?= base_url('perbend/progress_usulan_satker'); ?>" class="small-box-footer">Selesai <i class="fa fa-arrow-circle-right"></i></a>
+      </div>
     </div>
   </div>
+  <?php } ?>
 
-<div class='row dashboard-stat-row' style='text-align:center;'>
-  <?php $i=0;foreach($data as $k=>$v) {
-    if ($i==0 || $i==1 || $i==2) $class = "col-lg-4 col-xs-12";
-    else $class = "col-lg-3";
-  ?>
-   <div class="<?=$class;?>">
-          <!-- small box -->
-          <div class="small-box <?=$bgcolor[$k-1];?>">
-            <div class="inner">
-              <p>Jumlah <?=$v['kode']?><br/></p>
-              <h3><?=$v['total'];?></h3>
-         
-            </div>
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
-            <?php if ($cs[$k-1] != '' ) { ?> 
-            <a href="<?=base_url();?>perbend/<?=$cs[$k-1];?>" class="small-box-footer">
-            More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
-            <?php } else {?>
-            &nbsp;
-            <?php } ?>
+  <!-- ROW 2: Kartu Pejabat Perbendaharaan Dipadatkan dalam 1 Baris Flexbox -->
+  <div class="card-flex-row">
+    <?php $i=0; foreach($data as $k=>$v) { ?>
+      <div class="card-flex-item">
+        <div class="small-box <?=$bgcolor[$k-1];?>">
+          <div class="inner">
+            <p><?=$v['kode'];?></p>
+            <h3><?=$v['total'];?></h3>
           </div>
+          <div class="icon"><i class="fa fa-users"></i></div>
+          <?php if ($cs[$k-1] != '' ) { ?> 
+            <a href="<?=base_url();?>perbend/<?=$cs[$k-1];?>" class="small-box-footer">Rincian <i class="fa fa-arrow-circle-right"></i></a>
+          <?php } else { ?>
+            <span class="small-box-footer">&nbsp;</span>
+          <?php } ?>
+        </div>
+      </div>
+    <?php $i++; } ?>
+  </div>
+
+  <!-- ROW 3: GRAFIK VISUALISASI (2 Columns) -->
+  <div class="row">
+    <!-- Chart 1: Donut Chart Status Usulan SK -->
+    <div class="col-md-5 col-sm-12">
+      <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Status Usulan SK Tahun <?= !empty($summary_info['kpi']['tahun']) ? $summary_info['kpi']['tahun'] : date('Y'); ?></h3>
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="box-body text-center">
+          <div style="height: 240px; position: relative;">
+            <canvas id="chartStatusUsulan"></canvas>
+          </div>
+        </div>
+      </div>
     </div>
-  <?php $i++;} ?>
-    <!-- ./col -->
-</div>
+
+    <!-- Chart 2: Bar Chart Pejabat Perbendaharaan per Unit Utama -->
+    <div class="col-md-7 col-sm-12">
+      <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Distribusi Pejabat Perbendaharaan per Unit Utama</h3>
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="box-body">
+          <div style="height: 200px; position: relative;">
+            <canvas id="chartUnitUtama"></canvas>
+          </div>
+
+          <!-- Tabel Rekap Status Sertifikasi (Bendahara, PPK, PPSPM) per Unit Utama -->
+          <?php if (!empty($unit_cert_breakdown)) { ?>
+          <div style="margin-top: 15px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span style="font-size: 11px; font-weight: 600; color: #475569;">Status Sertifikasi <?= ($this->session->superuser) ? 'per Unit Utama (Kode 138)' : 'per Satuan Kerja'; ?> — <small class="text-muted">Klik angka untuk melihat rincian Satker & Pejabat</small></span>
+            <div style="position: relative; width: 180px;">
+              <input type="text" id="searchUnitUtama" class="form-control input-sm" placeholder="<?= ($this->session->superuser) ? 'Cari Unit Utama...' : 'Cari Satuan Kerja...'; ?>" style="border-radius: 8px; font-size: 11px; height: 28px; padding-left: 26px;">
+              <i class="fa fa-search" style="position: absolute; left: 8px; top: 7px; color: #94a3b8; font-size: 11px;"></i>
+            </div>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table id="tblUnitUtama" class="table table-bordered table-striped table-condensed" style="font-size: 11px; margin-bottom: 0;">
+              <thead>
+                <tr style="background: #f8fafc;">
+                  <th rowspan="2" style="vertical-align: middle; text-align: center;"><?= ($this->session->superuser) ? 'Unit Utama' : 'Satuan Kerja'; ?></th>
+                  <th colspan="2" style="text-align: center; background: #e0f2fe; color: #0369a1;">Bendahara</th>
+                  <th colspan="2" style="text-align: center; background: #fef3c7; color: #92400e;">PPK</th>
+                  <th colspan="2" style="text-align: center; background: #f3e8ff; color: #6b21a8;">PPSPM</th>
+                </tr>
+                <tr style="font-size: 10px;">
+                  <th style="text-align: center; background: #dbeafe; color: #0369a1;">Aktif</th>
+                  <th style="text-align: center; background: #eff6ff; color: #dc2626;">Belum</th>
+                  <th style="text-align: center; background: #fef3c7; color: #b45309;">Aktif</th>
+                  <th style="text-align: center; background: #fffbeb; color: #dc2626;">Belum</th>
+                  <th style="text-align: center; background: #f3e8ff; color: #7c3aed;">Aktif</th>
+                  <th style="text-align: center; background: #faf5ff; color: #dc2626;">Belum</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($unit_cert_breakdown as $row) { 
+                  $uName = htmlspecialchars($row['unit'], ENT_QUOTES);
+                ?>
+                <tr>
+                  <td><strong><?= $uName; ?></strong></td>
+                  <td class="text-center">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'bnd', 'cert', 'Bendahara Aktif Bersertifikat');" style="color: #0284c7; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                      <?= number_format($row['bnd_cert']); ?>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'bnd', 'uncert', 'Bendahara Belum Bersertifikat');" style="color: #dc2626; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                      <?= number_format($row['bnd_uncert']); ?>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppk', 'cert', 'PPK Aktif Bersertifikat');" style="color: #d97706; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                      <?= number_format($row['ppk_cert']); ?>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppk', 'uncert', 'PPK Belum Bersertifikat');" style="color: #dc2626; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                      <?= number_format($row['ppk_uncert']); ?>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppspm', 'cert', 'PPSPM Aktif Bersertifikat');" style="color: #7c3aed; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                      <?= number_format($row['ppspm_cert']); ?>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppspm', 'uncert', 'PPSPM Belum Bersertifikat');" style="color: #dc2626; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                      <?= number_format($row['ppspm_uncert']); ?>
+                    </a>
+                  </td>
+                </tr>
+                <?php } ?>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Modal Detail Satker Sertifikasi -->
+          <div class="modal fade" id="modalCertDetail" tabindex="-1" role="dialog" aria-labelledby="modalCertDetailLabel">
+            <div class="modal-dialog modal-lg" role="document" style="width: 85%; max-width: 1000px;">
+              <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #1e293b, #334155); color: #fff; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 14px 20px;">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8;"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="modalCertDetailLabel" style="font-weight: 600; font-size: 14px;"><i class="fa fa-list-alt" style="margin-right: 8px;"></i> Rincian Satker & Pejabat</h4>
+                </div>
+                <div class="modal-body" style="padding: 20px;">
+                  <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <h5 id="modalCertSubtitle" style="margin: 0; font-weight: 600; color: #1e293b; font-size: 13px;"></h5>
+                    <div style="position: relative; width: 240px;">
+                      <input type="text" id="searchModalCert" class="form-control input-sm" placeholder="Cari Satker / Nama / NIP..." style="border-radius: 8px; font-size: 11px; height: 28px; padding-left: 26px;">
+                      <i class="fa fa-search" style="position: absolute; left: 8px; top: 7px; color: #94a3b8; font-size: 11px;"></i>
+                    </div>
+                  </div>
+                  <div style="max-height: 420px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <table id="tblModalCert" class="table table-bordered table-striped table-hover" style="font-size: 11px; margin-bottom: 0;">
+                      <thead style="position: sticky; top: 0; background: #f1f5f9; z-index: 10;">
+                        <tr>
+                          <th style="width: 40px; text-align: center;">No</th>
+                          <th style="width: 90px; text-align: center;">Kode Satker</th>
+                          <th>Nama Satuan Kerja</th>
+                          <th style="width: 150px;">NIP</th>
+                          <th style="width: 180px;">Nama Pejabat</th>
+                          <th id="thCertHeader" style="width: 200px;">No. Sertifikat</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Dynamic JS content -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="modal-footer" style="background: #f8fafc; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; padding: 10px 20px;">
+                  <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 6px; font-weight: 500;">Tutup</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls Pagination untuk Tabel Unit Utama (Default 7 Data per Halaman) -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; flex-wrap: wrap; gap: 8px;">
+            <div id="unitUtamaPageInfo" style="color: #64748b; font-weight: 500;"></div>
+            <ul id="unitUtamaPagination" class="pagination pagination-sm" style="margin: 0;"></ul>
+          </div>
+
+          <!-- Modal Detail Satker Sertifikasi -->
+          <div class="modal fade" id="modalCertDetail" tabindex="-1" role="dialog" aria-labelledby="modalCertDetailLabel">
+            <div class="modal-dialog modal-lg" role="document" style="width: 85%; max-width: 1000px;">
+              <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #1e293b, #334155); color: #fff; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 14px 20px;">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8;"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="modalCertDetailLabel" style="font-weight: 600; font-size: 14px;"><i class="fa fa-list-alt" style="margin-right: 8px;"></i> Rincian Satker & Pejabat</h4>
+                </div>
+                <div class="modal-body" style="padding: 20px;">
+                  <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <h5 id="modalCertSubtitle" style="margin: 0; font-weight: 600; color: #1e293b; font-size: 13px;"></h5>
+                    <div style="position: relative; width: 240px;">
+                      <input type="text" id="searchModalCert" class="form-control input-sm" placeholder="Cari Satker / Nama / NIP..." style="border-radius: 8px; font-size: 11px; height: 28px; padding-left: 26px;">
+                      <i class="fa fa-search" style="position: absolute; left: 8px; top: 7px; color: #94a3b8; font-size: 11px;"></i>
+                    </div>
+                  </div>
+                  <div style="max-height: 420px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <table id="tblModalCert" class="table table-bordered table-striped table-hover" style="font-size: 11px; margin-bottom: 0;">
+                      <thead style="position: sticky; top: 0; background: #f1f5f9; z-index: 10;">
+                        <tr>
+                          <th style="width: 40px; text-align: center;">No</th>
+                          <th style="width: 90px; text-align: center;">Kode Satker</th>
+                          <th>Nama Satuan Kerja</th>
+                          <th style="width: 150px;">NIP</th>
+                          <th style="width: 180px;">Nama Pejabat</th>
+                          <th id="thCertHeader" style="width: 200px;">No. Sertifikat</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Dynamic JS content -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="modal-footer" style="background: #f8fafc; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; padding: 10px 20px;">
+                  <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 6px; font-weight: 500;">Tutup</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script type="text/javascript">
+          function show_cert_detail(unit, jab, status, label) {
+              var headerTitle = 'No. Sertifikat';
+              if (jab === 'bnd') {
+                  headerTitle = 'No. BNT';
+              } else if (jab === 'ppk') {
+                  headerTitle = 'No. PNT';
+              } else if (jab === 'ppspm') {
+                  headerTitle = 'No. SNT';
+              }
+              $('#thCertHeader').text(headerTitle);
+
+              $('#modalCertSubtitle').html('Unit Utama: <b>' + unit + '</b> | Status: <b>' + label + '</b>');
+              $('#tblModalCert tbody').html('<tr><td colspan="6" class="text-center" style="padding: 30px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><br/><span style="margin-top: 8px; display: inline-block; font-size: 12px;">Memuat data detail satker...</span></td></tr>');
+              $('#searchModalCert').val('');
+              $('#modalCertDetail').modal('show');
+
+              $.ajax({
+                  url: '<?= base_url("dashboard/index/get_unit_cert_detail"); ?>',
+                  type: 'POST',
+                  data: { unit: unit, jab: jab, status: status },
+                  dataType: 'json',
+                  success: function(data) {
+                      var html = '';
+                      if (data && data.length > 0) {
+                          $.each(data, function(idx, item) {
+                              var statusBadge = (item.no_sertifikat === 'Belum Bersertifikat') 
+                                  ? '<span class="label label-danger" style="font-size: 10px;">Belum Bersertifikat</span>' 
+                                  : '<span class="label label-success" style="font-size: 10px;"><i class="fa fa-certificate"></i> ' + item.no_sertifikat + '</span>';
+                              
+                              html += '<tr>' +
+                                  '<td class="text-center">' + (idx + 1) + '</td>' +
+                                  '<td class="text-center"><b>' + item.kode_satker + '</b></td>' +
+                                  '<td>' + item.nama_satker + '</td>' +
+                                  '<td>' + item.nip + '</td>' +
+                                  '<td><b>' + item.nama_pegawai + '</b></td>' +
+                                  '<td>' + statusBadge + '</td>' +
+                              '</tr>';
+                          });
+                      } else {
+                          html = '<tr><td colspan="6" class="text-center" style="padding: 20px; color: #64748b;"><b>Tidak ada data pejabat untuk kategori ini</b></td></tr>';
+                      }
+                      $('#tblModalCert tbody').html(html);
+                  },
+                  error: function() {
+                      $('#tblModalCert tbody').html('<tr><td colspan="6" class="text-center text-danger" style="padding: 20px;">Gagal memuat data detail satker. Silakan coba lagi.</td></tr>');
+                  }
+              });
+          }
+
+          $(document).ready(function() {
+              var pageSize = 7;
+              var currentPage = 1;
+              var $allRows = $('#tblUnitUtama tbody tr');
+
+              function renderUnitTable() {
+                  var searchTerm = $('#searchUnitUtama').val().toLowerCase().trim();
+                  var matchedRows = [];
+
+                  $allRows.each(function() {
+                      var text = $(this).find('td:first').text().toLowerCase();
+                      if (text.indexOf(searchTerm) !== -1) {
+                          matchedRows.push($(this));
+                      } else {
+                          $(this).hide();
+                      }
+                  });
+
+                  var totalFiltered = matchedRows.length;
+                  var totalPages = Math.ceil(totalFiltered / pageSize) || 1;
+                  if (currentPage > totalPages) currentPage = totalPages;
+                  if (currentPage < 1) currentPage = 1;
+
+                  var startIdx = (currentPage - 1) * pageSize;
+                  var endIdx = startIdx + pageSize;
+
+                  $.each(matchedRows, function(index, $row) {
+                      if (index >= startIdx && index < endIdx) {
+                          $row.show();
+                      } else {
+                          $row.hide();
+                      }
+                  });
+
+                  var startCount = totalFiltered === 0 ? 0 : startIdx + 1;
+                  var endCount = Math.min(endIdx, totalFiltered);
+                  $('#unitUtamaPageInfo').html('Menampilkan <b>' + startCount + ' - ' + endCount + '</b> dari <b>' + totalFiltered + '</b> unit');
+
+                  var $p = $('#unitUtamaPagination').empty();
+                  if (totalPages > 1) {
+                      var prevClass = (currentPage === 1) ? 'disabled' : '';
+                      $p.append('<li class="' + prevClass + '"><a href="#" class="unit-page-link" data-page="' + (currentPage - 1) + '">&laquo; Prev</a></li>');
+
+                      for (var i = 1; i <= totalPages; i++) {
+                          var activeClass = (i === currentPage) ? 'active' : '';
+                          $p.append('<li class="' + activeClass + '"><a href="#" class="unit-page-link" data-page="' + i + '">' + i + '</a></li>');
+                      }
+
+                      var nextClass = (currentPage === totalPages) ? 'disabled' : '';
+                      $p.append('<li class="' + nextClass + '"><a href="#" class="unit-page-link" data-page="' + (currentPage + 1) + '">Next &raquo;</a></li>');
+                  }
+              }
+
+              $(document).on('click', '.unit-page-link', function(e) {
+                  e.preventDefault();
+                  var target = parseInt($(this).attr('data-page'));
+                  if (!isNaN(target) && !$(this).parent().hasClass('disabled') && !$(this).parent().hasClass('active')) {
+                      currentPage = target;
+                      renderUnitTable();
+                  }
+              });
+
+              // Realtime search di modal detail
+              $('#searchModalCert').on('keyup input', function() {
+                  var term = $(this).val().toLowerCase().trim();
+                  $('#tblModalCert tbody tr').each(function() {
+                      var txt = $(this).text().toLowerCase();
+                      if (txt.indexOf(term) !== -1) {
+                          $(this).show();
+                      } else {
+                          $(this).hide();
+                      }
+                  });
+              });
+
+              // Realtime search tabel Unit Utama dengan pagination default 7
+              $('#searchUnitUtama').on('keyup input', function() {
+                  currentPage = 1;
+                  renderUnitTable();
+              });
+
+              renderUnitTable();
+          });
+          </script>
+          <?php } ?>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <!-- <div class="row">
   <div class="col-md-12">
@@ -260,67 +654,48 @@ $controller = 'index';
             </div>
       </div>
       <div class='box-body' style>
-          <div>
-             <?php /*<select name='pub_tahun' id='pub_tahun' class='form-control' style='width:128px;'>
-                  <option value=''>-- Pilih Tahun -- </option>
-                  <?php
-                    $sql = "SELECT ctahun from app_t_usulan 
-                        where ctahun IS NOT NULL and ctahun != '' group by ctahun";
-                    $rows = $this->db->query($sql)->result();
-                    foreach($rows as $r) {
-                      if ( $r->ctahun == $this->session->settahun ) $selected = ' selected ';
-                      else $selected = ' ';
-                  ?>
-                      <option <?=$selected;?> value='<?=$r->ctahun;?>'><?=$r->ctahun;?></option>
-                  <?php
-                    }
-                  ?>
-              </select>
-              */?>
-              <select onChange="reload_grid('<?=base_url();?>perbend/<?=$controller4;?>/lists/0/'+$(this).val(), '<?=$controller4;?>');" name='pub_bulan' id='pub_bulan' class='form-control' style='width:228px;'>
-                  <option value=''>-- Pilih Bulan -- </option>
-                  <?php
-                    foreach($this->session->sysparam->nama_bulan as $k=>$v) {
-                  ?>
-                      <option value='<?=$k;?>'><?=$v;?></option>
-                  <?php
-                    }
-                  ?>
-              </select>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
+              <div>
+                <select onChange="apply_pub_filter();" name='pub_bulan' id='pub_bulan' class='form-control' style='width:200px;'>
+                    <option value='0'>-- Semua Bulan --</option>
+                    <?php
+                      if (!empty($this->session->sysparam->nama_bulan)) {
+                        foreach($this->session->sysparam->nama_bulan as $k=>$v) {
+                    ?>
+                        <option value='<?=$k;?>'><?=$v;?></option>
+                    <?php
+                        }
+                      }
+                    ?>
+                </select>
+              </div>
+              <div>
+                <select onChange="apply_pub_filter();" name='pub_status' id='pub_status' class='form-control' style='width:220px;'>
+                    <option value='all'>-- Semua Status --</option>
+                    <option value='0'>Draft</option>
+                    <option value='1'>Menunggu Verifikasi</option>
+                    <option value='2'>Verifikasi I</option>
+                    <option value='3'>Verifikasi II</option>
+                    <option value='4'>Disetujui</option>
+                    <option value='5'>Ditolak</option>
+                    <option value='6'>Proses TTD SK</option>
+                    <option value='7'>Selesai</option>
+                </select>
+              </div>
           </div>
-          <hr/>
+          <script type="text/javascript">
+            function apply_pub_filter() {
+                var bulan = $('#pub_bulan').val() || '0';
+                var status = $('#pub_status').val() || 'all';
+                var url = '<?=base_url();?>perbend/<?=$controller4;?>/lists/0/' + bulan + '/0/0/' + status;
+                reload_grid(url, '<?=$controller4;?>');
+            }
+          </script>
+          <hr style="margin-top: 8px; margin-bottom: 12px;"/>
           <!-- pagination -->
             <div id='<?=$controller4;?>_paging-table-data'></div>
       		<!-- pagination -->
       		<div id='<?=$controller4;?>_table-data' style='overflow-x: auto;'></div>
-      </div>
-   </div>
-  </div>
-</div>
-
-<?php $controller3='laporan1';?>
-<div class="row">
-  <div class="col-md-12">
-    <div class='box'>
-       <div class='box-header with-border'>
-            <h3 class='box-title'>Bendahara Bersertifikat</h3>
-            <div class='box-tools pull-right'>
-                <button type='button' class='btn btn-box-tool' data-widget='collapse'>    
-                 <i class='fa fa-minus'></i>
-                </button>        
-            </div>
-      </div>
-      <div class='box-body' style>
-          <!-- pagination -->
-            <div id='<?=$controller3;?>_paging-table-data'></div>
-      		<!-- pagination -->
-      		<div id='<?=$controller3;?>_table-data' style='overflow-x: auto;'></div>
-
-          <?php /* Grafik Bendahara Bersertifikat disembunyikan atas permintaan user untuk menghilangkan space kosong dashboard.
-          <div id='<?=$controller3;?>_graph-data'>
-            <center><?=$charts;?></center>
-          </div>
-          */ ?>
       </div>
    </div>
   </div>
@@ -398,12 +773,82 @@ $(document).ready(function() {
   $('body').addClass('skin-blue sidebar-mini active sidebar-collapse');
   
 	reload_grid("<?=base_url();?>dashboard/index/lists", '<?=$controller;?>');
-	//reload_grid("<?=base_url();?>dashboard/ews/lists", '<?=$controller2;?>');
-	
 	reload_grid("<?=base_url();?>perbend/<?=$controller4;?>/lists", '<?=$controller4;?>');
-	
   reload_grid("<?=base_url();?>perbend/<?=$controller3;?>/lists", '<?=$controller3;?>');
-      // Tampilkan pop-up "Apa kabar" saat halaman dimuat
+
+  // Tampilkan pop-up pengumuman
   $("#messageModal").modal("show");
+
+  // Render Chart 1: Status Usulan SK (Doughnut Chart)
+  <?php if (!empty($summary_info['chart_status'])) { 
+    $st_labels = json_encode($summary_info['chart_status']['labels']);
+    $st_values = json_encode($summary_info['chart_status']['values']);
+    $st_colors = json_encode($summary_info['chart_status']['colors']);
+  ?>
+  if ($('#chartStatusUsulan').length && typeof Chart !== 'undefined') {
+    var ctx1 = document.getElementById('chartStatusUsulan').getContext('2d');
+    new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels: <?= $st_labels; ?>,
+        datasets: [{
+          data: <?= $st_values; ?>,
+          backgroundColor: <?= $st_colors; ?>,
+          borderWidth: 2,
+          borderColor: '#ffffff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          position: 'right',
+          labels: { boxWidth: 12, fontSize: 11 }
+        }
+      }
+    });
+  }
+  <?php } ?>
+
+  // Render Chart 2: Pejabat Perbendaharaan (Bar Chart)
+  <?php 
+    $bar_labels = array();
+    $bar_values = array();
+    if (!empty($data)) {
+      foreach ($data as $k => $v) {
+        if (is_array($v) && isset($v['kode']) && isset($v['total'])) {
+          $bar_labels[] = $v['kode'];
+          $bar_values[] = (int)$v['total'];
+        }
+      }
+    }
+    $js_bar_labels = json_encode($bar_labels);
+    $js_bar_values = json_encode($bar_values);
+  ?>
+  if ($('#chartUnitUtama').length && typeof Chart !== 'undefined') {
+    var ctx2 = document.getElementById('chartUnitUtama').getContext('2d');
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: <?= $js_bar_labels; ?>,
+        datasets: [{
+          label: 'Jumlah Pejabat',
+          data: <?= $js_bar_values; ?>,
+          backgroundColor: ['#10b981', '#0ea5e9', '#f59e0b', '#f43f5e', '#ea580c', '#1e3a8a', '#8b5cf6'],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: { display: false },
+        scales: {
+          yAxes: [{
+            ticks: { beginAtZero: true, precision: 0 }
+          }]
+        }
+      }
+    });
+  }
 });
 </script>

@@ -7,7 +7,7 @@ class Progress_usulan_satker extends MX_Controller {
   var $prefix = 'app';
   var $table;
   var $kriteria;
-  var $limit=10;
+  var $limit=5;
 	public function __construct() {
 		parent::__construct();
 		$controller = "perbend/progress_usulan_satker";
@@ -27,16 +27,18 @@ class Progress_usulan_satker extends MX_Controller {
 	}
 	
 	function manipulate_list_button($buttons) {
-		$btn_cetak = "<button type='button' class='btn btn-succcess btn_cetak' id='btn_cetak' name='btn_cetak'>
-		<i class='fas fa-xlsx'></i> Cetak</button>";
-		$buttons['cetak'] = $btn_cetak;
-		
-		return $buttons;
+		// Halaman monitoring only — semua tombol aksi disembunyikan
+		return array();
 	}
 	
-	function lists($xx='', $q=0, $page_ke='',$reports=false) {
-		//echo $page_ke.' => '.$q.' => ';
-		//exit;
+	function lists($xx='', $q=0, $page_ke='',$reports=false, $status='all') {
+		if (isset($_REQUEST['pub_bulan']) && $_REQUEST['pub_bulan'] !== '') {
+			$q = $_REQUEST['pub_bulan'];
+		}
+		if (isset($_REQUEST['pub_status']) && $_REQUEST['pub_status'] !== '') {
+			$status = $_REQUEST['pub_status'];
+		}
+
 	    $ar_status = [];
 	    $rows = $this->getall('', $this->prefix.'_m_status', '*', array('ldeleted'=>0));
 		foreach($rows as $r) {
@@ -50,7 +52,7 @@ class Progress_usulan_satker extends MX_Controller {
 		}
 		
 		
-		$ar_statususulan = $this->session->sysparam->status_usulan;
+		$ar_statususulan = (!empty($this->session->sysparam) && isset($this->session->sysparam->status_usulan)) ? $this->session->sysparam->status_usulan : array();
 		
   		$html = '';
   		
@@ -67,23 +69,20 @@ class Progress_usulan_satker extends MX_Controller {
   		$page = (int)$this->session->{$this->table.'_page'};
   
   		$offset = ($page - 1) * $this->limit;
-  		/*foreach ($_POST as $k=>$v) {			
-  			$krit = str_replace("q_", "", $k);
-  			$this->kriteria[$krit] = $this->input->post($k);
-  		}
-  		$this->kriteria = (object)$this->kriteria;*/
 		$this->kriteria['q'] = $q;
+		$this->kriteria['status'] = $status;
 		$this->kriteria = (object) $this->kriteria;
   		
   		if ($reports) $style='border=1';
   		else $style='';
 		
 		if ( $reports ) {
-			$nama_bulan = ($q !=0 ? $this->session->sysparam->nama_bulan[$q] : "Semua");
+			$nama_bulan = (!empty($q) && $q !== '0' ? (isset($this->session->sysparam->nama_bulan[$q]) ? $this->session->sysparam->nama_bulan[$q] : $q) : "Semua Bulan");
+			$st_title = ($status !== 'all' && isset($ar_statususulan[$status])) ? $ar_statususulan[$status] : "Semua Status";
 			$html .= "<table>
 				<tr>
-					<td colspan='7'>
-					Periode {$nama_bulan} {$this->session->settahun}
+					<td colspan='9'>
+					Periode {$nama_bulan} {$this->session->settahun} | Status: {$st_title}
 					</td>
 				</tr>
 				</table>";
@@ -103,11 +102,28 @@ class Progress_usulan_satker extends MX_Controller {
   		$html .= "</tr>";
   		
   	
-  		//$kodeunitutamas = $this->session->kodeunitutamas; 
-		if ( !empty(trim($q))) { $q = (int)$q;$qq = " and month(dtglusul) = '{$q}'";} else {$qq="";}
-  		$sql = "Select id, ijns, iunorid, cnousul, dtglusul, istatusid, tcreated, ijnsprubhnid, istatus 
-		  		from app_t_usulan where ijns = 1  {$qq} 
-				and ctahun = '{$this->session->settahun}'"; //and istatus != 7
+		if ( !empty(trim($q)) && $q !== '0') { $q = (int)$q; $qq = " and month(dtglusul) = '{$q}'"; } else { $qq = ""; }
+		
+		$qstatus = "";
+		if ($status !== 'all' && $status !== '' && $status !== NULL) {
+			$st_val = (int)$status;
+			$qstatus = " and istatus = '{$st_val}'";
+		}
+
+		// Filter 144 Satker Aktif dari DAFTAR SATKER.xlsx
+		$active_codes = get_active_excel_satker_codes();
+		$qactive = "";
+		if (!empty($active_codes)) {
+			$str_active_codes = implode(',', array_map(array($this->db, 'escape'), $active_codes));
+			$qactive = " and iunorid in ({$str_active_codes})";
+		}
+
+		$settahun = !empty($this->session->settahun) ? $this->session->settahun : date('Y');
+
+  		// Tampilkan usulan HANYA dari 144 Satker Aktif Excel
+		$sql = "Select id, ijns, iunorid, cnousul, dtglusul, istatusid, tcreated, ijnsprubhnid, istatus 
+		  		from app_t_usulan where ijns = 1 {$qq} {$qstatus} {$qactive}
+				and ctahun = '{$settahun}'";
   		
   		if (!$this->session->superuser) {
   		  $orgs = [];
@@ -119,6 +135,8 @@ class Progress_usulan_satker extends MX_Controller {
   		  $sql .=" and iunorid in ({$orgs})";
   		}
   		
+  		$sql .= " ORDER BY dtglusul DESC, id DESC";
+  		
     		$query = $this->db->query($sql);
     
 		if ( !$reports ) {
@@ -126,18 +144,14 @@ class Progress_usulan_satker extends MX_Controller {
     		$this->session->jum_page = ceil($this->session->jum_rec/$this->limit);
     
     		$sql .= " limit {$this->limit} offset {$offset}";
-    		//echo $sql;
-    		//exit;
 		}
     		
     		$query = $this->db->query($sql);
     		if ($query) {
     		$rows = $query->result();
     		if (sizeOf($rows) > 0) {
-    		//foreach($kodeunitutamas as $kode) {
 
     		// OPTIMIZED: preload app_m_unor sekali, hindari N+1 query
-    		// Buat lookup array app_m_unor SEKALI sebelum loop (hindari N+1 query)
     		$unor_rows = $this->getall('', 'app_m_unor', 'kode, kode_atasan, nama', array('deleted' => 0));
     		$unor_map = []; // kode => ['nama' => ..., 'kode_atasan' => ...]
     		$unor_nama_map = []; // kode => nama
@@ -160,9 +174,13 @@ class Progress_usulan_satker extends MX_Controller {
     		$html .= "<td>".(isset($unor_nama_map[$kode->iunorid]) ? $unor_nama_map[$kode->iunorid] : $kode->iunorid)."( ".$kode->iunorid.")</td>";
   		  $html .= "<td><a href='".base_url()."perbend/t_usulan_satker'>".$kode->cnousul."</a></td>";
   		  $html .= "<td>".date('d-m-y', strtotime($kode->dtglusul))."</td>";
-  		  $html .= "<td>".$ar_statusid[$kode->istatusid]."</td>";
-  		  $html .= "<td>".$ar_statusperubahan[$kode->ijnsprubhnid]."</td>";
-  		  $html .= "<td>".$ar_statususulan[$kode->istatus]."</td>";
+  		  $st_id = isset($ar_statusid[$kode->istatusid]) ? $ar_statusid[$kode->istatusid] : '-';
+  		  $st_perubahan = isset($ar_statusperubahan[$kode->ijnsprubhnid]) ? $ar_statusperubahan[$kode->ijnsprubhnid] : '-';
+  		  $st_usulan = (is_array($ar_statususulan) && isset($ar_statususulan[$kode->istatus])) ? $ar_statususulan[$kode->istatus] : (isset($kode->istatus) ? 'Status '.$kode->istatus : '-');
+
+  		  $html .= "<td>".$st_id."</td>";
+  		  $html .= "<td>".$st_perubahan."</td>";
+  		  $html .= "<td>".$st_usulan."</td>";
   		  $html .= "<td>".date('d-m-y', strtotime($kode->tcreated))."</td>";
   		  $html .= "</tr>";
 
@@ -180,7 +198,7 @@ class Progress_usulan_satker extends MX_Controller {
 			$html .= "<div align='right'>
 						<button type='button' name='btn_export_excel_progress' 
 						id='btn_export_excel_progress' class='btn btn-success btn_export_excel_progress' 
-						onclick='download(\"".base_url()."perbend/progress_usulan_satker/lists/0/{$q}/0/1\");'
+						onclick='download(\"".base_url()."perbend/progress_usulan_satker/lists/0/{$q}/0/1/{$status}\");'
 						><i class='fas fa-file-excel'></i> Export Ke Excel</button>
 					</div>";
 					
@@ -190,10 +208,7 @@ class Progress_usulan_satker extends MX_Controller {
 						  }
 					  </script>";
 					
-			//$pagination = $this->_ajaxPagination(base_url()."perbend/progress_usulan_satker/lists/{$page_ke}/{$q}", $this->kriteria, 'progress_usulan_satker');
-			//print_r($this->kriteria);
-			//exit;
-			$pagination = $this->_ajaxPagination(base_url()."perbend/progress_usulan_satker/lists/{$offset}/{$q}", $this->kriteria, 'progress_usulan_satker', $offset);
+			$pagination = $this->_ajaxPagination(base_url()."perbend/progress_usulan_satker/lists/{$offset}/{$q}/0/0/{$status}", $this->kriteria, 'progress_usulan_satker', $offset);
 			$hasil['html'] = array('html'=>$html);
 			$hasil['pagination'] = $pagination;
 	  

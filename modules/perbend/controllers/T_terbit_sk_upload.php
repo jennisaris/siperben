@@ -34,7 +34,7 @@ class T_terbit_sk_upload extends MX_Controller {
 		$this->_addTable($this->table);
 		$this->_addField($this->table, 'id', '', true, true);
 		$this->_addField($this->table, 'ijns', 'ijns', false, true);
-    $this->_addField($this->table, 'cnosk', 'No. SK', false, true);
+		$this->_addField($this->table, 'cnosk', 'No. SK Menteri', false, false);
 		$this->_addField($this->table, 'lampiran', 'Lampiran Surat Keputusan (dlm format PDF)', false, false, true);
     $this->_addField($this->table, 'tfile2', 'tfile', false, true);
 		$this->_addField($this->table, 'vtype', 'vtype', false, true);
@@ -175,7 +175,12 @@ class T_terbit_sk_upload extends MX_Controller {
     }
     
     function after_update_processor($id, $post) {
-		//print_r($post);exit;
+		// Sinkronkan No. SK Menteri ke tabel usulan pegawai jika diubah
+		if (!empty($post->app_t_usulan_sk_cnosk)) {
+			$this->db->where('inoskid', $id);
+			$this->db->update('app_t_usulan_pegawai', array('cnosk' => trim($post->app_t_usulan_sk_cnosk)));
+		}
+
       if ($post->app_t_usulan_sk_tfile2 != null) {
         $sql = "Select b.iusulanid, a.istatusid, 
                 a.ijnsprubhnid,

@@ -1,300 +1,925 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graphify - Siperben Knowledge Graph Explorer</title>
-    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --panel-bg: #1e293b;
-            --accent: #38bdf8;
-            --text: #f8fafc;
-            --text-dim: #94a3b8;
-            --border: #334155;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background: var(--bg-color); color: var(--text); overflow: hidden; display: flex; height: 100vh; }
-        
-        #sidebar {
-            width: 360px;
-            background: var(--panel-bg);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-            gap: 1rem;
-            z-index: 10;
-            overflow-y: auto;
-        }
-        .title-area h1 { font-size: 1.25rem; font-weight: 700; color: var(--accent); }
-        .title-area p { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem; }
-
-        .search-box input {
-            width: 100%;
-            padding: 0.6rem 0.8rem;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: #fff;
-            font-size: 0.9rem;
-        }
-        .search-box input:focus { outline: 1px solid var(--accent); }
-
-        .section-box {
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.8rem;
-        }
-        .section-box h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 0.5rem; }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-        .stat-card { background: #1e293b; padding: 0.5rem; border-radius: 4px; text-align: center; }
-        .stat-card .val { font-size: 1.1rem; font-weight: bold; color: var(--accent); }
-        .stat-card .lbl { font-size: 0.7rem; color: var(--text-dim); }
-
-        .legend-list { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.8rem; }
-        .legend-item { display: flex; align-items: center; gap: 0.5rem; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-
-        #main-canvas { flex: 1; position: relative; }
-        svg { width: 100%; height: 100%; cursor: grab; }
-        svg:active { cursor: grabbing; }
-
-        .node text { font-size: 10px; fill: #cbd5e1; pointer-events: none; }
-        .node circle { stroke: #fff; stroke-width: 1.5px; transition: r 0.2s, stroke 0.2s; }
-        .node:hover circle { stroke: var(--accent); stroke-width: 3px; cursor: pointer; }
-
-        .link { stroke: #475569; stroke-opacity: 0.5; stroke-width: 1.2px; }
-        .link.highlight { stroke: var(--accent); stroke-opacity: 1; stroke-width: 2.5px; }
-
-        #detail-drawer {
-            position: absolute;
-            right: 1rem;
-            top: 1rem;
-            width: 320px;
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            display: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            z-index: 20;
-        }
-        #detail-drawer h2 { font-size: 1.1rem; color: var(--accent); word-break: break-all; }
-        #detail-drawer p { font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-dim); }
-        #detail-drawer .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; background: #334155; color: #fff; margin-top: 0.4rem; }
-        #detail-drawer .close-btn { float: right; cursor: pointer; color: #94a3b8; font-weight: bold; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siperben — Knowledge Graph</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3348;
+    --text: #e2e8f0;
+    --text-muted: #8892a4;
+    --accent: #7c6be8;
+    --accent2: #5fd4a8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  header h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #a78bfa, #5fd4a8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  header .subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .stats-bar {
+    margin-left: auto;
+    display: flex;
+    gap: 20px;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-val {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+  .stat-lbl {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+  #sidebar {
+    width: 280px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .sidebar-section {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-section h3 {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .legend-item:hover { background: var(--surface2); }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .legend-label {
+    font-size: 0.78rem;
+    color: var(--text);
+  }
+  .legend-count {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 1px 6px;
+    border-radius: 10px;
+  }
+  #search-box {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  #search-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #search-input:focus { border-color: var(--accent); }
+  #node-detail {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 14px;
+  }
+  #node-detail.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-align: center;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .detail-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .detail-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .detail-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+  .detail-path {
+    font-size: 0.72rem;
+    color: var(--accent2);
+    font-family: monospace;
+    background: var(--surface2);
+    padding: 4px 8px;
+    border-radius: 4px;
+    word-break: break-all;
+    margin-bottom: 10px;
+  }
+  .detail-section-title {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin: 10px 0 5px;
+  }
+  .detail-edge {
+    font-size: 0.76rem;
+    color: var(--text);
+    padding: 3px 0 3px 8px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 3px;
+  }
+  .detail-edge .rel-label {
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    font-style: italic;
+  }
+  .god-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+    color: #1a0000;
+    font-size: 0.62rem;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 800;
+    margin-left: 6px;
+    text-transform: uppercase;
+  }
+  #canvas-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 50%, #131726 0%, #0a0c13 100%);
+  }
+  canvas { position: absolute; top: 0; left: 0; cursor: grab; }
+  canvas:active { cursor: grabbing; }
+  .controls {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ctrl-btn {
+    width: 32px; height: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .ctrl-btn:hover { background: var(--surface2); }
+  .tooltip {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    pointer-events: none;
+    z-index: 100;
+    max-width: 200px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    display: none;
+  }
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-chip {
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: capitalize;
+  }
+  .filter-chip.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
 </head>
 <body>
-    <div id="sidebar">
-        <div class="title-area">
-            <h1>Siperben Graphify</h1>
-            <p>Interactive Knowledge Graph Explorer</p>
-        </div>
-
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="Search node by name or type..." oninput="filterGraph()">
-        </div>
-
-        <div class="section-box">
-            <h3>Graph Statistics</h3>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="val" id="stat-nodes">0</div><div class="lbl">Nodes</div></div>
-                <div class="stat-card"><div class="val" id="stat-edges">0</div><div class="lbl">Edges</div></div>
-                <div class="stat-card"><div class="val" id="stat-gods">0</div><div class="lbl">God Nodes</div></div>
-                <div class="stat-card"><div class="val" id="stat-comms">0</div><div class="lbl">Communities</div></div>
-            </div>
-        </div>
-
-        <div class="section-box">
-            <h3>Communities</h3>
-            <div class="legend-list" id="community-legend"></div>
-        </div>
-
-        <div class="section-box">
-            <h3>Top God Nodes</h3>
-            <div class="legend-list" id="god-nodes-list"></div>
-        </div>
+<header>
+  <div>
+    <h1>⬡ Siperben — Knowledge Graph</h1>
+    <div class="subtitle">Sistem Perbendaharaan · CodeIgniter 3 HMVC · Kemendikbud/Biro Keuangan</div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-val" id="s-nodes">72</div><div class="stat-lbl">Nodes</div></div>
+    <div class="stat"><div class="stat-val" id="s-edges">131</div><div class="stat-lbl">Edges</div></div>
+    <div class="stat"><div class="stat-val" id="s-comm">7</div><div class="stat-lbl">Communities</div></div>
+    <div class="stat"><div class="stat-val" id="s-gods">8</div><div class="stat-lbl">God Nodes</div></div>
+  </div>
+</header>
+<div class="layout">
+  <div id="sidebar">
+    <div id="search-box">
+      <input id="search-input" placeholder="🔍  Search nodes…" type="text"/>
     </div>
-
-    <div id="main-canvas">
-        <svg id="svg-canvas"></svg>
-        <div id="detail-drawer">
-            <span class="close-btn" onclick="closeDetail()">&times;</span>
-            <h2 id="detail-title">Node Name</h2>
-            <div id="detail-type" class="badge">Type</div>
-            <p id="detail-desc">Description</p>
-            <div style="margin-top:0.8rem; font-size:0.8rem; color:#94a3b8;">
-                <div>Degree: <span id="detail-degree" style="color:#fff;">0</span> (In: <span id="detail-in">0</span>, Out: <span id="detail-out">0</span>)</div>
-                <div>Community: <span id="detail-comm" style="color:#fff;">-</span></div>
-                <div id="detail-file-container" style="margin-top:0.4rem; word-break:break-all;">File: <span id="detail-file" style="color:#38bdf8;">-</span></div>
-            </div>
-        </div>
+    <div class="filter-bar" id="filter-bar"></div>
+    <div class="sidebar-section">
+      <h3>Communities</h3>
+      <div id="legend"></div>
     </div>
+    <div id="node-detail" class="empty">
+      <div style="font-size:2rem;">🔵</div>
+      <div>Click a node to inspect it</div>
+    </div>
+  </div>
+  <div id="canvas-wrap">
+    <canvas id="graph"></canvas>
+    <div class="tooltip" id="tooltip"></div>
+    <div class="controls">
+      <button class="ctrl-btn" id="zoom-in" title="Zoom In">+</button>
+      <button class="ctrl-btn" id="zoom-out" title="Zoom Out">−</button>
+      <button class="ctrl-btn" id="zoom-fit" title="Fit">⊡</button>
+    </div>
+  </div>
+</div>
 
-    <script>
-        let graphData = null;
-        let simulation = null;
-        let svg, g, link, node;
+<script>
+// ── GRAPH DATA ────────────────────────────────────────────────────
+const GRAPH = {
+  meta: { project:"siperben", total_nodes:72, total_edges:131, total_communities:7 },
+  communities: [
+    { id:0, name:"Framework Core",       color:"#6c5ce7" },
+    { id:1, name:"Auth & Privileges",    color:"#e17055" },
+    { id:2, name:"Treasury (Perbend)",   color:"#00b894" },
+    { id:3, name:"HR (Kepegawaian)",     color:"#0984e3" },
+    { id:4, name:"Dashboard & Reports",  color:"#fdcb6e" },
+    { id:5, name:"Infra & Config",       color:"#636e72" },
+    { id:6, name:"External Integrations",color:"#fd79a8" }
+  ],
+  nodes: [
+    { id:"CI_Core",                label:"CodeIgniter 3",             type:"framework",        community:0, weight:10, path:"system/",               description:"Base framework: CI_Controller, CI_Model, routing, DB, session" },
+    { id:"MX_Extension",           label:"MX (Modular Extensions)",   type:"library",          community:0, weight:9,  path:"application/third_party/MX", description:"HMVC extension enabling modular controllers (MX_Controller)" },
+    { id:"MY_Controller",          label:"MY_Controller",             type:"class",            community:0, weight:8,  path:"application/core/MY_Controller.php", description:"Thin wrapper extending CI_Controller" },
+    { id:"MX_Controller",          label:"MX_Controller",             type:"class",            community:0, weight:10, path:"application/third_party/MX", description:"Base for all module controllers; provides _setTitle, _addTable, _addField, _init, getall", god_node:true },
+    { id:"IndexPHP",               label:"index.php",                 type:"entrypoint",       community:0, weight:8,  path:"index.php",             description:"Single entry point; sets ENVIRONMENT=production, boots CodeIgniter" },
+    { id:"Routes",                 label:"routes.php",                type:"config",           community:0, weight:6,  path:"application/config/routes.php", description:"default_controller=privileges/user_authentication" },
+    { id:"Autoload",               label:"autoload.php",              type:"config",           community:5, weight:7,  path:"application/config/autoload.php", description:"Autoloads: database, template, session, url, own, check_session, captcha, properties" },
+    { id:"Database_Config",        label:"database.php",              type:"config",           community:5, weight:6,  path:"application/config/database.php", description:"MySQL via mysqli, host=127.0.0.1, db=db_app01" },
+    { id:"Properties_Config",      label:"properties.php",            type:"config",           community:5, weight:7,  path:"application/config/properties.php", description:"App name, theme=AdminLTE-2.3.11, dbprefix=priv_, DIKBUD API creds" },
+    { id:"Hooks_Config",           label:"hooks.php",                 type:"config",           community:5, weight:5,  path:"application/config/hooks.php", description:"post_controller_constructor → Operator_registration_check" },
+    { id:"Template_Lib",           label:"Template Library",          type:"library",          community:5, weight:9,  path:"application/libraries/Template.php", description:"Renders themed views; checks allowview, composes header/menu/sidebar/breadcrumbs/footer", god_node:true },
+    { id:"Curl_Lib",               label:"Curl Library",              type:"library",          community:6, weight:5,  path:"application/libraries/Curl.php", description:"HTTP cURL wrapper for outbound REST calls" },
+    { id:"Rest_Lib",               label:"Rest Library",              type:"library",          community:6, weight:6,  path:"application/libraries/Rest.php", description:"REST client abstraction for DIKBUD HR API" },
+    { id:"Own_Helper",             label:"own_helper.php",            type:"helper",           community:5, weight:8,  path:"application/helpers/own_helper.php", description:"Custom utilities: access_menu(), write_log()" },
+    { id:"CheckSession_Helper",    label:"check_session_helper.php",  type:"helper",           community:1, weight:9,  path:"application/helpers/check_session_helper.php", description:"Guards every request: enforces session, redirects unauthenticated, calls access_menu()", god_node:true },
+    { id:"AuditLog_Helper",        label:"audit_log_helper.php",      type:"helper",           community:5, weight:4,  path:"application/helpers/audit_log_helper.php", description:"Writes audit logs" },
+    { id:"OperatorHook",           label:"Operator_registration_check",type:"hook",            community:1, weight:6,  path:"application/hooks/Operator_registration_check.php", description:"Validates operator registration before any action" },
+    { id:"User_Authentication",    label:"User_Authentication",       type:"controller",       community:1, weight:10, path:"modules/privileges/controllers/User_authentication.php", description:"Login/logout; validates captcha+credentials, sets session (logged_in, groupid, username, orgs)", god_node:true },
+    { id:"User_Ctrl",              label:"User (Privileges)",         type:"controller",       community:1, weight:7,  path:"modules/privileges/controllers/User.php", description:"CRUD for priv_t_user; user account management" },
+    { id:"Group_Ctrl",             label:"Group",                     type:"controller",       community:1, weight:5,  path:"modules/privileges/controllers/Group.php", description:"CRUD for user groups (priv_t_group)" },
+    { id:"Menu_Ctrl",              label:"Menu",                      type:"controller",       community:1, weight:6,  path:"modules/privileges/controllers/Menu.php", description:"CRUD for priv_t_menu; defines navigation tree" },
+    { id:"Sysparam_Ctrl",          label:"Sysparam",                  type:"controller",       community:1, weight:4,  path:"modules/privileges/controllers/Sysparam.php", description:"System parameter management" },
+    { id:"Approval_Pengguna",      label:"Approval_pengguna",         type:"controller",       community:1, weight:5,  path:"modules/privileges/controllers/Approval_pengguna.php", description:"User registration approval workflow" },
+    { id:"Change_Password",        label:"Change_password",           type:"controller",       community:1, weight:4,  path:"modules/privileges/controllers/Change_password.php", description:"Password change for logged-in users" },
+    { id:"Registrasi_Ctrl",        label:"Registrasi",                type:"controller",       community:1, weight:5,  path:"application/controllers/Registrasi.php", description:"Self-registration (excluded from session check)" },
+    { id:"Dashboard_Index",        label:"Dashboard Index",           type:"controller",       community:4, weight:8,  path:"modules/dashboard/controllers/Index.php", description:"Executive dashboard; shows total stats, chart data by unit utama" },
+    { id:"T_terbit_sk",            label:"T_terbit_sk",               type:"controller",       community:2, weight:10, path:"modules/perbend/controllers/T_terbit_sk.php", description:"SK issuance: list, approve, generate Word/PDF; 1646 lines GOD controller", god_node:true },
+    { id:"T_usulan_satker",        label:"T_usulan_satker",           type:"controller",       community:2, weight:10, path:"modules/perbend/controllers/T_usulan_satker.php", description:"Proposal submission by Satker; document upload + PHPMailer; 2263 lines GOD controller", god_node:true },
+    { id:"T_usulan_satker2",       label:"T_usulan_satker2",          type:"controller",       community:2, weight:7,  path:"modules/perbend/controllers/T_usulan_satker2.php", description:"Secondary proposal type variant" },
+    { id:"T_usulan_daftar",        label:"T_usulan_daftar",           type:"controller",       community:2, weight:8,  path:"modules/perbend/controllers/T_usulan_daftar.php", description:"Proposal list for treasury staff (49836 bytes)" },
+    { id:"T_usulan_daftar2",       label:"T_usulan_daftar2",          type:"controller",       community:2, weight:6,  path:"modules/perbend/controllers/T_usulan_daftar2.php", description:"Secondary proposal list" },
+    { id:"T_usulan_approval",      label:"T_usulan_approval",         type:"controller",       community:2, weight:8,  path:"modules/perbend/controllers/T_usulan_approval.php", description:"Approval workflow (37989 bytes)" },
+    { id:"T_usulan_verifikator",   label:"T_usulan_verifikator",      type:"controller",       community:2, weight:7,  path:"modules/perbend/controllers/T_usulan_verifikator.php", description:"Verifier proposal workflow" },
+    { id:"T_usulan_verifikator2",  label:"T_usulan_verifikator2",     type:"controller",       community:2, weight:6,  path:"modules/perbend/controllers/T_usulan_verifikator2.php", description:"Second verifikator variant" },
+    { id:"T_usulan_nosk",          label:"T_usulan_nosk",             type:"controller",       community:2, weight:6,  path:"modules/perbend/controllers/T_usulan_nosk.php", description:"SK number assignment (19341 bytes)" },
+    { id:"T_usulan_pelatihan",     label:"T_usulan_pelatihan",        type:"controller",       community:2, weight:6,  path:"modules/perbend/controllers/T_usulan_pelatihan.php", description:"Training proposal workflow (31158 bytes)" },
+    { id:"T_usulan_pelatihan_daftar",label:"T_usulan_pelatihan_daftar",type:"controller",     community:2, weight:5,  path:"modules/perbend/controllers/T_usulan_pelatihan_daftar.php", description:"Training proposal list view" },
+    { id:"T_verifikasi_usulan_pelatihan",label:"T_verifikasi_pelatihan",type:"controller",    community:2, weight:5,  path:"modules/perbend/controllers/T_verifikasi_usulan_pelatihan.php", description:"Verification of training proposals" },
+    { id:"T_alasan_penolakan",     label:"T_alasan_penolakan",        type:"controller",       community:2, weight:5,  path:"modules/perbend/controllers/T_alasan_penolakan.php", description:"Rejection reason CRUD (20140 bytes)" },
+    { id:"T_sprint",               label:"T_sprint",                  type:"controller",       community:2, weight:3,  path:"modules/perbend/controllers/T_sprint.php", description:"Sprint tracking" },
+    { id:"T_unggah",               label:"T_unggah",                  type:"controller",       community:2, weight:5,  path:"modules/perbend/controllers/T_unggah.php", description:"Document upload management (14739 bytes)" },
+    { id:"T_terbit_sk_upload",     label:"T_terbit_sk_upload",        type:"controller",       community:2, weight:5,  path:"modules/perbend/controllers/T_terbit_sk_upload.php", description:"SK upload management (17938 bytes)" },
+    { id:"M_unor_Perbend",         label:"M_unor (Perbend)",          type:"controller",       community:2, weight:10, path:"modules/perbend/controllers/M_unor.php", description:"Org unit master; getRekursifUnit() hierarchy traversal; required by Dashboard+Auth", god_node:true },
+    { id:"M_unor_rekening",        label:"M_unor_rekening",           type:"controller",       community:2, weight:6,  path:"modules/perbend/controllers/M_unor_rekening.php", description:"Org unit bank account management (25410 bytes)" },
+    { id:"M_informasi",            label:"M_informasi",               type:"controller",       community:2, weight:5,  path:"modules/perbend/controllers/M_informasi.php", description:"Information/announcement management" },
+    { id:"M_jabatan_Perbend",      label:"M_Jabatan (Perbend)",       type:"controller",       community:2, weight:4,  path:"modules/perbend/controllers/M_Jabatan.php", description:"Position master for treasury" },
+    { id:"M_pelatihan",            label:"M_pelatihan",               type:"controller",       community:2, weight:4,  path:"modules/perbend/controllers/M_pelatihan.php", description:"Training program master data" },
+    { id:"M_perubahan",            label:"M_perubahan",               type:"controller",       community:2, weight:4,  path:"modules/perbend/controllers/M_perubahan.php", description:"Change type master (jenis perubahan)" },
+    { id:"M_status",               label:"M_status",                  type:"controller",       community:2, weight:4,  path:"modules/perbend/controllers/M_status.php", description:"Status master for proposals and SK" },
+    { id:"M_ttd",                  label:"M_ttd",                     type:"controller",       community:2, weight:5,  path:"modules/perbend/controllers/M_ttd.php", description:"Signature (TTD) master; authorized signatories for SK" },
+    { id:"M_upload_rekening",      label:"M_upload_rekening",         type:"controller",       community:2, weight:4,  path:"modules/perbend/controllers/M_upload_rekening.php", description:"Bank account file upload" },
+    { id:"Cetak_sk_satker",        label:"Cetak_sk_satker",           type:"controller",       community:2, weight:5,  path:"modules/perbend/controllers/Cetak_sk_satker.php", description:"SK printing for satker" },
+    { id:"Daftar_sk_kemdikbud",    label:"Daftar_sk_kemdikbud",       type:"controller",       community:2, weight:5,  path:"modules/perbend/controllers/Daftar_sk_kemdikbud.php", description:"List of Kemendikbud central SKs" },
+    { id:"Detail_sk_kemdikbud",    label:"Detail_sk_kemdikbud",       type:"controller",       community:2, weight:5,  path:"modules/perbend/controllers/Detail_sk_kemdikbud.php", description:"SK detail view Kemendikbud (21829 bytes)" },
+    { id:"Detail_sk_kpa",          label:"Detail_sk_kpa",             type:"controller",       community:2, weight:6,  path:"modules/perbend/controllers/Detail_sk_kpa.php", description:"SK detail for KPA (26101 bytes)" },
+    { id:"Croscek_data",           label:"Croscek_data",              type:"controller",       community:2, weight:5,  path:"modules/perbend/controllers/Croscek_data.php", description:"Data cross-check/validation" },
+    { id:"Ews_Ctrl",               label:"EWS (Early Warning)",       type:"controller",       community:4, weight:6,  path:"modules/perbend/controllers/Ews.php", description:"Early Warning System for treasury anomaly detection" },
+    { id:"Laporan1",               label:"Laporan1",                  type:"controller",       community:4, weight:5,  path:"modules/perbend/controllers/Laporan1.php", description:"Report 1 by criteria" },
+    { id:"Laporan2",               label:"Laporan2",                  type:"controller",       community:4, weight:5,  path:"modules/perbend/controllers/Laporan2.php", description:"Report 2" },
+    { id:"Laporan3",               label:"Laporan3",                  type:"controller",       community:4, weight:5,  path:"modules/perbend/controllers/Laporan3.php", description:"Report 3" },
+    { id:"Laporan4",               label:"Laporan4",                  type:"controller",       community:4, weight:5,  path:"modules/perbend/controllers/Laporan4.php", description:"Report 4" },
+    { id:"Laporan_Dashboard",      label:"Laporan_dashboard",         type:"controller",       community:4, weight:5,  path:"modules/perbend/controllers/Laporan_dashboard.php", description:"Dashboard report aggregation" },
+    { id:"Detail_laporan1",        label:"Detail_laporan1",           type:"controller",       community:4, weight:5,  path:"modules/perbend/controllers/Detail_laporan1.php", description:"Detailed breakdown of Report 1 (14838 bytes)" },
+    { id:"Rekap_pejabat",          label:"Rekap_pejabat",             type:"controller",       community:4, weight:5,  path:"modules/perbend/controllers/Rekap_pejabat.php", description:"Summary of officials by position" },
+    { id:"M_pegawai",              label:"M_pegawai",                 type:"controller",       community:3, weight:8,  path:"modules/kepegawaian/controllers/M_pegawai.php", description:"Employee master data CRUD; requires M_kepegawaian_unor (1138 lines)" },
+    { id:"M_jabatan_Kepeg",        label:"M_jabatan (Kepegawaian)",   type:"controller",       community:3, weight:5,  path:"modules/kepegawaian/controllers/M_jabatan.php", description:"Job position master for HR (10222 bytes)" },
+    { id:"M_kepegawaian_unor",     label:"M_kepegawaian_unor",        type:"controller",       community:3, weight:8,  path:"modules/kepegawaian/controllers/M_kepegawaian_unor.php", description:"HR org unit controller (23064 bytes); required by User_Auth and M_pegawai", god_node:true },
+    { id:"M_golongan",             label:"M_golongan",                type:"controller",       community:3, weight:4,  path:"modules/kepegawaian/controllers/M_golongan.php", description:"Civil service rank/grade master" },
+    { id:"M_jenis_jabatan",        label:"M_jenis_jabatan",           type:"controller",       community:3, weight:4,  path:"modules/kepegawaian/controllers/M_jenis_jabatan.php", description:"Position type (functional/structural) master" },
+    { id:"M_tarik_pegawai",        label:"M_tarik_pegawai",           type:"controller",       community:3, weight:6,  path:"modules/kepegawaian/controllers/M_tarik_pegawai.php", description:"Pull employee data from DIKBUD HR API" },
+    { id:"DB_MySQL",               label:"MySQL (db_app01)",          type:"database",         community:5, weight:10, path:"db/",                   description:"MySQL ~8.6GB; table prefixes: priv_, kepeg_, app_", god_node:true },
+    { id:"PHPWord",                label:"PhpWord",                   type:"dependency",       community:6, weight:6,  path:"vendor/phpoffice/phpword", description:"Word document generation for SK letters" },
+    { id:"MPDF",                   label:"mPDF",                      type:"dependency",       community:6, weight:6,  path:"vendor/mpdf/mpdf",      description:"PDF generation for SK and reports" },
+    { id:"PHPMailer",              label:"PHPMailer",                 type:"dependency",       community:6, weight:5,  path:"vendor/phpmailer",      description:"Email notifications for proposal status" },
+    { id:"DIKBUD_API",             label:"DIKBUD HR API",             type:"external_service", community:6, weight:6,  path:"https://data-sdm.kemdikbud.go.id", description:"External Kemendikbud HR data service (Basic Auth)" },
+    { id:"AdminLTE",               label:"AdminLTE 2.3.11",           type:"theme",            community:5, weight:5,  path:"application/views/themes/AdminLTE-2.3.11", description:"Bootstrap admin template with partials" }
+  ],
+  edges: [
+    { source:"IndexPHP",             target:"CI_Core",              relation:"boots" },
+    { source:"CI_Core",              target:"MX_Extension",         relation:"extends_with" },
+    { source:"MX_Extension",         target:"MX_Controller",        relation:"provides" },
+    { source:"MY_Controller",        target:"CI_Core",              relation:"extends" },
+    { source:"MX_Controller",        target:"MY_Controller",        relation:"chains_to" },
+    { source:"Routes",               target:"User_Authentication",  relation:"default_route" },
+    { source:"Routes",               target:"Registrasi_Ctrl",      relation:"routes_to" },
+    { source:"Autoload",             target:"Template_Lib",         relation:"autoloads" },
+    { source:"Autoload",             target:"DB_MySQL",             relation:"autoloads_db" },
+    { source:"Autoload",             target:"CheckSession_Helper",  relation:"autoloads" },
+    { source:"Autoload",             target:"Own_Helper",           relation:"autoloads" },
+    { source:"Autoload",             target:"Properties_Config",    relation:"autoloads_config" },
+    { source:"Hooks_Config",         target:"OperatorHook",         relation:"registers" },
+    { source:"OperatorHook",         target:"User_Authentication",  relation:"fires_before" },
+    { source:"CheckSession_Helper",  target:"User_Authentication",  relation:"redirects_to" },
+    { source:"CheckSession_Helper",  target:"Own_Helper",           relation:"calls" },
+    { source:"CheckSession_Helper",  target:"AuditLog_Helper",      relation:"calls" },
+    { source:"User_Authentication",  target:"MX_Controller",        relation:"extends" },
+    { source:"User_Authentication",  target:"M_kepegawaian_unor",   relation:"require_once" },
+    { source:"User_Authentication",  target:"M_unor_Perbend",       relation:"require_once" },
+    { source:"User_Authentication",  target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"User_Authentication",  target:"Template_Lib",         relation:"uses_display" },
+    { source:"User_Ctrl",            target:"MX_Controller",        relation:"extends" },
+    { source:"User_Ctrl",            target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"Group_Ctrl",           target:"MX_Controller",        relation:"extends" },
+    { source:"Menu_Ctrl",            target:"MX_Controller",        relation:"extends" },
+    { source:"Sysparam_Ctrl",        target:"MX_Controller",        relation:"extends" },
+    { source:"Approval_Pengguna",    target:"MX_Controller",        relation:"extends" },
+    { source:"Change_Password",      target:"MX_Controller",        relation:"extends" },
+    { source:"Template_Lib",         target:"DB_MySQL",             relation:"queries_menu" },
+    { source:"Template_Lib",         target:"AdminLTE",             relation:"renders_with" },
+    { source:"Template_Lib",         target:"Own_Helper",           relation:"calls" },
+    { source:"Dashboard_Index",      target:"MX_Controller",        relation:"extends" },
+    { source:"Dashboard_Index",      target:"M_unor_Perbend",       relation:"require_once" },
+    { source:"Dashboard_Index",      target:"DB_MySQL",             relation:"reads" },
+    { source:"Dashboard_Index",      target:"Template_Lib",         relation:"uses_display" },
+    { source:"T_terbit_sk",          target:"MX_Controller",        relation:"extends" },
+    { source:"T_terbit_sk",          target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"T_terbit_sk",          target:"PHPWord",              relation:"generates_doc" },
+    { source:"T_terbit_sk",          target:"MPDF",                 relation:"generates_pdf" },
+    { source:"T_terbit_sk",          target:"M_unor_Perbend",       relation:"uses" },
+    { source:"T_terbit_sk",          target:"Template_Lib",         relation:"uses_display" },
+    { source:"T_terbit_sk",          target:"M_ttd",                relation:"references" },
+    { source:"T_terbit_sk",          target:"M_perubahan",          relation:"references" },
+    { source:"T_terbit_sk",          target:"M_status",             relation:"references" },
+    { source:"T_usulan_satker",      target:"MX_Controller",        relation:"extends" },
+    { source:"T_usulan_satker",      target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"T_usulan_satker",      target:"PHPMailer",            relation:"sends_email" },
+    { source:"T_usulan_satker",      target:"M_unor_Perbend",       relation:"uses" },
+    { source:"T_usulan_satker",      target:"Template_Lib",         relation:"uses_display" },
+    { source:"T_usulan_satker",      target:"M_status",             relation:"references" },
+    { source:"T_usulan_satker",      target:"M_perubahan",          relation:"references" },
+    { source:"T_usulan_satker",      target:"T_usulan_daftar",      relation:"navigates_to" },
+    { source:"T_usulan_satker2",     target:"MX_Controller",        relation:"extends" },
+    { source:"T_usulan_satker2",     target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"T_usulan_daftar",      target:"MX_Controller",        relation:"extends" },
+    { source:"T_usulan_daftar",      target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"T_usulan_daftar2",     target:"MX_Controller",        relation:"extends" },
+    { source:"T_usulan_approval",    target:"MX_Controller",        relation:"extends" },
+    { source:"T_usulan_approval",    target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"T_usulan_approval",    target:"PHPMailer",            relation:"sends_email" },
+    { source:"T_usulan_approval",    target:"T_alasan_penolakan",   relation:"uses" },
+    { source:"T_usulan_verifikator", target:"MX_Controller",        relation:"extends" },
+    { source:"T_usulan_verifikator", target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"T_usulan_verifikator2",target:"MX_Controller",        relation:"extends" },
+    { source:"T_usulan_nosk",        target:"MX_Controller",        relation:"extends" },
+    { source:"T_usulan_nosk",        target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"T_usulan_pelatihan",   target:"MX_Controller",        relation:"extends" },
+    { source:"T_usulan_pelatihan",   target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"T_usulan_pelatihan_daftar",target:"MX_Controller",    relation:"extends" },
+    { source:"T_verifikasi_usulan_pelatihan",target:"MX_Controller",relation:"extends" },
+    { source:"T_alasan_penolakan",   target:"MX_Controller",        relation:"extends" },
+    { source:"T_alasan_penolakan",   target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"T_sprint",             target:"MX_Controller",        relation:"extends" },
+    { source:"T_unggah",             target:"MX_Controller",        relation:"extends" },
+    { source:"T_unggah",             target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"T_terbit_sk_upload",   target:"MX_Controller",        relation:"extends" },
+    { source:"M_unor_Perbend",       target:"MX_Controller",        relation:"extends" },
+    { source:"M_unor_Perbend",       target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"M_unor_rekening",      target:"MX_Controller",        relation:"extends" },
+    { source:"M_unor_rekening",      target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"M_informasi",          target:"MX_Controller",        relation:"extends" },
+    { source:"M_jabatan_Perbend",    target:"MX_Controller",        relation:"extends" },
+    { source:"M_pelatihan",          target:"MX_Controller",        relation:"extends" },
+    { source:"M_perubahan",          target:"MX_Controller",        relation:"extends" },
+    { source:"M_status",             target:"MX_Controller",        relation:"extends" },
+    { source:"M_ttd",                target:"MX_Controller",        relation:"extends" },
+    { source:"M_upload_rekening",    target:"MX_Controller",        relation:"extends" },
+    { source:"Cetak_sk_satker",      target:"MX_Controller",        relation:"extends" },
+    { source:"Cetak_sk_satker",      target:"PHPWord",              relation:"generates_doc" },
+    { source:"Daftar_sk_kemdikbud",  target:"MX_Controller",        relation:"extends" },
+    { source:"Detail_sk_kemdikbud",  target:"MX_Controller",        relation:"extends" },
+    { source:"Detail_sk_kpa",        target:"MX_Controller",        relation:"extends" },
+    { source:"Croscek_data",         target:"MX_Controller",        relation:"extends" },
+    { source:"Ews_Ctrl",             target:"MX_Controller",        relation:"extends" },
+    { source:"Ews_Ctrl",             target:"DB_MySQL",             relation:"reads" },
+    { source:"Laporan1",             target:"MX_Controller",        relation:"extends" },
+    { source:"Laporan1",             target:"DB_MySQL",             relation:"reads" },
+    { source:"Laporan2",             target:"MX_Controller",        relation:"extends" },
+    { source:"Laporan3",             target:"MX_Controller",        relation:"extends" },
+    { source:"Laporan4",             target:"MX_Controller",        relation:"extends" },
+    { source:"Laporan_Dashboard",    target:"MX_Controller",        relation:"extends" },
+    { source:"Detail_laporan1",      target:"MX_Controller",        relation:"extends" },
+    { source:"Rekap_pejabat",        target:"MX_Controller",        relation:"extends" },
+    { source:"M_pegawai",            target:"MX_Controller",        relation:"extends" },
+    { source:"M_pegawai",            target:"M_kepegawaian_unor",   relation:"require_once" },
+    { source:"M_pegawai",            target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"M_pegawai",            target:"M_jabatan_Kepeg",      relation:"references" },
+    { source:"M_pegawai",            target:"M_golongan",           relation:"references" },
+    { source:"M_kepegawaian_unor",   target:"MX_Controller",        relation:"extends" },
+    { source:"M_kepegawaian_unor",   target:"DB_MySQL",             relation:"reads_writes" },
+    { source:"M_jabatan_Kepeg",      target:"MX_Controller",        relation:"extends" },
+    { source:"M_golongan",           target:"MX_Controller",        relation:"extends" },
+    { source:"M_jenis_jabatan",      target:"MX_Controller",        relation:"extends" },
+    { source:"M_tarik_pegawai",      target:"MX_Controller",        relation:"extends" },
+    { source:"M_tarik_pegawai",      target:"Rest_Lib",             relation:"uses" },
+    { source:"M_tarik_pegawai",      target:"DIKBUD_API",           relation:"calls_api" },
+    { source:"Rest_Lib",             target:"Curl_Lib",             relation:"uses" },
+    { source:"Curl_Lib",             target:"DIKBUD_API",           relation:"http_calls" },
+    { source:"Dashboard_Index",      target:"Laporan_Dashboard",    relation:"links_to" },
+    { source:"Properties_Config",    target:"DIKBUD_API",           relation:"provides_creds" },
+    { source:"Database_Config",      target:"DB_MySQL",             relation:"connects_to" }
+  ]
+};
 
-        const colorMap = {
-            'Perbendaharaan (Treasury & SK)': '#38bdf8',
-            'Kepegawaian (HR & Staff)': '#4ade80',
-            'Privileges & User Mgmt': '#f43f5e',
-            'Dashboard & Analytics': '#fbbf24',
-            'Public & Auth Actions': '#a855f7',
-            'Configuration': '#64748b',
-            'System Core': '#ec4899',
-            'Shared Utilities': '#14b8a6',
-            'General & Infrastructure': '#94a3b8'
-        };
+// ── CANVAS GRAPH ENGINE ──────────────────────────────────────────
+const canvas = document.getElementById('graph');
+const ctx = canvas.getContext('2d');
+const wrap = document.getElementById('canvas-wrap');
 
-        fetch('graph.json')
-            .then(res => res.json())
-            .then(data => {
-                graphData = data;
-                initUI();
-                renderGraph();
-            });
+let nodes = [], links = [];
+let transform = { x: 0, y: 0, scale: 1 };
+let dragging = false, dragNode = null;
+let mouseX = 0, mouseY = 0, panStart = null;
+let hoveredNode = null, selectedNode = null;
+let activeFilter = 'all';
+let searchTerm = '';
 
-        function initUI() {
-            document.getElementById('stat-nodes').innerText = graphData.nodes.length;
-            document.getElementById('stat-edges').innerText = graphData.edges.length;
-            document.getElementById('stat-gods').innerText = graphData.god_nodes.length;
-            document.getElementById('stat-comms').innerText = Object.keys(graphData.communities).length;
+const commColors = {};
+GRAPH.communities.forEach(c => commColors[c.id] = c.color);
 
-            const legendEl = document.getElementById('community-legend');
-            Object.keys(graphData.communities).forEach(comm => {
-                const color = colorMap[comm] || '#94a3b8';
-                legendEl.innerHTML += `
-                    <div class="legend-item">
-                        <span class="dot" style="background:${color}"></span>
-                        <span>${comm} (${graphData.communities[comm]})</span>
-                    </div>
-                `;
-            });
+function typeShape(type) {
+  const map = { framework:'diamond', library:'hexagon', config:'rect', helper:'rect',
+                hook:'triangle', controller:'circle', database:'cylinder', 
+                dependency:'hexagon', external_service:'star', theme:'rect',
+                class:'circle', entrypoint:'star' };
+  return map[type] || 'circle';
+}
 
-            const godEl = document.getElementById('god-nodes-list');
-            graphData.god_nodes.slice(0, 8).forEach(g => {
-                godEl.innerHTML += `
-                    <div class="legend-item" style="cursor:pointer;" onclick="selectNode('${g.id}')">
-                        <span style="color:#38bdf8; font-weight:bold;">★ ${g.label}</span>
-                        <span style="color:#94a3b8; font-size:0.75rem;">(deg: ${g.degree})</span>
-                    </div>
-                `;
-            });
-        }
+function initNodes() {
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+  nodes = GRAPH.nodes.map((n, i) => {
+    const angle = (i / GRAPH.nodes.length) * Math.PI * 2;
+    const r = 280 + (n.weight * 10);
+    return {
+      ...n,
+      x: W/2 + Math.cos(angle)*r + (Math.random()-0.5)*100,
+      y: H/2 + Math.sin(angle)*r + (Math.random()-0.5)*100,
+      vx: 0, vy: 0,
+      radius: Math.max(8, n.weight * 2.2)
+    };
+  });
+  links = GRAPH.edges.map(e => ({
+    ...e,
+    source: nodes.find(n => n.id === e.source),
+    target: nodes.find(n => n.id === e.target)
+  })).filter(l => l.source && l.target);
+}
 
-        function renderGraph() {
-            const width = document.getElementById('main-canvas').clientWidth;
-            const height = document.getElementById('main-canvas').clientHeight;
+// Force-directed layout
+let simRunning = true, simStep = 0;
+function simulate() {
+  if (!simRunning) return;
+  const alpha = Math.max(0.001, 0.3 * (1 - simStep/300));
+  simStep++;
+  if (simStep > 300) simRunning = false;
 
-            svg = d3.select("#svg-canvas");
-            svg.selectAll("*").remove();
+  // Repulsion
+  for (let i=0; i<nodes.length; i++) {
+    for (let j=i+1; j<nodes.length; j++) {
+      const a=nodes[i], b=nodes[j];
+      let dx=b.x-a.x, dy=b.y-a.y;
+      const dist=Math.sqrt(dx*dx+dy*dy)||1;
+      const force = 3000 / (dist*dist);
+      const fx = (dx/dist)*force*alpha;
+      const fy = (dy/dist)*force*alpha;
+      a.vx -= fx; a.vy -= fy;
+      b.vx += fx; b.vy += fy;
+    }
+  }
 
-            g = svg.append("g");
+  // Attraction along edges
+  links.forEach(l => {
+    if (!l.source || !l.target) return;
+    const dx = l.target.x - l.source.x;
+    const dy = l.target.y - l.source.y;
+    const dist = Math.sqrt(dx*dx+dy*dy)||1;
+    const ideal = 120;
+    const force = (dist - ideal) * 0.05 * alpha;
+    const fx = (dx/dist)*force;
+    const fy = (dy/dist)*force;
+    l.source.vx += fx; l.source.vy += fy;
+    l.target.vx -= fx; l.target.vy -= fy;
+  });
 
-            // Zoom behavior
-            const zoom = d3.zoom().on("zoom", (event) => {
-                g.attr("transform", event.transform);
-            });
-            svg.call(zoom);
+  // Community clustering
+  const centers = {};
+  GRAPH.communities.forEach(c => { centers[c.id]={x:0,y:0,count:0}; });
+  nodes.forEach(n => { centers[n.community].x+=n.x; centers[n.community].y+=n.y; centers[n.community].count++; });
+  Object.keys(centers).forEach(k => {
+    const c = centers[k];
+    if (c.count) { c.x/=c.count; c.y/=c.count; }
+  });
+  nodes.forEach(n => {
+    const c = centers[n.community];
+    n.vx += (c.x - n.x) * 0.008 * alpha;
+    n.vy += (c.y - n.y) * 0.008 * alpha;
+  });
 
-            const nodes = graphData.nodes.map(d => Object.create(d));
-            const links = graphData.edges.map(d => Object.create(d));
+  nodes.forEach(n => {
+    if (n === dragNode) return;
+    n.vx *= 0.7; n.vy *= 0.7;
+    n.x += n.vx; n.y += n.vy;
+  });
+}
 
-            simulation = d3.forceSimulation(nodes)
-                .force("link", d3.forceLink(links).id(d => d.id).distance(80))
-                .force("charge", d3.forceManyBody().strength(-150))
-                .force("center", d3.forceCenter(width / 2, height / 2))
-                .force("collision", d3.forceCollide().radius(d => Math.max(8, d.degree * 2)));
+// Drawing helpers
+function drawShape(x, y, r, shape, color, stroke, strokeW=1.5) {
+  ctx.beginPath();
+  switch(shape) {
+    case 'diamond':
+      ctx.moveTo(x, y-r*1.3); ctx.lineTo(x+r*1.3, y); ctx.lineTo(x, y+r*1.3); ctx.lineTo(x-r*1.3, y); ctx.closePath(); break;
+    case 'hexagon': {
+      for(let i=0;i<6;i++){
+        const a=Math.PI/2+i*Math.PI/3;
+        i===0?ctx.moveTo(x+r*Math.cos(a),y+r*Math.sin(a)):ctx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a));
+      } ctx.closePath(); break; }
+    case 'triangle':
+      ctx.moveTo(x, y-r*1.3); ctx.lineTo(x+r*1.3, y+r); ctx.lineTo(x-r*1.3, y+r); ctx.closePath(); break;
+    case 'rect':
+      ctx.rect(x-r, y-r*0.7, r*2, r*1.4); break;
+    case 'star': {
+      for(let i=0;i<10;i++){
+        const a=i*Math.PI/5-Math.PI/2;
+        const ir=i%2===1?r*0.45:r;
+        i===0?ctx.moveTo(x+ir*Math.cos(a),y+ir*Math.sin(a)):ctx.lineTo(x+ir*Math.cos(a),y+ir*Math.sin(a));
+      } ctx.closePath(); break; }
+    default:
+      ctx.arc(x, y, r, 0, Math.PI*2);
+  }
+  ctx.fillStyle = color;
+  ctx.fill();
+  if (stroke) {
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = strokeW;
+    ctx.stroke();
+  }
+}
 
-            link = g.append("g")
-                .selectAll("line")
-                .data(links)
-                .join("line")
-                .attr("class", "link");
+function isVisible(n) {
+  if (activeFilter !== 'all' && n.type !== activeFilter) return false;
+  if (searchTerm && !n.label.toLowerCase().includes(searchTerm) && !n.id.toLowerCase().includes(searchTerm)) return false;
+  return true;
+}
 
-            node = g.append("g")
-                .selectAll(".node")
-                .data(nodes)
-                .join("g")
-                .attr("class", "node")
-                .call(d3.drag()
-                    .on("start", dragstarted)
-                    .on("drag", dragged)
-                    .on("end", dragended))
-                .on("click", (event, d) => showDetail(d));
+function draw() {
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.translate(transform.x, transform.y);
+  ctx.scale(transform.scale, transform.scale);
 
-            node.append("circle")
-                .attr("r", d => Math.max(6, Math.min(20, 5 + d.degree * 1.5)))
-                .attr("fill", d => colorMap[d.community] || '#94a3b8');
+  // Draw edges
+  links.forEach(l => {
+    if (!isVisible(l.source) || !isVisible(l.target)) return;
+    const dx = l.target.x - l.source.x;
+    const dy = l.target.y - l.source.y;
+    const dist = Math.sqrt(dx*dx+dy*dy)||1;
+    const isHighlighted = selectedNode && (l.source === selectedNode || l.target === selectedNode);
+    const alpha2 = selectedNode ? (isHighlighted ? 0.9 : 0.05) : 0.25;
 
-            node.append("text")
-                .attr("dx", 12)
-                .attr("dy", ".35em")
-                .text(d => d.label);
+    ctx.beginPath();
+    ctx.moveTo(l.source.x, l.source.y);
+    ctx.lineTo(l.target.x, l.target.y);
+    ctx.strokeStyle = isHighlighted
+      ? commColors[l.source.community] + 'cc'
+      : commColors[l.source.community] + Math.round(alpha2*255).toString(16).padStart(2,'0');
+    ctx.lineWidth = isHighlighted ? 2 : 1;
+    ctx.stroke();
 
-            simulation.on("tick", () => {
-                link
-                    .attr("x1", d => d.source.x)
-                    .attr("y1", d => d.source.y)
-                    .attr("x2", d => d.target.x)
-                    .attr("y2", d => d.target.y);
+    // Arrow
+    if (isHighlighted) {
+      const ax = l.target.x - (dx/dist)*l.target.radius;
+      const ay = l.target.y - (dy/dist)*l.target.radius;
+      const angle = Math.atan2(dy, dx);
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(ax - 8*Math.cos(angle-0.4), ay - 8*Math.sin(angle-0.4));
+      ctx.lineTo(ax - 8*Math.cos(angle+0.4), ay - 8*Math.sin(angle+0.4));
+      ctx.closePath();
+      ctx.fillStyle = commColors[l.source.community];
+      ctx.fill();
+    }
+  });
 
-                node
-                    .attr("transform", d => `translate(${d.x},${d.y})`);
-            });
-        }
+  // Draw nodes
+  nodes.forEach(n => {
+    if (!isVisible(n)) return;
+    const color = commColors[n.community];
+    const isSelected = n === selectedNode;
+    const isHovered = n === hoveredNode;
+    const dimmed = selectedNode && n !== selectedNode &&
+      !links.some(l => (l.source===selectedNode&&l.target===n)||(l.target===selectedNode&&l.source===n));
+    const nodeAlpha = dimmed ? 0.2 : 1;
 
-        function dragstarted(event, d) {
-            if (!event.active) simulation.alphaTarget(0.3).restart();
-            d.fx = d.x;
-            d.fy = d.y;
-        }
-        function dragged(event, d) {
-            d.fx = event.x;
-            d.fy = event.y;
-        }
-        function dragended(event, d) {
-            if (!event.active) simulation.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
-        }
+    ctx.globalAlpha = nodeAlpha;
 
-        function showDetail(d) {
-            document.getElementById('detail-drawer').style.display = 'block';
-            document.getElementById('detail-title').innerText = d.label;
-            document.getElementById('detail-type').innerText = d.type.toUpperCase();
-            document.getElementById('detail-desc').innerText = d.description || 'No detailed description available.';
-            document.getElementById('detail-degree').innerText = d.degree;
-            document.getElementById('detail-in').innerText = d.inDegree;
-            document.getElementById('detail-out').innerText = d.outDegree;
-            document.getElementById('detail-comm').innerText = d.community;
-            document.getElementById('detail-file').innerText = d.filepath || 'N/A';
+    // Glow for god nodes or selected
+    if (n.god_node || isSelected) {
+      const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.radius*2.5);
+      grd.addColorStop(0, color + '55');
+      grd.addColorStop(1, color + '00');
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.radius*2.5, 0, Math.PI*2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+    }
 
-            // Highlight connections
-            link.classed("highlight", l => l.source.id === d.id || l.target.id === d.id);
-        }
+    const shape = typeShape(n.type);
+    const strokeColor = isSelected ? '#ffffff' : isHovered ? color : color + '99';
+    const strokeW = isSelected ? 3 : isHovered ? 2 : 1.5;
 
-        function closeDetail() {
-            document.getElementById('detail-drawer').style.display = 'none';
-            link.classed("highlight", false);
-        }
+    // Fill with gradient
+    const grd2 = ctx.createRadialGradient(n.x-n.radius*0.3, n.y-n.radius*0.3, 0, n.x, n.y, n.radius*1.5);
+    grd2.addColorStop(0, color + 'ee');
+    grd2.addColorStop(1, color + '66');
 
-        function selectNode(nodeId) {
-            const found = graphData.nodes.find(n => n.id === nodeId);
-            if (found) showDetail(found);
-        }
+    drawShape(n.x, n.y, n.radius, shape, grd2, strokeColor, strokeW);
 
-        function filterGraph() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            node.style("opacity", d => d.label.toLowerCase().includes(query) || d.type.toLowerCase().includes(query) ? 1 : 0.15);
-        }
-    </script>
+    // Labels
+    if (transform.scale > 0.6 || isSelected || isHovered) {
+      ctx.globalAlpha = nodeAlpha;
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `${isSelected?'bold ':''}${Math.max(9, 10/transform.scale*0.7)}px Segoe UI`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      const label = n.label.length > 20 ? n.label.slice(0,18)+'…' : n.label;
+      ctx.fillText(label, n.x, n.y + n.radius + 3);
+    }
+
+    ctx.globalAlpha = 1;
+  });
+
+  ctx.restore();
+  simulate();
+  requestAnimationFrame(draw);
+}
+
+// ── INTERACTION ──────────────────────────────────────────────────
+function toGraph(clientX, clientY) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: (clientX - rect.left - transform.x) / transform.scale,
+    y: (clientY - rect.top  - transform.y) / transform.scale
+  };
+}
+
+function findNode(cx, cy) {
+  const p = toGraph(cx, cy);
+  return nodes.slice().reverse().find(n => {
+    if (!isVisible(n)) return false;
+    const dx=n.x-p.x, dy=n.y-p.y;
+    return Math.sqrt(dx*dx+dy*dy) < n.radius+8;
+  });
+}
+
+canvas.addEventListener('mousedown', e => {
+  dragNode = findNode(e.clientX, e.clientY);
+  if (!dragNode) { dragging = true; panStart = {x:e.clientX-transform.x, y:e.clientY-transform.y}; }
+  else { simRunning = true; }
+});
+
+canvas.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  if (dragNode) {
+    const p = toGraph(e.clientX, e.clientY);
+    dragNode.x = p.x; dragNode.y = p.y;
+    dragNode.vx = 0; dragNode.vy = 0;
+  } else if (dragging && panStart) {
+    transform.x = e.clientX - panStart.x;
+    transform.y = e.clientY - panStart.y;
+  } else {
+    const h = findNode(e.clientX, e.clientY);
+    if (h !== hoveredNode) {
+      hoveredNode = h;
+      showTooltip(h, e);
+    }
+  }
+});
+
+canvas.addEventListener('mouseup', e => {
+  if (!dragging && !dragNode) {
+    const clicked = findNode(e.clientX, e.clientY);
+    if (clicked) showDetail(clicked);
+    else if (selectedNode) { selectedNode = null; }
+  }
+  dragging = false; dragNode = null; panStart = null;
+});
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const factor = e.deltaY < 0 ? 1.1 : 0.9;
+  const rect = canvas.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+  transform.x = cx - (cx-transform.x)*factor;
+  transform.y = cy - (cy-transform.y)*factor;
+  transform.scale *= factor;
+  transform.scale = Math.max(0.1, Math.min(5, transform.scale));
+}, { passive: false });
+
+// Tooltip
+const tooltip = document.getElementById('tooltip');
+function showTooltip(node, e) {
+  if (!node) { tooltip.style.display='none'; return; }
+  tooltip.innerHTML = `<strong>${node.label}</strong><br><span style="color:#8892a4;font-size:0.68rem">${node.type}</span>`;
+  tooltip.style.display = 'block';
+  tooltip.style.left = (e.clientX - wrap.getBoundingClientRect().left + 12) + 'px';
+  tooltip.style.top  = (e.clientY - wrap.getBoundingClientRect().top - 10) + 'px';
+}
+canvas.addEventListener('mouseleave', () => { tooltip.style.display='none'; hoveredNode=null; });
+
+// Node detail panel
+function showDetail(n) {
+  selectedNode = n;
+  const panel = document.getElementById('node-detail');
+  panel.classList.remove('empty');
+
+  const incoming = links.filter(l => l.target === n).map(l => `<div class="detail-edge">← ${l.source.label} <span class="rel-label">${l.relation}</span></div>`);
+  const outgoing = links.filter(l => l.source === n).map(l => `<div class="detail-edge">→ ${l.target.label} <span class="rel-label">${l.relation}</span></div>`);
+  const comm = GRAPH.communities.find(c=>c.id===n.community);
+
+  panel.innerHTML = `
+    <div class="detail-badge" style="background:${comm.color}33;color:${comm.color}">${n.type}</div>
+    ${n.god_node?'<span class="god-badge">⚡ God Node</span>':''}
+    <div class="detail-name">${n.label}</div>
+    <div class="detail-desc">${n.description||''}</div>
+    <div class="detail-path">${n.path||''}</div>
+    <div class="detail-section-title" style="color:${comm.color}">${comm.name}</div>
+    ${outgoing.length?`<div class="detail-section-title">→ Outgoing (${outgoing.length})</div>${outgoing.join('')}`:''}
+    ${incoming.length?`<div class="detail-section-title">← Incoming (${incoming.length})</div>${incoming.join('')}`:''}
+  `;
+}
+
+// Legend
+const legendEl = document.getElementById('legend');
+GRAPH.communities.forEach(c => {
+  const count = GRAPH.nodes.filter(n=>n.community===c.id).length;
+  const el = document.createElement('div');
+  el.className='legend-item';
+  el.innerHTML=`<div class="legend-dot" style="background:${c.color}"></div><div class="legend-label">${c.name}</div><div class="legend-count">${count}</div>`;
+  el.addEventListener('click', () => {
+    const focused = nodes.filter(n=>n.community===c.id);
+    selectedNode = null;
+    activeFilter='all';
+    searchTerm='';
+    document.getElementById('search-input').value='';
+    document.querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active'));
+  });
+  legendEl.appendChild(el);
+});
+
+// Filter chips
+const types = [...new Set(GRAPH.nodes.map(n=>n.type))];
+const filterBar = document.getElementById('filter-bar');
+['all',...types].forEach(t => {
+  const chip = document.createElement('div');
+  chip.className='filter-chip'+(t==='all'?' active':'');
+  chip.textContent = t==='all'?'All':t;
+  chip.addEventListener('click', ()=>{
+    activeFilter=t;
+    document.querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active'));
+    chip.classList.add('active');
+  });
+  filterBar.appendChild(chip);
+});
+
+// Search
+document.getElementById('search-input').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase().trim();
+});
+
+// Zoom controls
+document.getElementById('zoom-in').addEventListener('click', ()=>{ transform.scale=Math.min(5,transform.scale*1.25); });
+document.getElementById('zoom-out').addEventListener('click', ()=>{ transform.scale=Math.max(0.1,transform.scale*0.8); });
+document.getElementById('zoom-fit').addEventListener('click', ()=>{
+  transform={x:0,y:0,scale:1};
+  initNodes(); simRunning=true; simStep=0;
+});
+
+// Resize
+function resize() {
+  canvas.width  = wrap.clientWidth;
+  canvas.height = wrap.clientHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+initNodes();
+draw();
+</script>
 </body>
 </html>

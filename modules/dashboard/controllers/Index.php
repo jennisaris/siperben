@@ -15,9 +15,6 @@ class Index extends MX_Controller {
 	}
 	
 	public function index() {
-	  
-	  //$this->cews = new Ews;
-		
 		$data = array();
 		
 		if ($this->session->superuser) {
@@ -32,8 +29,154 @@ class Index extends MX_Controller {
 		
 		$results['result'] = $this->getdatacharts();
 		$data['charts'] = $this->load->view('d/chart', $results, true);
+		$data['summary_info'] = $this->get_dashboard_summary();
+		$data['unit_cert_breakdown'] = $this->get_unit_cert_breakdown();
 		
 		$this->template->display('d/index', $data, TRUE);
+	}
+
+	private function get_unit_cert_breakdown() {
+		$kodeunitutamas = $this->session->kodeunitutamas;
+		if (empty($kodeunitutamas)) return array();
+
+		$results = array();
+
+		foreach ($kodeunitutamas as $unit) {
+			$unit_id = trim($unit->id);
+			$unit_kode = trim($unit->kode);
+			$unit_ksat = !empty($unit->kode_satker) ? trim($unit->kode_satker) : '';
+			$abbrv = !empty($unit->abbrv) ? trim($unit->abbrv) : trim($unit->nama);
+
+			// Cek apakah $unit ini merupakan Unit Utama Eselon I (13801..13812 atau nama Eselon I)
+			$excel_satkers = get_excel_satkers_by_eselon($abbrv);
+			if (empty($excel_satkers) && !empty($unit_ksat)) {
+				$excel_satkers = get_excel_satkers_by_eselon($unit_ksat);
+			}
+
+			$ids = array();
+			$kodes = array();
+
+			if (!empty($excel_satkers)) {
+				// CASE A: Top-level Unit Utama Eselon I (Tampilan Superuser)
+				$str_satkers = implode(',', array_map(array($this->db, 'escape'), $excel_satkers));
+				$unor_rows = $this->db->query("SELECT id, kode, kode_satker FROM kepeg_m_unor WHERE kode_satker IN ({$str_satkers}) OR kode IN ({$str_satkers})")->result_array();
+
+				foreach ($unor_rows as $u) {
+					if (!empty($u['id'])) $ids[trim($u['id'])] = $this->db->escape(trim($u['id']));
+					if (!empty($u['kode'])) $kodes[trim($u['kode'])] = $this->db->escape(trim($u['kode']));
+					if (!empty($u['kode_satker'])) $kodes[trim($u['kode_satker'])] = $this->db->escape(trim($u['kode_satker']));
+				}
+				foreach ($excel_satkers as $code) {
+					$kodes[trim($code)] = $this->db->escape(trim($code));
+				}
+			} else {
+				// CASE B: Satuan Kerja Perorangan (Tampilan User Eselon I)
+				if (!empty($unit_id)) $ids[$unit_id] = $this->db->escape($unit_id);
+				if (!empty($unit_kode)) $kodes[$unit_kode] = $this->db->escape($unit_kode);
+				if (!empty($unit_ksat)) $kodes[$unit_ksat] = $this->db->escape($unit_ksat);
+
+				$esc_id = $this->db->escape($unit_id);
+				$child_unors = $this->db->query("SELECT id, kode, kode_satker FROM kepeg_m_unor WHERE id_atasan = {$esc_id}")->result_array();
+				foreach ($child_unors as $cu) {
+					if (!empty($cu['id'])) $ids[trim($cu['id'])] = $this->db->escape(trim($cu['id']));
+					if (!empty($cu['kode'])) $kodes[trim($cu['kode'])] = $this->db->escape(trim($cu['kode']));
+					if (!empty($cu['kode_satker'])) $kodes[trim($cu['kode_satker'])] = $this->db->escape(trim($cu['kode_satker']));
+				}
+			}
+
+			$str_ids = !empty($ids) ? implode(',', array_values($ids)) : "'0'";
+			$str_kodes = !empty($kodes) ? implode(',', array_values($kodes)) : "''";
+
+			$sql = "SELECT 
+						-- Bendahara (BP:2, BPn:3, BPP:6)
+						SUM(CASE WHEN p.cjabid2 IN (2,3,6) AND (p.cnobnt IS NOT NULL AND p.cnobnt != '') THEN 1 ELSE 0 END) AS bnd_cert,
+						SUM(CASE WHEN p.cjabid2 IN (2,3,6) AND (p.cnobnt IS NULL OR p.cnobnt = '') THEN 1 ELSE 0 END) AS bnd_uncert,
+						-- PPK (cjabid2 = 5)
+						SUM(CASE WHEN p.cjabid2 = 5 AND (p.cnopnt IS NOT NULL AND p.cnopnt != '') THEN 1 ELSE 0 END) AS ppk_cert,
+						SUM(CASE WHEN p.cjabid2 = 5 AND (p.cnopnt IS NULL OR p.cnopnt = '') THEN 1 ELSE 0 END) AS ppk_uncert,
+						-- PPSPM (cjabid2 = 4)
+						SUM(CASE WHEN p.cjabid2 = 4 AND (p.cnosnt IS NOT NULL AND p.cnosnt != '') THEN 1 ELSE 0 END) AS ppspm_cert,
+						SUM(CASE WHEN p.cjabid2 = 4 AND (p.cnosnt IS NULL OR p.cnosnt = '') THEN 1 ELSE 0 END) AS ppspm_uncert
+					FROM kepeg_m_pegawai p
+					WHERE (p.ikduker IN ({$str_ids}) OR p.ckduker IN ({$str_kodes}))";
+
+			$row = $this->db->query($sql)->row();
+
+			$results[] = array(
+				'unit'         => $abbrv,
+				'bnd_cert'     => (int)($row ? $row->bnd_cert : 0),
+				'bnd_uncert'   => (int)($row ? $row->bnd_uncert : 0),
+				'ppk_cert'     => (int)($row ? $row->ppk_cert : 0),
+				'ppk_uncert'   => (int)($row ? $row->ppk_uncert : 0),
+				'ppspm_cert'   => (int)($row ? $row->ppspm_cert : 0),
+				'ppspm_uncert' => (int)($row ? $row->ppspm_uncert : 0)
+			);
+		}
+
+		return $results;
+	}
+
+	private function get_dashboard_summary() {
+		$tahun = !empty($this->session->settahun) ? $this->session->settahun : date('Y');
+		
+		$q_satker = "";
+		if (!$this->session->superuser) {
+			$user_orgs = !empty($this->session->orgs) ? array_keys($this->session->orgs) : array();
+			if (!empty($user_orgs)) {
+				$str_orgs = implode(',', array_map(array($this->db, 'escape'), $user_orgs));
+				$q_satker = " AND iunorid IN ({$str_orgs})";
+			}
+		} else {
+			$active_codes = get_active_excel_satker_codes();
+			if (!empty($active_codes)) {
+				$str_active = implode(',', array_map(array($this->db, 'escape'), $active_codes));
+				$q_satker = " AND iunorid IN ({$str_active})";
+			}
+		}
+
+		$tot_usulan = (int)$this->db->query("SELECT COUNT(*) AS total FROM app_t_usulan WHERE ctahun=? AND ijns=1 AND istatus != 0 {$q_satker}", array($tahun))->row()->total;
+		$tot_proses = (int)$this->db->query("SELECT COUNT(*) AS total FROM app_t_usulan WHERE ctahun=? AND ijns=1 AND istatus != 0 AND istatus != 7 {$q_satker}", array($tahun))->row()->total;
+		$tot_sk_pending = (int)$this->db->query("SELECT COUNT(DISTINCT iunorid) AS total FROM app_t_usulan WHERE ctahun=? AND istatus=6 {$q_satker}", array($tahun))->row()->total;
+		$tot_selesai = (int)$this->db->query("SELECT COUNT(*) AS total FROM app_t_usulan WHERE ctahun=? AND ijns=1 AND istatus=7 {$q_satker}", array($tahun))->row()->total;
+
+		$status_map = array(
+			0 => 'Draft',
+			1 => 'Menunggu Verifikasi',
+			2 => 'Verifikasi I',
+			3 => 'Verifikasi II',
+			4 => 'Disetujui',
+			5 => 'Ditolak',
+			6 => 'Proses TTD SK',
+			7 => 'Selesai'
+		);
+		$res = $this->db->query("SELECT istatus, COUNT(*) as cnt FROM app_t_usulan WHERE ctahun=? AND ijns=1 {$q_satker} GROUP BY istatus", array($tahun))->result();
+		
+		$labels = array();
+		$values = array();
+		$colors = array('#94a3b8', '#3b82f6', '#0284c7', '#6366f1', '#8b5cf6', '#ef4444', '#f59e0b', '#10b981');
+		$bg_colors = array();
+
+		foreach ($res as $r) {
+			$st = (int)$r->istatus;
+			$labels[] = isset($status_map[$st]) ? $status_map[$st] : 'Status '.$st;
+			$values[] = (int)$r->cnt;
+			$bg_colors[] = isset($colors[$st]) ? $colors[$st] : '#64748b';
+		}
+
+		return array(
+			'kpi' => array(
+				'total_usulan' => $tot_usulan,
+				'total_proses' => $tot_proses,
+				'sk_pending'   => $tot_sk_pending,
+				'total_selesai'=> $tot_selesai,
+				'tahun'        => $tahun
+			),
+			'chart_status' => array(
+				'labels' => $labels,
+				'values' => $values,
+				'colors' => $bg_colors
+			)
+		);
 	}
 	
 	function getdatacharts() {
@@ -139,8 +282,22 @@ class Index extends MX_Controller {
 	  
 	  if ($kd_satker !='') {
 	    $kd_satker_ = "'".implode("','", $kd_satker)."'";
-	    $q_kd_satker = " and ckduker in (".$kd_satker_.")";
-	  } else $q_kd_satker = "";
+	    $q_kd_satker = " and p.ckduker in (".$kd_satker_.")";
+	  } else {
+	    if (!$this->session->superuser && !empty($this->session->orgs)) {
+			$user_orgs = array_keys($this->session->orgs);
+			$str_user_orgs = implode(',', array_map(array($this->db, 'escape'), $user_orgs));
+			$q_kd_satker = " and p.ckduker in (".$str_user_orgs.")";
+	    } else {
+	        $active_codes = get_active_excel_satker_codes();
+	        if (!empty($active_codes)) {
+	            $str_active = implode(',', array_map(array($this->db, 'escape'), $active_codes));
+	            $q_kd_satker = " and p.ckduker in (".$str_active.")";
+	        } else {
+	            $q_kd_satker = "";
+	        }
+	    }
+	  }
 	  
 	  // OPTIMIZED: JOIN menggantikan correlated subquery
   $sql = "Select p.ijabid2, count(p.cnip) as total 
@@ -471,4 +628,124 @@ class Index extends MX_Controller {
 
         echo json_encode($datas);
     }
+
+	public function get_unit_cert_detail() {
+		$unit_abbrv = $this->input->post('unit');
+		$jab_type   = $this->input->post('jab');   // 'bnd', 'ppk', 'ppspm'
+		$status_type= $this->input->post('status');// 'cert', 'uncert'
+
+		// 1. Dapatkan daftar 6-digit kode satker jika $unit_abbrv adalah Unit Utama Eselon I
+		$excel_satkers = get_excel_satkers_by_eselon($unit_abbrv);
+		if (empty($excel_satkers)) {
+			$uu_row = $this->db->query("SELECT kode_satker FROM kepeg_m_unor WHERE (abbrv = " . $this->db->escape($unit_abbrv) . " OR nama = " . $this->db->escape($unit_abbrv) . ") AND id_atasan = '14124'")->row();
+			if ($uu_row && !empty($uu_row->kode_satker)) {
+				$excel_satkers = get_excel_satkers_by_eselon($uu_row->kode_satker);
+			}
+		}
+
+		// 2. Jika masih kosong, berarti $unit_abbrv adalah nama Satker individu atau kode satker individu!
+		if (empty($excel_satkers)) {
+			$name_map = get_excel_satker_name_map();
+			foreach ($name_map as $code => $name) {
+				if (trim($name) === trim($unit_abbrv) || trim($code) === trim($unit_abbrv)) {
+					$excel_satkers = array($code);
+					break;
+				}
+			}
+		}
+
+		if (empty($excel_satkers)) {
+			$u_row = $this->db->query("SELECT kode_satker, kode FROM kepeg_m_unor WHERE nama = " . $this->db->escape($unit_abbrv) . " OR abbrv = " . $this->db->escape($unit_abbrv) . " OR kode_satker = " . $this->db->escape($unit_abbrv) . " OR kode = " . $this->db->escape($unit_abbrv))->row();
+			if ($u_row) {
+				$ks = !empty($u_row->kode_satker) ? trim($u_row->kode_satker) : trim($u_row->kode);
+				$excel_satkers = array($ks);
+			}
+		}
+
+		$details = array();
+		if (!empty($excel_satkers)) {
+			// Map jab_type ke cjabid2 & nama kolom sertifikat
+			$jab_ids = array();
+			$cert_col = '';
+			if ($jab_type === 'bnd') {
+				$jab_ids = array(2, 3, 6);
+				$cert_col = 'cnobnt';
+			} elseif ($jab_type === 'ppk') {
+				$jab_ids = array(5);
+				$cert_col = 'cnopnt';
+			} elseif ($jab_type === 'ppspm') {
+				$jab_ids = array(4);
+				$cert_col = 'cnosnt';
+			}
+
+			$str_jab = implode(',', $jab_ids);
+
+			// Preload top unors matching these satker codes
+			$str_satkers = implode(',', array_map(array($this->db, 'escape'), $excel_satkers));
+			$top_unors = $this->db->query("SELECT id, kode, kode_satker, nama FROM kepeg_m_unor WHERE kode_satker IN ({$str_satkers}) OR kode IN ({$str_satkers})")->result_array();
+
+			// Preload seluruh hirarki kepeg_m_unor untuk traversal anak unor
+			$all_unors = $this->db->query("SELECT id, kode, kode_satker, id_atasan FROM kepeg_m_unor WHERE date_expired IS NULL")->result_array();
+			$tree = array();
+			foreach ($all_unors as $u) {
+				$parent_id = trim($u['id_atasan']);
+				$tree[$parent_id][] = $u;
+			}
+
+			foreach ($top_unors as $top) {
+				$top_id   = trim($top['id']);
+				$top_ksat = !empty($top['kode_satker']) ? trim($top['kode_satker']) : trim($top['kode']);
+
+				$ids = array($top_id => $this->db->escape($top_id));
+				$kodes = array();
+				if (!empty($top['kode'])) $kodes[trim($top['kode'])] = $this->db->escape(trim($top['kode']));
+				if (!empty($top_ksat)) $kodes[$top_ksat] = $this->db->escape($top_ksat);
+
+				$this->_collect_satker_child_keys($top_id, $tree, $ids, $kodes);
+
+				$str_ids = !empty($ids) ? implode(',', array_values($ids)) : "'0'";
+				$str_kodes = !empty($kodes) ? implode(',', array_values($kodes)) : "''";
+
+				$sql_peg = "SELECT cnip, vname, {$cert_col} as cert_no 
+							FROM kepeg_m_pegawai 
+							WHERE cjabid2 IN ({$str_jab}) 
+							AND (ikduker IN ({$str_ids}) OR ckduker IN ({$str_kodes}))";
+
+				if ($status_type === 'cert') {
+					$sql_peg .= " AND ({$cert_col} IS NOT NULL AND {$cert_col} != '')";
+				} else {
+					$sql_peg .= " AND ({$cert_col} IS NULL OR {$cert_col} = '')";
+				}
+
+				$pegs = $this->db->query($sql_peg)->result_array();
+				if (!empty($pegs)) {
+					$full_satker_name = get_excel_satker_name($top_ksat, $top['nama']);
+					foreach ($pegs as $p) {
+						$details[] = array(
+							'kode_satker' => $top_ksat,
+							'nama_satker' => $full_satker_name,
+							'nip'         => !empty($p['cnip']) ? $p['cnip'] : '-',
+							'nama_pegawai'=> !empty($p['vname']) ? $p['vname'] : '-',
+							'no_sertifikat'=> !empty($p['cert_no']) ? $p['cert_no'] : 'Belum Bersertifikat'
+						);
+					}
+				}
+			}
+		}
+
+		echo json_encode($details);
+	}
+
+	private function _collect_satker_child_keys($parent_id, &$tree, &$ids, &$kodes) {
+		if (!isset($tree[$parent_id])) return;
+		foreach ($tree[$parent_id] as $child) {
+			$cid   = trim($child['id']);
+			$ckode = trim($child['kode']);
+			$cksat = trim($child['kode_satker']);
+			if (!empty($cid)) $ids[$cid] = $this->db->escape($cid);
+			if (!empty($ckode)) $kodes[$ckode] = $this->db->escape($ckode);
+			if (!empty($cksat)) $kodes[$cksat] = $this->db->escape($cksat);
+			$this->_collect_satker_child_keys($cid, $tree, $ids, $kodes);
+		}
+	}
 }

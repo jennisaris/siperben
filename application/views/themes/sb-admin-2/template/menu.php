@@ -146,66 +146,45 @@ $CI =&get_instance();
                     </ul>
                     <!-- /.dropdown-tasks -->
                 </li>
+                <?php */ ?>
                 <!-- /.dropdown -->
+                <?php
+                $app_notifs = get_app_notifications();
+                $total_notifs = count($app_notifs);
+                ?>
+
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-bell fa-fw"></i>
+                        <?php if ($total_notifs > 0) { ?>
+                            <span class="label label-warning" style="border-radius: .25em;"><?= $total_notifs; ?></span>
+                        <?php } ?>
+                        <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> New Comment
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
+                    <ul class="dropdown-menu dropdown-alerts" style="width: 320px;">
+                        <li style="padding: 10px 15px; font-weight: bold; background: #f8f8f8; border-bottom: 1px solid #e7e7e7;">
+                            Notifikasi (<?= $total_notifs; ?>)
                         </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-tasks fa-fw"></i> New Task
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
+                        <?php if (!empty($app_notifs)) {
+                            foreach ($app_notifs as $n) { ?>
+                            <li>
+                                <a href="<?= $n['url']; ?>" style="white-space: normal; padding: 10px 15px;">
+                                    <div>
+                                        <i class="<?= $n['icon']; ?>"></i> <strong><?= $n['title']; ?></strong>
+                                        <span class="pull-right text-muted small">Detail</span>
+                                    </div>
+                                    <div style="font-size: 11px; color: #666; margin-top: 3px;"><?= $n['msg']; ?></div>
+                                </a>
+                            </li>
+                            <li class="divider" style="margin: 0;"></li>
+                        <?php }
+                        } else { ?>
+                            <li style="padding: 15px; text-align: center; color: #777;">Tidak ada notifikasi baru</li>
+                        <?php } ?>
                     </ul>
                     <!-- /.dropdown-alerts -->
-                </li> */ ?>
+                </li>
+
                 <!-- /.dropdown -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
