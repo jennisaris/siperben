@@ -271,7 +271,17 @@ class Progress_usulan_satker extends MX_Controller {
 		}
 	}
 
-	function progres_proses_lists($page=1, $reports=false) {
+	public function progres_proses() {
+		$data = array();
+		$data['title'] = 'Notifikasi Progres Usulan Satker (Sedang Diproses)';
+		$this->_setTitle('Notifikasi Progres Usulan Satker (Sedang Diproses)');
+		$this->template->display('laporan/list_progres_proses', $data, TRUE);
+	}
+
+	function progres_proses_lists($page=1, $q=0, $reports=false) {
+		if (isset($_REQUEST['pub_proses_bulan']) && $_REQUEST['pub_proses_bulan'] !== '') {
+			$q = $_REQUEST['pub_proses_bulan'];
+		}
 		$page = (int)$page;
 		if ($page < 1) $page = 1;
 
@@ -318,10 +328,16 @@ class Progress_usulan_satker extends MX_Controller {
 			}
 		}
 
+		$qq = "";
+		if (!empty(trim($q)) && $q !== '0') {
+			$q_val = (int)$q;
+			$qq = " AND month(dtglusul) = '{$q_val}'";
+		}
+
 		// KETAT: Hanya usulan perubahan SK yang SEDANG DIPROSES (istatus != 0 DRAFT dan istatus != 7 SELESAI)
 		$sql = "SELECT id, ijns, iunorid, cnousul, dtglusul, istatusid, tcreated, ijnsprubhnid, istatus 
 				FROM app_t_usulan 
-				WHERE ijns = 1 AND ctahun = '{$settahun}' AND istatus != 0 AND istatus != 7 {$qsatker}
+				WHERE ijns = 1 AND ctahun = '{$settahun}' AND istatus != 0 AND istatus != 7 {$qq} {$qsatker}
 				ORDER BY dtglusul DESC, id DESC";
 
 		$query = $this->db->query($sql);

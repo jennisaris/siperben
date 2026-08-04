@@ -281,7 +281,7 @@ $controller = 'index';
           <h3><?= number_format($kpi['total_proses']); ?></h3>
         </div>
         <div class="icon"><i class="fa fa-hourglass-half"></i></div>
-        <a href="<?= base_url('dashboard/index?link=notif_usulan_proses'); ?>" class="small-box-footer btn-scroll-notif-proses">Progres <i class="fa fa-arrow-circle-right"></i></a>
+        <a href="<?= base_url('perbend/progress_usulan_satker/progres_proses'); ?>" class="small-box-footer">Progres <i class="fa fa-arrow-circle-right"></i></a>
       </div>
     </div>
     <div class="card-flex-item">
@@ -652,33 +652,6 @@ $controller = 'index';
   </div>
 </div> -->
 
-<?php $controller_proses='progres_proses'; ?>
-<div class="row">
-  <div class="col-md-12">
-    <div class='box' id='progres_proses_box' style="border-top: 3px solid #f59e0b; margin-bottom: 20px; transition: box-shadow 0.4s ease;">
-       <div class='box-header with-border' style="background: linear-gradient(135deg, #fffbeb, #fef3c7);">
-            <h3 class='box-title' style="color: #92400e; font-weight: 700;">
-              <i class='fa fa-clock-o text-warning' style="margin-right: 6px;"></i> 
-              Notifikasi Progres Usulan Satker (Sedang Diproses)
-            </h3>
-            <span class="label label-warning" style="font-size: 11px; margin-left: 8px; border-radius: 999px; padding: 4px 10px;">
-              <?= number_format(!empty($summary_info['kpi']['total_proses']) ? $summary_info['kpi']['total_proses'] : 0); ?> Usulan Aktif Diproses
-            </span>
-            <div class='box-tools pull-right'>
-                <button type='button' class='btn btn-box-tool' data-widget='collapse'>    
-                 <i class='fa fa-minus'></i>
-                </button>        
-            </div>
-      </div>
-      <div class='box-body'>
-          <div id='<?=$controller_proses;?>_table-data' style="width:100%; max-width:100%; overflow-x:auto; display:block;"></div>
-          <!-- pagination -->
-          <div id='<?=$controller_proses;?>_paging-table-data'></div>
-      </div>
-   </div>
-  </div>
-</div>
-
 <?php $controller4='progress_usulan_satker';?>
 <div class="row">
   <div class="col-md-12">
@@ -842,32 +815,8 @@ $(document).ready(function() {
   $('body').addClass('skin-blue sidebar-mini active sidebar-collapse');
   
 	reload_grid("<?=base_url();?>dashboard/index/lists", '<?=$controller;?>');
-	reload_grid("<?=base_url();?>perbend/progress_usulan_satker/progres_proses_lists", 'progres_proses');
 	reload_grid("<?=base_url();?>perbend/<?=$controller4;?>/lists", '<?=$controller4;?>');
   reload_grid("<?=base_url();?>perbend/<?=$controller3;?>/lists", '<?=$controller3;?>');
-
-  // Smooth scroll & highlight ke tabel Notifikasi Progres Usulan Satker (Sedang Diproses)
-  function scrollToNotifProses() {
-      if ($('#progres_proses_box').length) {
-          $('html, body').animate({
-              scrollTop: $('#progres_proses_box').offset().top - 70
-          }, 600);
-          $('#progres_proses_box').css('box-shadow', '0 0 25px rgba(245, 158, 11, 0.7)');
-          setTimeout(function() {
-              $('#progres_proses_box').css('box-shadow', '');
-          }, 3000);
-      }
-  }
-
-  $(document).on('click', '.btn-scroll-notif-proses', function(e) {
-      e.preventDefault();
-      scrollToNotifProses();
-  });
-
-  var urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('link') === 'notif_usulan_proses') {
-      setTimeout(scrollToNotifProses, 400);
-  }
 
   // Tampilkan pop-up pengumuman
   $("#messageModal").modal("show");
