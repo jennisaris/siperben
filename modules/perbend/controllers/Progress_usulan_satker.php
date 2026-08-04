@@ -270,8 +270,160 @@ class Progress_usulan_satker extends MX_Controller {
 			exit;
 		}
 	}
-	
-	
+
+	function progres_proses_lists($page=1, $reports=false) {
+		$page = (int)$page;
+		if ($page < 1) $page = 1;
+
+		$offset = ($page - 1) * $this->limit;
+		if ($offset < 0) $offset = 0;
+
+		$ar_statusid = array();
+		$rows = $this->getall('', $this->prefix.'_m_status', '*', array('ldeleted'=>0));
+		if (!empty($rows)) {
+			foreach($rows as $r) {
+				$ar_statusid[$r->id] = $r->vdesc;
+			}
+		}
+
+		$ar_statusperubahan = array();
+		$rows = $this->getall('', $this->prefix.'_m_perubahan', '*', array('ldeleted'=>0));
+		if (!empty($rows)) {
+			foreach($rows as $r) {
+				$ar_statusperubahan[$r->id] = $r->vdesc;
+			}
+		}
+
+		$ar_statususulan = (!empty($this->session->sysparam) && isset($this->session->sysparam->status_usulan)) ? $this->session->sysparam->status_usulan : array();
+
+		$settahun = !empty($this->session->settahun) ? $this->session->settahun : date('Y');
+
+		$qsatker = "";
+		if (!$this->session->superuser) {
+			if (!empty($this->session->orgs) && (is_array($this->session->orgs) || is_object($this->session->orgs))) {
+				$orgs = array();
+				foreach($this->session->orgs as $k=>$v) {
+					$orgs[] = $this->db->escape($k);
+				}
+				if (!empty($orgs)) {
+					$str_orgs = implode(',', $orgs);
+					$qsatker = " AND iunorid IN ({$str_orgs})";
+				}
+			}
+		} else {
+			$active_codes = get_active_excel_satker_codes();
+			if (!empty($active_codes)) {
+				$str_active_codes = implode(',', array_map(array($this->db, 'escape'), $active_codes));
+				$qsatker = " AND iunorid IN ({$str_active_codes})";
+			}
+		}
+
+		// KETAT: Hanya usulan perubahan SK yang SEDANG DIPROSES (istatus != 0 DRAFT dan istatus != 7 SELESAI)
+		$sql = "SELECT id, ijns, iunorid, cnousul, dtglusul, istatusid, tcreated, ijnsprubhnid, istatus 
+				FROM app_t_usulan 
+				WHERE ijns = 1 AND ctahun = '{$settahun}' AND istatus != 0 AND istatus != 7 {$qsatker}
+				ORDER BY dtglusul DESC, id DESC";
+
+		$query = $this->db->query($sql);
+		$this->session->jum_rec = $query ? $query->num_rows() : 0;
+
+		$sql_paged = $sql . " LIMIT {$this->limit} OFFSET {$offset}";
+		$query_paged = $this->db->query($sql_paged);
+
+		$html = "<table class='table table-bordered table-striped table-condensed' style='font-size:11px; margin-bottom:0; width:100%; table-layout:fixed;'>";
+		$html .= "<colgroup>
+			<col style='width:3%;'>
+			<col style='width:18%;'>
+			<col style='width:20%;'>
+			<col style='width:14%;'>
+			<col style='width:8%;'>
+			<col style='width:9%;'>
+			<col style='width:10%;'>
+			<col style='width:10%;'>
+			<col style='width:8%;'>
+		</colgroup>";
+		$html .= "<thead>
+			<tr style='background: #fff7ed;'>
+				<th style='text-align:center; vertical-align:middle;'>No.</th>
+				<th style='vertical-align:middle; overflow:hidden; text-overflow:ellipsis;'>Eselon I</th>
+				<th style='vertical-align:middle; overflow:hidden; text-overflow:ellipsis;'>Satuan Kerja</th>
+				<th style='text-align:center; vertical-align:middle; overflow:hidden;'>No. Usul</th>
+				<th style='text-align:center; vertical-align:middle; overflow:hidden;'>Tgl. Usul</th>
+				<th style='vertical-align:middle; overflow:hidden;'>Status Perubahan</th>
+				<th style='vertical-align:middle; overflow:hidden;'>Jenis Perubahan</th>
+				<th style='text-align:center; vertical-align:middle; overflow:hidden;'>Status Proses</th>
+				<th style='text-align:center; vertical-align:middle; overflow:hidden;'>Tgl. Input</th>
+			</tr>
+		</thead><tbody>";
+
+		if ($query_paged && $query_paged->num_rows() > 0) {
+			$rows = $query_paged->result();
+
+			$unor_rows = $this->getall('', 'app_m_unor', 'kode, kode_atasan, nama', array('deleted' => 0));
+			$unor_map = [];
+			$unor_nama_map = [];
+			if (!empty($unor_rows)) {
+				foreach ($unor_rows as $u) {
+					$unor_map[$u->kode] = ['nama' => $u->nama, 'kode_atasan' => $u->kode_atasan];
+					$unor_nama_map[$u->kode] = $u->nama;
+				}
+			}
+
+			$no = 1;
+			foreach ($rows as $kode) {
+				$norut = ($offset == 0) ? $no : ($no + $offset);
+
+				$unor_atasan_kode = isset($unor_map[$kode->iunorid]) ? $unor_map[$kode->iunorid]['kode_atasan'] : '';
+				$unor_atasan_nama = isset($unor_nama_map[$unor_atasan_kode]) ? $unor_nama_map[$unor_atasan_kode] : '-';
+				$satker_nama = isset($unor_nama_map[$kode->iunorid]) ? $unor_nama_map[$kode->iunorid] : $kode->iunorid;
+
+				$st_id = isset($ar_statusid[$kode->istatusid]) ? $ar_statusid[$kode->istatusid] : '-';
+				$st_perubahan = isset($ar_statusperubahan[$kode->ijnsprubhnid]) ? $ar_statusperubahan[$kode->ijnsprubhnid] : '-';
+				$raw_status = (is_array($ar_statususulan) && isset($ar_statususulan[$kode->istatus])) ? $ar_statususulan[$kode->istatus] : 'Status '.$kode->istatus;
+
+				if ($kode->istatus == 6) {
+					$badge_class = 'label-warning';
+				} else if ($kode->istatus == 4) {
+					$badge_class = 'label-info';
+				} else if ($kode->istatus == 5) {
+					$badge_class = 'label-danger';
+				} else {
+					$badge_class = 'label-primary';
+				}
+				$st_usulan = "<span class='label {$badge_class}' style='font-size: 10px;'><i class='fa fa-clock-o'></i> ".$raw_status."</span>";
+
+				$html .= "<tr>";
+				$html .= "<td class='text-center'>".$norut."</td>";
+				$html .= "<td><strong>".strtoupper($unor_atasan_nama)."</strong></td>";
+				$html .= "<td>".$satker_nama." (<b>".$kode->iunorid."</b>)</td>";
+				$html .= "<td class='text-center'><a href='".base_url()."perbend/t_usulan_satker' style='font-weight: 700; text-decoration: underline; color: #0284c7;'>".$kode->cnousul."</a></td>";
+				$html .= "<td class='text-center'>".(!empty($kode->dtglusul) && $kode->dtglusul != '0000-00-00' ? date('d-m-Y', strtotime($kode->dtglusul)) : '-')."</td>";
+				$html .= "<td>".$st_id."</td>";
+				$html .= "<td>".$st_perubahan."</td>";
+				$html .= "<td class='text-center'>".$st_usulan."</td>";
+				$html .= "<td class='text-center'>".(!empty($kode->tcreated) ? date('d-m-Y', strtotime($kode->tcreated)) : '-')."</td>";
+				$html .= "</tr>";
+
+				$no++;
+			}
+		} else {
+			$html .= "<tr><td colspan='9' class='text-center text-muted' style='padding: 20px;'><b>Tidak ada usulan perubahan SK yang sedang diproses saat ini</b></td></tr>";
+		}
+
+		$html .= "</tbody></table>";
+
+		$base_paging_url = base_url()."perbend/progress_usulan_satker/progres_proses_lists/1";
+		$pagination = $this->_ajaxPagination($base_paging_url, (object)array(), 'progres_proses', $offset);
+		$hasil['html'] = array('html' => $html);
+		$hasil['pagination'] = $pagination;
+
+		if (ob_get_length()) {
+			@ob_clean();
+		}
+		header('Content-Type: application/json; charset=utf-8');
+		echo json_encode($hasil);
+		exit;
+	}
 	
   function app_t_usulan_output() {
         $js = "<script type='text/javascript'>

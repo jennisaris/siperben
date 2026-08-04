@@ -652,6 +652,33 @@ $controller = 'index';
   </div>
 </div> -->
 
+<?php $controller_proses='progres_proses'; ?>
+<div class="row">
+  <div class="col-md-12">
+    <div class='box' style="border-top: 3px solid #f59e0b; margin-bottom: 20px;">
+       <div class='box-header with-border' style="background: linear-gradient(135deg, #fffbeb, #fef3c7);">
+            <h3 class='box-title' style="color: #92400e; font-weight: 700;">
+              <i class='fa fa-clock-o text-warning' style="margin-right: 6px;"></i> 
+              Notifikasi Progres Usulan Satker (Sedang Diproses)
+            </h3>
+            <span class="label label-warning" style="font-size: 11px; margin-left: 8px; border-radius: 999px; padding: 4px 10px;">
+              <?= number_format(!empty($summary_info['kpi']['total_proses']) ? $summary_info['kpi']['total_proses'] : 0); ?> Usulan Aktif Diproses
+            </span>
+            <div class='box-tools pull-right'>
+                <button type='button' class='btn btn-box-tool' data-widget='collapse'>    
+                 <i class='fa fa-minus'></i>
+                </button>        
+            </div>
+      </div>
+      <div class='box-body'>
+          <div id='<?=$controller_proses;?>_table-data' style="width:100%; max-width:100%; overflow-x:auto; display:block;"></div>
+          <!-- pagination -->
+          <div id='<?=$controller_proses;?>_paging-table-data'></div>
+      </div>
+   </div>
+  </div>
+</div>
+
 <?php $controller4='progress_usulan_satker';?>
 <div class="row">
   <div class="col-md-12">
@@ -815,6 +842,7 @@ $(document).ready(function() {
   $('body').addClass('skin-blue sidebar-mini active sidebar-collapse');
   
 	reload_grid("<?=base_url();?>dashboard/index/lists", '<?=$controller;?>');
+	reload_grid("<?=base_url();?>perbend/progress_usulan_satker/progres_proses_lists", 'progres_proses');
 	reload_grid("<?=base_url();?>perbend/<?=$controller4;?>/lists", '<?=$controller4;?>');
   reload_grid("<?=base_url();?>perbend/<?=$controller3;?>/lists", '<?=$controller3;?>');
 
