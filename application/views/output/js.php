@@ -334,28 +334,45 @@
             cache: false,
             success: function(responseText) {
                 try {
-                    var o = jQuery.parseJSON(responseText);
+                    var o = null;
+                    if (typeof responseText === 'object' && responseText !== null) {
+                        o = responseText;
+                    } else if (typeof responseText === 'string') {
+                        try {
+                            var match = responseText.match(/\{[\s\S]*\}/);
+                            var cleanText = match ? match[0] : responseText;
+                            o = JSON.parse(cleanText);
+                        } catch(err) {
+                            o = null;
+                        }
+                    }
+
+                    if (!o) {
+                        throw new Error('Invalid JSON format');
+                    }
+
                     var html = (o.html && o.html.html !== undefined) ? o.html.html : (o.html || '');
+                    var pagination = o.pagination || '';
 
                     if ( !is_window_opener ) {
                         $('#'+table_id+'_table-data').html(html);
-                        $('#'+table_id+'_paging-table-data').html(o.pagination || '');
+                        $('#'+table_id+'_paging-table-data').html(pagination);
                     } else {
                         $('#'+table_id+'_table-data', window.opener.document).html(html);
-                        $('#'+table_id+'_paging-table-data', window.opener.document).html(o.pagination || '');
+                        $('#'+table_id+'_paging-table-data', window.opener.document).html(pagination);
                     }
 
                     if ( frm != '' && $('#'+frm).length ) {
                         $('html,body').animate({ scrollTop: $("#"+frm).offset().top }, 'slow');
                     }
                 } catch(e) {
-                    var msg = "<div style='padding:10px;color:#b91c1c;'>Gagal memuat data. Silakan refresh halaman.</div>";
+                    var msg = "<div style='padding:15px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;'><b>Gagal memuat data.</b> Silakan refresh halaman atau muat ulang tabel.<br/><button type='button' class='btn btn-xs btn-default' style='margin-top:6px;' onclick='reload_grid(\"" + url + "\", \"" + table_id + "\", \"" + page + "\");'><i class='fa fa-refresh'></i> Muat Ulang Tabel</button></div>";
                     if ( !is_window_opener ) $('#'+table_id+'_table-data').html(msg);
                     else $('#'+table_id+'_table-data', window.opener.document).html(msg);
                 }
             },
             error: function(xhr, status, error) {
-                var msg = "<div style='padding:10px;color:#b91c1c;'>Error memuat data: " + error + "</div>";
+                var msg = "<div style='padding:15px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;'><b>Error memuat data:</b> " + error + "<br/><button type='button' class='btn btn-xs btn-default' style='margin-top:6px;' onclick='reload_grid(\"" + url + "\", \"" + table_id + "\", \"" + page + "\");'><i class='fa fa-refresh'></i> Coba Lagi</button></div>";
                 if ( !is_window_opener ) $('#'+table_id+'_table-data').html(msg);
                 else $('#'+table_id+'_table-data', window.opener.document).html(msg);
             }

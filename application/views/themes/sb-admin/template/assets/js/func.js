@@ -101,7 +101,23 @@ function reload_grid(url, table_id, page, frm='') {
 		data: form_search,
 		success: function(responseText) {
 			try {
-				var o = jQuery.parseJSON(responseText);
+				var o = null;
+				if (typeof responseText === 'object' && responseText !== null) {
+					o = responseText;
+				} else if (typeof responseText === 'string') {
+					try {
+						var match = responseText.match(/\{[\s\S]*\}/);
+						var cleanText = match ? match[0] : responseText;
+						o = JSON.parse(cleanText);
+					} catch(err) {
+						o = null;
+					}
+				}
+
+				if (!o) {
+					throw new Error('Invalid JSON format');
+				}
+
 				var html = (o.html && o.html.html !== undefined) ? o.html.html : (o.html || '');
 				$('#'+table_id+'_table-data').html(html);
 				$('#'+table_id+'_paging-table-data').html(o.pagination || '');
@@ -112,9 +128,9 @@ function reload_grid(url, table_id, page, frm='') {
 				}
 			} catch(e) {
 				$('#'+table_id+'_table-data').html(
-					"<div style='padding:20px;color:red;'>"
+					"<div style='padding:15px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;'>"
 					+ "<b>Gagal memuat data.</b> Silakan refresh halaman.<br/>"
-					+ "<small>" + responseText.substring(0, 200) + "</small>"
+					+ "<button type='button' class='btn btn-xs btn-default' style='margin-top:6px;' onclick='reload_grid(\"" + url + "\", \"" + table_id + "\", \"" + page + "\");'><i class='fa fa-refresh'></i> Coba Lagi</button>"
 					+ "</div>"
 				);
 			}

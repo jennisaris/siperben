@@ -7,13 +7,10 @@
 	</div>
 </div>
 <div class="panel-body" id="panel-body-list">
-		<!-- pagination -->
-		<div id='<?=$controller;?>_paging-table-data'></div>
-		<!-- pagination -->
-
+		<div id='<?=$controller;?>_table-data' style="width:100%; max-width:100%; overflow-x:auto; display:block;"></div>
 		<div class="clearfix"></div>
+		<div id='<?=$controller;?>_paging-table-data' style='margin-top:10px;'></div>
 
-		<div id='<?=$controller;?>_table-data' style='overflow-x: auto;'></div>
 
 		<div class="clearfix"></div>
   	<div class="pull-right">

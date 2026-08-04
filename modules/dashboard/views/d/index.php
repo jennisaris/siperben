@@ -194,7 +194,45 @@ $controller = 'index';
         .dashboard-hero h2 { font-size: 18px; }
         .dashboard-modern .small-box .inner h3 { font-size: 18px; }
     }
+
+    /* === PROGRESS USULAN BENDAHARA === */
+    #progress-usulan-scroll-container {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        display: block;
+        position: relative;
+    }
+    #progress_usulan_satker_table-data {
+        width: 100%;
+    }
+    #progress-usulan-scroll-container table {
+        width: 100%;
+        font-size: 11px;
+        margin-bottom: 0;
+        border-collapse: collapse;
+    }
+    #progress_usulan_satker_paging-table-data nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        font-size: 11px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    #progress_usulan_satker_paging-table-data ul.pagination {
+        margin: 0;
+    }
+    #progress_usulan_satker_paging-table-data .ajax_pagination {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 500;
+    }
 </style>
+
 
 <!-- Load Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -289,11 +327,11 @@ $controller = 'index';
     <?php $i++; } ?>
   </div>
 
-  <!-- ROW 3: GRAFIK VISUALISASI (2 Columns) -->
+  <!-- ROW 3: GRAFIK VISUALISASI (2 Columns Side-by-Side) -->
   <div class="row">
     <!-- Chart 1: Donut Chart Status Usulan SK -->
     <div class="col-md-5 col-sm-12">
-      <div class="box">
+      <div class="box" style="margin-bottom: 20px;">
         <div class="box-header with-border">
           <h3 class="box-title">Status Usulan SK Tahun <?= !empty($summary_info['kpi']['tahun']) ? $summary_info['kpi']['tahun'] : date('Y'); ?></h3>
           <div class="box-tools pull-right">
@@ -301,7 +339,7 @@ $controller = 'index';
           </div>
         </div>
         <div class="box-body text-center">
-          <div style="height: 240px; position: relative;">
+          <div style="height: 230px; position: relative;">
             <canvas id="chartStatusUsulan"></canvas>
           </div>
         </div>
@@ -310,7 +348,7 @@ $controller = 'index';
 
     <!-- Chart 2: Bar Chart Pejabat Perbendaharaan per Unit Utama -->
     <div class="col-md-7 col-sm-12">
-      <div class="box">
+      <div class="box" style="margin-bottom: 20px;">
         <div class="box-header with-border">
           <h3 class="box-title">Distribusi Pejabat Perbendaharaan per Unit Utama</h3>
           <div class="box-tools pull-right">
@@ -318,15 +356,29 @@ $controller = 'index';
           </div>
         </div>
         <div class="box-body">
-          <div style="height: 200px; position: relative;">
+          <div style="height: 230px; position: relative;">
             <canvas id="chartUnitUtama"></canvas>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          <!-- Tabel Rekap Status Sertifikasi (Bendahara, PPK, PPSPM) per Unit Utama -->
-          <?php if (!empty($unit_cert_breakdown)) { ?>
-          <div style="margin-top: 15px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <span style="font-size: 11px; font-weight: 600; color: #475569;">Status Sertifikasi <?= ($this->session->superuser) ? 'per Unit Utama (Kode 138)' : 'per Satuan Kerja'; ?> — <small class="text-muted">Klik angka untuk melihat rincian Satker & Pejabat</small></span>
-            <div style="position: relative; width: 180px;">
+  <!-- ROW 4: TABEL REKAP STATUS SERTIFIKASI (Full Width col-md-12) -->
+  <?php if (!empty($unit_cert_breakdown)) { ?>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box" style="margin-bottom: 20px;">
+        <div class="box-header with-border">
+          <h3 class="box-title">Status Sertifikasi Pejabat Perbendaharaan <?= ($this->session->superuser) ? 'per Unit Utama (Kode 138)' : 'per Satuan Kerja'; ?></h3>
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="box-body">
+          <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span style="font-size: 11px; font-weight: 600; color: #475569;">Status Sertifikasi (Bendahara, PPK, PPSPM) — <small class="text-muted">Klik angka untuk melihat rincian Satker & Pejabat</small></span>
+            <div style="position: relative; width: 220px;">
               <input type="text" id="searchUnitUtama" class="form-control input-sm" placeholder="<?= ($this->session->superuser) ? 'Cari Unit Utama...' : 'Cari Satuan Kerja...'; ?>" style="border-radius: 8px; font-size: 11px; height: 28px; padding-left: 26px;">
               <i class="fa fa-search" style="position: absolute; left: 8px; top: 7px; color: #94a3b8; font-size: 11px;"></i>
             </div>
@@ -392,233 +444,192 @@ $controller = 'index';
             </table>
           </div>
 
-          <!-- Modal Detail Satker Sertifikasi -->
-          <div class="modal fade" id="modalCertDetail" tabindex="-1" role="dialog" aria-labelledby="modalCertDetailLabel">
-            <div class="modal-dialog modal-lg" role="document" style="width: 85%; max-width: 1000px;">
-              <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);">
-                <div class="modal-header" style="background: linear-gradient(135deg, #1e293b, #334155); color: #fff; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 14px 20px;">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8;"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title" id="modalCertDetailLabel" style="font-weight: 600; font-size: 14px;"><i class="fa fa-list-alt" style="margin-right: 8px;"></i> Rincian Satker & Pejabat</h4>
-                </div>
-                <div class="modal-body" style="padding: 20px;">
-                  <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                    <h5 id="modalCertSubtitle" style="margin: 0; font-weight: 600; color: #1e293b; font-size: 13px;"></h5>
-                    <div style="position: relative; width: 240px;">
-                      <input type="text" id="searchModalCert" class="form-control input-sm" placeholder="Cari Satker / Nama / NIP..." style="border-radius: 8px; font-size: 11px; height: 28px; padding-left: 26px;">
-                      <i class="fa fa-search" style="position: absolute; left: 8px; top: 7px; color: #94a3b8; font-size: 11px;"></i>
-                    </div>
-                  </div>
-                  <div style="max-height: 420px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
-                    <table id="tblModalCert" class="table table-bordered table-striped table-hover" style="font-size: 11px; margin-bottom: 0;">
-                      <thead style="position: sticky; top: 0; background: #f1f5f9; z-index: 10;">
-                        <tr>
-                          <th style="width: 40px; text-align: center;">No</th>
-                          <th style="width: 90px; text-align: center;">Kode Satker</th>
-                          <th>Nama Satuan Kerja</th>
-                          <th style="width: 150px;">NIP</th>
-                          <th style="width: 180px;">Nama Pejabat</th>
-                          <th id="thCertHeader" style="width: 200px;">No. Sertifikat</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Dynamic JS content -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div class="modal-footer" style="background: #f8fafc; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; padding: 10px 20px;">
-                  <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 6px; font-weight: 500;">Tutup</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <!-- Controls Pagination untuk Tabel Unit Utama (Default 7 Data per Halaman) -->
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; flex-wrap: wrap; gap: 8px;">
             <div id="unitUtamaPageInfo" style="color: #64748b; font-weight: 500;"></div>
             <ul id="unitUtamaPagination" class="pagination pagination-sm" style="margin: 0;"></ul>
           </div>
-
-          <!-- Modal Detail Satker Sertifikasi -->
-          <div class="modal fade" id="modalCertDetail" tabindex="-1" role="dialog" aria-labelledby="modalCertDetailLabel">
-            <div class="modal-dialog modal-lg" role="document" style="width: 85%; max-width: 1000px;">
-              <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);">
-                <div class="modal-header" style="background: linear-gradient(135deg, #1e293b, #334155); color: #fff; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 14px 20px;">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8;"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title" id="modalCertDetailLabel" style="font-weight: 600; font-size: 14px;"><i class="fa fa-list-alt" style="margin-right: 8px;"></i> Rincian Satker & Pejabat</h4>
-                </div>
-                <div class="modal-body" style="padding: 20px;">
-                  <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                    <h5 id="modalCertSubtitle" style="margin: 0; font-weight: 600; color: #1e293b; font-size: 13px;"></h5>
-                    <div style="position: relative; width: 240px;">
-                      <input type="text" id="searchModalCert" class="form-control input-sm" placeholder="Cari Satker / Nama / NIP..." style="border-radius: 8px; font-size: 11px; height: 28px; padding-left: 26px;">
-                      <i class="fa fa-search" style="position: absolute; left: 8px; top: 7px; color: #94a3b8; font-size: 11px;"></i>
-                    </div>
-                  </div>
-                  <div style="max-height: 420px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
-                    <table id="tblModalCert" class="table table-bordered table-striped table-hover" style="font-size: 11px; margin-bottom: 0;">
-                      <thead style="position: sticky; top: 0; background: #f1f5f9; z-index: 10;">
-                        <tr>
-                          <th style="width: 40px; text-align: center;">No</th>
-                          <th style="width: 90px; text-align: center;">Kode Satker</th>
-                          <th>Nama Satuan Kerja</th>
-                          <th style="width: 150px;">NIP</th>
-                          <th style="width: 180px;">Nama Pejabat</th>
-                          <th id="thCertHeader" style="width: 200px;">No. Sertifikat</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Dynamic JS content -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div class="modal-footer" style="background: #f8fafc; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; padding: 10px 20px;">
-                  <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 6px; font-weight: 500;">Tutup</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <script type="text/javascript">
-          function show_cert_detail(unit, jab, status, label) {
-              var headerTitle = 'No. Sertifikat';
-              if (jab === 'bnd') {
-                  headerTitle = 'No. BNT';
-              } else if (jab === 'ppk') {
-                  headerTitle = 'No. PNT';
-              } else if (jab === 'ppspm') {
-                  headerTitle = 'No. SNT';
-              }
-              $('#thCertHeader').text(headerTitle);
-
-              $('#modalCertSubtitle').html('Unit Utama: <b>' + unit + '</b> | Status: <b>' + label + '</b>');
-              $('#tblModalCert tbody').html('<tr><td colspan="6" class="text-center" style="padding: 30px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><br/><span style="margin-top: 8px; display: inline-block; font-size: 12px;">Memuat data detail satker...</span></td></tr>');
-              $('#searchModalCert').val('');
-              $('#modalCertDetail').modal('show');
-
-              $.ajax({
-                  url: '<?= base_url("dashboard/index/get_unit_cert_detail"); ?>',
-                  type: 'POST',
-                  data: { unit: unit, jab: jab, status: status },
-                  dataType: 'json',
-                  success: function(data) {
-                      var html = '';
-                      if (data && data.length > 0) {
-                          $.each(data, function(idx, item) {
-                              var statusBadge = (item.no_sertifikat === 'Belum Bersertifikat') 
-                                  ? '<span class="label label-danger" style="font-size: 10px;">Belum Bersertifikat</span>' 
-                                  : '<span class="label label-success" style="font-size: 10px;"><i class="fa fa-certificate"></i> ' + item.no_sertifikat + '</span>';
-                              
-                              html += '<tr>' +
-                                  '<td class="text-center">' + (idx + 1) + '</td>' +
-                                  '<td class="text-center"><b>' + item.kode_satker + '</b></td>' +
-                                  '<td>' + item.nama_satker + '</td>' +
-                                  '<td>' + item.nip + '</td>' +
-                                  '<td><b>' + item.nama_pegawai + '</b></td>' +
-                                  '<td>' + statusBadge + '</td>' +
-                              '</tr>';
-                          });
-                      } else {
-                          html = '<tr><td colspan="6" class="text-center" style="padding: 20px; color: #64748b;"><b>Tidak ada data pejabat untuk kategori ini</b></td></tr>';
-                      }
-                      $('#tblModalCert tbody').html(html);
-                  },
-                  error: function() {
-                      $('#tblModalCert tbody').html('<tr><td colspan="6" class="text-center text-danger" style="padding: 20px;">Gagal memuat data detail satker. Silakan coba lagi.</td></tr>');
-                  }
-              });
-          }
-
-          $(document).ready(function() {
-              var pageSize = 7;
-              var currentPage = 1;
-              var $allRows = $('#tblUnitUtama tbody tr');
-
-              function renderUnitTable() {
-                  var searchTerm = $('#searchUnitUtama').val().toLowerCase().trim();
-                  var matchedRows = [];
-
-                  $allRows.each(function() {
-                      var text = $(this).find('td:first').text().toLowerCase();
-                      if (text.indexOf(searchTerm) !== -1) {
-                          matchedRows.push($(this));
-                      } else {
-                          $(this).hide();
-                      }
-                  });
-
-                  var totalFiltered = matchedRows.length;
-                  var totalPages = Math.ceil(totalFiltered / pageSize) || 1;
-                  if (currentPage > totalPages) currentPage = totalPages;
-                  if (currentPage < 1) currentPage = 1;
-
-                  var startIdx = (currentPage - 1) * pageSize;
-                  var endIdx = startIdx + pageSize;
-
-                  $.each(matchedRows, function(index, $row) {
-                      if (index >= startIdx && index < endIdx) {
-                          $row.show();
-                      } else {
-                          $row.hide();
-                      }
-                  });
-
-                  var startCount = totalFiltered === 0 ? 0 : startIdx + 1;
-                  var endCount = Math.min(endIdx, totalFiltered);
-                  $('#unitUtamaPageInfo').html('Menampilkan <b>' + startCount + ' - ' + endCount + '</b> dari <b>' + totalFiltered + '</b> unit');
-
-                  var $p = $('#unitUtamaPagination').empty();
-                  if (totalPages > 1) {
-                      var prevClass = (currentPage === 1) ? 'disabled' : '';
-                      $p.append('<li class="' + prevClass + '"><a href="#" class="unit-page-link" data-page="' + (currentPage - 1) + '">&laquo; Prev</a></li>');
-
-                      for (var i = 1; i <= totalPages; i++) {
-                          var activeClass = (i === currentPage) ? 'active' : '';
-                          $p.append('<li class="' + activeClass + '"><a href="#" class="unit-page-link" data-page="' + i + '">' + i + '</a></li>');
-                      }
-
-                      var nextClass = (currentPage === totalPages) ? 'disabled' : '';
-                      $p.append('<li class="' + nextClass + '"><a href="#" class="unit-page-link" data-page="' + (currentPage + 1) + '">Next &raquo;</a></li>');
-                  }
-              }
-
-              $(document).on('click', '.unit-page-link', function(e) {
-                  e.preventDefault();
-                  var target = parseInt($(this).attr('data-page'));
-                  if (!isNaN(target) && !$(this).parent().hasClass('disabled') && !$(this).parent().hasClass('active')) {
-                      currentPage = target;
-                      renderUnitTable();
-                  }
-              });
-
-              // Realtime search di modal detail
-              $('#searchModalCert').on('keyup input', function() {
-                  var term = $(this).val().toLowerCase().trim();
-                  $('#tblModalCert tbody tr').each(function() {
-                      var txt = $(this).text().toLowerCase();
-                      if (txt.indexOf(term) !== -1) {
-                          $(this).show();
-                      } else {
-                          $(this).hide();
-                      }
-                  });
-              });
-
-              // Realtime search tabel Unit Utama dengan pagination default 7
-              $('#searchUnitUtama').on('keyup input', function() {
-                  currentPage = 1;
-                  renderUnitTable();
-              });
-
-              renderUnitTable();
-          });
-          </script>
-          <?php } ?>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Modal Detail Satker Sertifikasi -->
+  <div class="modal fade" id="modalCertDetail" tabindex="-1" role="dialog" aria-labelledby="modalCertDetailLabel">
+    <div class="modal-dialog modal-lg" role="document" style="width: 85%; max-width: 1000px;">
+      <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);">
+        <div class="modal-header" style="background: linear-gradient(135deg, #1e293b, #334155); color: #fff; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 14px 20px;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8;"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="modalCertDetailLabel" style="font-weight: 600; font-size: 14px;"><i class="fa fa-list-alt" style="margin-right: 8px;"></i> Rincian Satker & Pejabat</h4>
+        </div>
+        <div class="modal-body" style="padding: 20px;">
+          <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h5 id="modalCertSubtitle" style="margin: 0; font-weight: 600; color: #1e293b; font-size: 13px;"></h5>
+            <div style="position: relative; width: 240px;">
+              <input type="text" id="searchModalCert" class="form-control input-sm" placeholder="Cari Satker / Nama / NIP..." style="border-radius: 8px; font-size: 11px; height: 28px; padding-left: 26px;">
+              <i class="fa fa-search" style="position: absolute; left: 8px; top: 7px; color: #94a3b8; font-size: 11px;"></i>
+            </div>
+          </div>
+          <div style="max-height: 420px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <table id="tblModalCert" class="table table-bordered table-striped table-hover" style="font-size: 11px; margin-bottom: 0;">
+              <thead style="position: sticky; top: 0; background: #f1f5f9; z-index: 10;">
+                <tr>
+                  <th style="width: 40px; text-align: center;">No</th>
+                  <th style="width: 90px; text-align: center;">Kode Satker</th>
+                  <th>Nama Satuan Kerja</th>
+                  <th style="width: 150px;">NIP</th>
+                  <th style="width: 180px;">Nama Pejabat</th>
+                  <th id="thCertHeader" style="width: 200px;">No. Sertifikat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dynamic JS content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer" style="background: #f8fafc; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; padding: 10px 20px;">
+          <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 6px; font-weight: 500;">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+  function show_cert_detail(unit, jab, status, label) {
+      var headerTitle = 'No. Sertifikat';
+      if (jab === 'bnd') {
+          headerTitle = 'No. BNT';
+      } else if (jab === 'ppk') {
+          headerTitle = 'No. PNT';
+      } else if (jab === 'ppspm') {
+          headerTitle = 'No. SNT';
+      }
+      $('#thCertHeader').text(headerTitle);
+
+      $('#modalCertSubtitle').html('Unit Utama: <b>' + unit + '</b> | Status: <b>' + label + '</b>');
+      $('#tblModalCert tbody').html('<tr><td colspan="6" class="text-center" style="padding: 30px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><br/><span style="margin-top: 8px; display: inline-block; font-size: 12px;">Memuat data detail satker...</span></td></tr>');
+      $('#searchModalCert').val('');
+      $('#modalCertDetail').modal('show');
+
+      $.ajax({
+          url: '<?= base_url("dashboard/index/get_unit_cert_detail"); ?>',
+          type: 'POST',
+          data: { unit: unit, jab: jab, status: status },
+          dataType: 'json',
+          success: function(data) {
+              var html = '';
+              if (data && data.length > 0) {
+                  $.each(data, function(idx, item) {
+                      var statusBadge = (item.no_sertifikat === 'Belum Bersertifikat') 
+                          ? '<span class="label label-danger" style="font-size: 10px;">Belum Bersertifikat</span>' 
+                          : '<span class="label label-success" style="font-size: 10px;"><i class="fa fa-certificate"></i> ' + item.no_sertifikat + '</span>';
+                      
+                      html += '<tr>' +
+                          '<td class="text-center">' + (idx + 1) + '</td>' +
+                          '<td class="text-center"><b>' + item.kode_satker + '</b></td>' +
+                          '<td>' + item.nama_satker + '</td>' +
+                          '<td>' + item.nip + '</td>' +
+                          '<td><b>' + item.nama_pegawai + '</b></td>' +
+                          '<td>' + statusBadge + '</td>' +
+                      '</tr>';
+                  });
+              } else {
+                  html = '<tr><td colspan="6" class="text-center" style="padding: 20px; color: #64748b;"><b>Tidak ada data pejabat untuk kategori ini</b></td></tr>';
+              }
+              $('#tblModalCert tbody').html(html);
+          },
+          error: function() {
+              $('#tblModalCert tbody').html('<tr><td colspan="6" class="text-center text-danger" style="padding: 20px;">Gagal memuat data detail satker. Silakan coba lagi.</td></tr>');
+          }
+      });
+  }
+
+  $(document).ready(function() {
+      var pageSize = 7;
+      var currentPage = 1;
+      var $allRows = $('#tblUnitUtama tbody tr');
+
+      function renderUnitTable() {
+          var searchTerm = $('#searchUnitUtama').val().toLowerCase().trim();
+          var matchedRows = [];
+
+          $allRows.each(function() {
+              var text = $(this).find('td:first').text().toLowerCase();
+              if (text.indexOf(searchTerm) !== -1) {
+                  matchedRows.push($(this));
+              } else {
+                  $(this).hide();
+              }
+          });
+
+          var totalFiltered = matchedRows.length;
+          var totalPages = Math.ceil(totalFiltered / pageSize) || 1;
+          if (currentPage > totalPages) currentPage = totalPages;
+          if (currentPage < 1) currentPage = 1;
+
+          var startIdx = (currentPage - 1) * pageSize;
+          var endIdx = startIdx + pageSize;
+
+          $.each(matchedRows, function(index, $row) {
+              if (index >= startIdx && index < endIdx) {
+                  $row.show();
+              } else {
+                  $row.hide();
+              }
+          });
+
+          var startCount = totalFiltered === 0 ? 0 : startIdx + 1;
+          var endCount = Math.min(endIdx, totalFiltered);
+          $('#unitUtamaPageInfo').html('Menampilkan <b>' + startCount + ' - ' + endCount + '</b> dari <b>' + totalFiltered + '</b> unit');
+
+          var $p = $('#unitUtamaPagination').empty();
+          if (totalPages > 1) {
+              var prevClass = (currentPage === 1) ? 'disabled' : '';
+              $p.append('<li class="' + prevClass + '"><a href="#" class="unit-page-link" data-page="' + (currentPage - 1) + '">&laquo; Prev</a></li>');
+
+              for (var i = 1; i <= totalPages; i++) {
+                  var activeClass = (i === currentPage) ? 'active' : '';
+                  $p.append('<li class="' + activeClass + '"><a href="#" class="unit-page-link" data-page="' + i + '">' + i + '</a></li>');
+              }
+
+              var nextClass = (currentPage === totalPages) ? 'disabled' : '';
+              $p.append('<li class="' + nextClass + '"><a href="#" class="unit-page-link" data-page="' + (currentPage + 1) + '">Next &raquo;</a></li>');
+          }
+      }
+
+      $(document).on('click', '.unit-page-link', function(e) {
+          e.preventDefault();
+          var target = parseInt($(this).attr('data-page'));
+          if (!isNaN(target) && !$(this).parent().hasClass('disabled') && !$(this).parent().hasClass('active')) {
+              currentPage = target;
+              renderUnitTable();
+          }
+      });
+
+      // Realtime search di modal detail
+      $('#searchModalCert').on('keyup input', function() {
+          var term = $(this).val().toLowerCase().trim();
+          $('#tblModalCert tbody tr').each(function() {
+              var txt = $(this).text().toLowerCase();
+              if (txt.indexOf(term) !== -1) {
+                  $(this).show();
+              } else {
+                  $(this).hide();
+              }
+          });
+      });
+
+      // Realtime search tabel Unit Utama dengan pagination default 7
+      $('#searchUnitUtama').on('keyup input', function() {
+          currentPage = 1;
+          renderUnitTable();
+      });
+
+      renderUnitTable();
+  });
+  </script>
+  <?php } ?>
 
 <!-- <div class="row">
   <div class="col-md-12">
@@ -653,7 +664,7 @@ $controller = 'index';
                 </button>        
             </div>
       </div>
-      <div class='box-body' style>
+      <div class='box-body'>
           <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
               <div>
                 <select onChange="apply_pub_filter();" name='pub_bulan' id='pub_bulan' class='form-control' style='width:200px;'>
@@ -687,19 +698,50 @@ $controller = 'index';
             function apply_pub_filter() {
                 var bulan = $('#pub_bulan').val() || '0';
                 var status = $('#pub_status').val() || 'all';
-                var url = '<?=base_url();?>perbend/<?=$controller4;?>/lists/0/' + bulan + '/0/0/' + status;
+                var url = '<?=base_url();?>perbend/<?=$controller4;?>/lists/1/' + bulan + '/0/0/' + status;
                 reload_grid(url, '<?=$controller4;?>');
             }
           </script>
           <hr style="margin-top: 8px; margin-bottom: 12px;"/>
+          <div id='<?=$controller4;?>_table-data' style="width:100%; max-width:100%; overflow-x:auto; display:block;"></div>
           <!-- pagination -->
-            <div id='<?=$controller4;?>_paging-table-data'></div>
-      		<!-- pagination -->
-      		<div id='<?=$controller4;?>_table-data' style='overflow-x: auto;'></div>
+          <div id='<?=$controller4;?>_paging-table-data'></div>
       </div>
    </div>
   </div>
 </div>
+<script type="text/javascript">
+(function() {
+    // Fix overflow tabel Progress Usulan — dipanggil setiap selesai AJAX inject
+    function fixProgressTable() {
+        var td = document.getElementById('progress_usulan_satker_table-data');
+        if (!td) return;
+        var tbl = td.querySelector('table.table-bordered');
+        if (!tbl) return;
+        // Pastikan table tidak lebih lebar dari container
+        tbl.style.width = '100%';
+        tbl.style.tableLayout = 'fixed';
+        tbl.style.maxWidth = '100%';
+        // Pastikan _table-data div adalah scroll container yang aktif
+        td.style.overflowX = 'auto';
+        td.style.maxWidth = '100%';
+        td.style.display = 'block';
+    }
+
+    // Jalankan setelah setiap AJAX selesai ke progress_usulan_satker
+    $(document).ajaxComplete(function(event, xhr, settings) {
+        if (settings.url && settings.url.indexOf('progress_usulan_satker') !== -1) {
+            setTimeout(fixProgressTable, 50);
+        }
+    });
+
+    // Jalankan juga saat pertama kali halaman dimuat
+    $(document).ready(function() {
+        setTimeout(fixProgressTable, 500);
+    });
+})();
+</script>
+
 
 <?php /*$controller2='ews';?>
 <div class="row">

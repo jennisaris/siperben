@@ -341,7 +341,7 @@ if ($row->count == 0) {
 
 		$icons = array(
 			'danger' => 'fa-exclamation-triangle',
-			'warning' => 'fa-shield-alt',
+			'warning' => 'fa-exclamation-circle',
 			'info' => 'fa-info-circle',
 			'success' => 'fa-check-circle'
 		);
