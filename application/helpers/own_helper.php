@@ -103,8 +103,8 @@ if (!function_exists('get_app_notifications')) {
                     'icon'  => 'fas fa-file-invoice text-warning',
                     'title' => 'Usulan Perubahan SK',
                     'msg'   => "Ada $total_incomp usulan SK satker yang sedang diajukan / belum selesai.",
-                    // Mengarah ke halaman Progress Usulan Satker (tabel progress per satker)
-                    'url'   => base_url('perbend/progress_usulan_satker'),
+                    // Mengarah ke tabel khusus Notifikasi Progres Usulan Satker (Sedang Diproses) di Dashboard
+                    'url'   => base_url('dashboard/index') . '?link=notif_usulan_proses',
                     'badge' => 'label-warning'
                 );
             }
