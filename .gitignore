@@ -17,7 +17,8 @@ vendor/
 **/config/database.php
 **/config/config.php
 **/config/properties.php
-#sql/
 db/
+!db/migration_approval_registrasi.sql
+!db/backup_priv_t_menu_group_privileges.sql
 cookies.txt
 application/logs/
