@@ -719,7 +719,8 @@ class Index extends MX_Controller {
 				if (!empty($top['kode'])) $kodes[trim($top['kode'])] = $this->db->escape(trim($top['kode']));
 				if (!empty($top_ksat)) $kodes[$top_ksat] = $this->db->escape($top_ksat);
 
-				$this->_collect_satker_child_keys($top_id, $tree, $ids, $kodes);
+				// Samakan filter modal dengan angka summary: gunakan satker referensi langsung,
+				// bukan seluruh anak hirarki unor, agar jumlah detail = jumlah pada tabel utama.
 
 				$str_ids = !empty($ids) ? implode(',', array_values($ids)) : "'0'";
 				$str_kodes = !empty($kodes) ? implode(',', array_values($kodes)) : "''";
