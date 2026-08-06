@@ -708,10 +708,15 @@ class Index extends MX_Controller {
 				$str_ids = !empty($ids) ? implode(',', array_values($ids)) : "'0'";
 				$str_kodes = !empty($kodes) ? implode(',', array_values($kodes)) : "''";
 
-				$sql_peg = "SELECT cnip, vname, {$cert_col} as cert_no 
-							FROM kepeg_m_pegawai 
-							WHERE cjabid2 IN ({$str_jab}) 
-							AND (ikduker IN ({$str_ids}) OR ckduker IN ({$str_kodes}))";
+				$sql_peg = "SELECT p.cnip, p.vname, p.{$cert_col} as cert_no,
+							p.ikduker, p.ckduker,
+							u.kode_satker AS peg_kode_satker,
+							u.kode AS peg_kode_unor,
+							u.nama AS peg_nama_unor
+							FROM kepeg_m_pegawai p
+							LEFT JOIN kepeg_m_unor u ON u.id = p.ikduker
+							WHERE p.cjabid2 IN ({$str_jab})
+							AND (p.ikduker IN ({$str_ids}) OR p.ckduker IN ({$str_kodes}))";
 
 				if ($status_type === 'cert') {
 					$sql_peg .= " AND ({$cert_col} IS NOT NULL AND {$cert_col} != '')";
@@ -721,11 +726,12 @@ class Index extends MX_Controller {
 
 				$pegs = $this->db->query($sql_peg)->result_array();
 				if (!empty($pegs)) {
-					$full_satker_name = get_excel_satker_name($top_ksat, $top['nama']);
 					foreach ($pegs as $p) {
+						$pegawai_satker_code = !empty($p['peg_kode_satker']) ? trim($p['peg_kode_satker']) : (!empty($p['ckduker']) ? trim($p['ckduker']) : $top_ksat);
+						$pegawai_satker_name = get_excel_satker_name($pegawai_satker_code, !empty($p['peg_nama_unor']) ? $p['peg_nama_unor'] : $top['nama']);
 						$details[] = array(
-							'kode_satker' => $top_ksat,
-							'nama_satker' => $full_satker_name,
+							'kode_satker' => $pegawai_satker_code,
+							'nama_satker' => $pegawai_satker_name,
 							'nip'         => !empty($p['cnip']) ? $p['cnip'] : '-',
 							'nama_pegawai'=> !empty($p['vname']) ? $p['vname'] : '-',
 							'no_sertifikat'=> !empty($p['cert_no']) ? $p['cert_no'] : 'Belum Bersertifikat'
