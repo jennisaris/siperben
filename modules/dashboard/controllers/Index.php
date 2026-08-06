@@ -700,9 +700,15 @@ class Index extends MX_Controller {
 			// Preload seluruh hirarki kepeg_m_unor untuk traversal anak unor
 			$all_unors = $this->db->query("SELECT id, kode, kode_satker, id_atasan FROM kepeg_m_unor WHERE date_expired IS NULL")->result_array();
 			$tree = array();
+			$unor_by_id = array();
+			$unor_by_kode = array();
 			foreach ($all_unors as $u) {
 				$parent_id = trim($u['id_atasan']);
 				$tree[$parent_id][] = $u;
+				$unor_by_id[trim($u['id'])] = $u;
+				if (!empty($u['kode'])) {
+					$unor_by_kode[trim($u['kode'])] = $u;
+				}
 			}
 
 			foreach ($top_unors as $top) {
@@ -721,11 +727,16 @@ class Index extends MX_Controller {
 
 				$sql_peg = "SELECT p.cnip, p.vname, p.{$cert_col} as cert_no,
 							p.ikduker, p.ckduker,
+							u.id AS peg_unor_id,
 							u.kode_satker AS peg_kode_satker,
 							u.kode AS peg_kode_unor,
-							u.nama AS peg_nama_unor
+							u.nama AS peg_nama_unor,
+							uck.id AS ckduker_unor_id,
+							uck.kode_satker AS ckduker_kode_satker,
+							uck.nama AS ckduker_nama_unor
 							FROM kepeg_m_pegawai p
 							LEFT JOIN kepeg_m_unor u ON u.id = p.ikduker
+							LEFT JOIN kepeg_m_unor uck ON uck.kode = p.ckduker
 							WHERE p.cjabid2 IN ({$str_jab})
 							AND (p.ikduker IN ({$str_ids}) OR p.ckduker IN ({$str_kodes}))";
 
@@ -738,7 +749,27 @@ class Index extends MX_Controller {
 				$pegs = $this->db->query($sql_peg)->result_array();
 				if (!empty($pegs)) {
 					foreach ($pegs as $p) {
-						$pegawai_satker_code = !empty($p['peg_kode_satker']) ? trim($p['peg_kode_satker']) : (!empty($p['ckduker']) ? trim($p['ckduker']) : $top_ksat);
+						$pegawai_satker_code = '';
+						if (!empty($p['peg_kode_satker']) && preg_match('/^[0-9]+$/', trim($p['peg_kode_satker']))) {
+							$pegawai_satker_code = trim($p['peg_kode_satker']);
+						} elseif (!empty($p['ckduker_kode_satker']) && preg_match('/^[0-9]+$/', trim($p['ckduker_kode_satker']))) {
+							$pegawai_satker_code = trim($p['ckduker_kode_satker']);
+						} else {
+							$pegawai_satker_code = $this->_resolve_numeric_satker_code(
+								!empty($p['peg_unor_id']) ? $p['peg_unor_id'] : (!empty($p['ckduker_unor_id']) ? $p['ckduker_unor_id'] : ''),
+								!empty($p['peg_kode_unor']) ? $p['peg_kode_unor'] : (!empty($p['ckduker']) ? $p['ckduker'] : ''),
+								$unor_by_id,
+								$unor_by_kode
+							);
+						}
+						if ($pegawai_satker_code === '' && !empty($p['ckduker']) && preg_match('/^[0-9]+$/', trim($p['ckduker']))) {
+							$pegawai_satker_code = trim($p['ckduker']);
+						} elseif ($pegawai_satker_code === '' && preg_match('/^[0-9]+$/', $top_ksat)) {
+							$pegawai_satker_code = $top_ksat;
+						}
+						if ($pegawai_satker_code === '') {
+							continue;
+						}
 						if (!empty($active_lookup) && !isset($active_lookup[$pegawai_satker_code])) {
 							continue;
 						}
@@ -746,10 +777,14 @@ class Index extends MX_Controller {
 							continue;
 						}
 						$detail_satker_seen[$pegawai_satker_code] = true;
-						$pegawai_satker_name = get_excel_satker_name($pegawai_satker_code, !empty($p['peg_nama_unor']) ? $p['peg_nama_unor'] : $top['nama']);
+						$fallback_satker_name = !empty($p['ckduker_nama_unor']) ? $p['ckduker_nama_unor'] : (!empty($p['peg_nama_unor']) ? $p['peg_nama_unor'] : $top['nama']);
+						$pegawai_satker_name = get_excel_satker_name($pegawai_satker_code, $fallback_satker_name);
 						$details[] = array(
 							'kode_satker' => $pegawai_satker_code,
-							'nama_satker' => $pegawai_satker_name
+							'nama_satker' => $pegawai_satker_name,
+							'nip'         => !empty($p['cnip']) ? $p['cnip'] : '-',
+							'nama_pegawai'=> !empty($p['vname']) ? $p['vname'] : '-',
+							'no_sertifikat'=> !empty($p['cert_no']) ? $p['cert_no'] : 'Belum Bersertifikat'
 						);
 					}
 				}
@@ -757,6 +792,35 @@ class Index extends MX_Controller {
 		}
 
 		echo json_encode($details);
+	}
+
+
+	private function _resolve_numeric_satker_code($unor_id, $unor_kode, &$unor_by_id, &$unor_by_kode) {
+		$node = null;
+		$unor_id = trim($unor_id);
+		$unor_kode = trim($unor_kode);
+		if ($unor_id !== '' && isset($unor_by_id[$unor_id])) {
+			$node = $unor_by_id[$unor_id];
+		} elseif ($unor_kode !== '' && isset($unor_by_kode[$unor_kode])) {
+			$node = $unor_by_kode[$unor_kode];
+		}
+
+		$guard = 0;
+		while (!empty($node) && $guard < 50) {
+			if (!empty($node['kode_satker']) && preg_match('/^[0-9]+$/', trim($node['kode_satker']))) {
+				return trim($node['kode_satker']);
+			}
+			if (!empty($node['kode']) && preg_match('/^[0-9]+$/', trim($node['kode']))) {
+				return trim($node['kode']);
+			}
+			$parent_id = !empty($node['id_atasan']) ? trim($node['id_atasan']) : '';
+			if ($parent_id === '' || !isset($unor_by_id[$parent_id])) {
+				break;
+			}
+			$node = $unor_by_id[$parent_id];
+			$guard++;
+		}
+		return '';
 	}
 
 	private function _collect_satker_child_keys($parent_id, &$tree, &$ids, &$kodes) {
