@@ -49,6 +49,7 @@ class Detail_rekap_pejabat extends MX_Controller {
   
   		$offset = ($page - 1) * $this->limit;
   
+      //print_r($_POST);
   		foreach ($_POST as $k=>$v) {			
   			$krit = str_replace("q_", "", $k);
   			$this->kriteria[$krit] = $this->input->post($k);
@@ -78,15 +79,18 @@ class Detail_rekap_pejabat extends MX_Controller {
   		if ($reports!=1) $kodeatasan = $this->kriteria->{$this->table.'_iunorid'};
   			$sql = "Select b.kode_atasan, (select nama from 
 				app_m_unor where kode=b.kode_atasan) as eselon1, 
-				b.kode, b.nama from app_m_unor b
+				COALESCE(k.kode_satker, b.kode) as kode, COALESCE(k.nama, b.nama) as nama from app_m_unor b
+				left join kepeg_m_unor k on k.kode_satker = b.kode and k.date_expired IS NULL
 				where b.kode_atasan = '{$kodeatasan}' and deleted=0";
 			
+  			//echo $sql;exit;
     		$query = $this->db->query($sql);
 	  		$jum_rec = $query->num_rows();
 			if( $jum_rec == 0 ) {
 				$sql = "Select b.kode_atasan, (select nama from 
 						app_m_unor where kode=b.kode_atasan) as eselon1, 
-						b.kode, b.nama from app_m_unor b
+						COALESCE(k.kode_satker, b.kode) as kode, COALESCE(k.nama, b.nama) as nama from app_m_unor b
+						left join kepeg_m_unor k on k.kode_satker = b.kode and k.date_expired IS NULL
 						where b.kode = '{$kodeatasan}' and deleted=0";
 
 				$query = $this->db->query($sql);
@@ -101,6 +105,7 @@ class Detail_rekap_pejabat extends MX_Controller {
           $sql .= " limit {$this->limit} offset {$offset}";
     		  $query = $this->db->query($sql);
         } //else { echo $sql;exit; }
+		//echo $sql;exit;
   		//print_r($kodeunitutamas);
   		//exit;
   		$no = 1;
@@ -334,6 +339,7 @@ class Detail_rekap_pejabat extends MX_Controller {
 					end ";
 		//$sql .= " and inoskid IS NOT NULL";
 		$sql .= " Group by ijabid2";
+		//echo $sql;exit;
 				
 		$rows = $this->db->query($sql)->result();
 		//echo $q_kd_satker.' : ';
