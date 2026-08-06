@@ -675,7 +675,6 @@ class Index extends MX_Controller {
 		}
 
 		$details = array();
-		$detail_satker_seen = array();
 		if (!empty($excel_satkers)) {
 			// Map jab_type ke cjabid2 & nama kolom sertifikat
 			$jab_ids = array();
@@ -773,18 +772,17 @@ class Index extends MX_Controller {
 						if (!empty($active_lookup) && !isset($active_lookup[$pegawai_satker_code])) {
 							continue;
 						}
-						if (isset($detail_satker_seen[$pegawai_satker_code])) {
-							continue;
-						}
-						$detail_satker_seen[$pegawai_satker_code] = true;
 						$fallback_satker_name = !empty($p['ckduker_nama_unor']) ? $p['ckduker_nama_unor'] : (!empty($p['peg_nama_unor']) ? $p['peg_nama_unor'] : $top['nama']);
 						$pegawai_satker_name = get_excel_satker_name($pegawai_satker_code, $fallback_satker_name);
+						$cert_no = !empty($p['cert_no']) ? trim($p['cert_no']) : '';
+						$cert_status = $this->_get_cert_status($cert_no);
 						$details[] = array(
 							'kode_satker' => $pegawai_satker_code,
 							'nama_satker' => $pegawai_satker_name,
 							'nip'         => !empty($p['cnip']) ? $p['cnip'] : '-',
 							'nama_pegawai'=> !empty($p['vname']) ? $p['vname'] : '-',
-							'no_sertifikat'=> !empty($p['cert_no']) ? $p['cert_no'] : 'Belum Bersertifikat'
+							'no_sertifikat'=> $cert_no !== '' ? $cert_no : 'Belum Bersertifikat',
+							'cert_status' => $cert_status
 						);
 					}
 				}
@@ -794,6 +792,20 @@ class Index extends MX_Controller {
 		echo json_encode($details);
 	}
 
+
+
+	private function _get_cert_status($cert_no) {
+		$cert_no = trim($cert_no);
+		if ($cert_no === '') {
+			return 'missing';
+		}
+		if (preg_match('/(19|20)\d{2}(?!.*(19|20)\d{2})/', $cert_no, $m)) {
+			$year = (int)$m[0];
+			$current_year = (int)date('Y');
+			return (($current_year - $year) > 5) ? 'expired' : 'active';
+		}
+		return 'active';
+	}
 
 	private function _resolve_numeric_satker_code($unor_id, $unor_kode, &$unor_by_id, &$unor_by_kode) {
 		$node = null;

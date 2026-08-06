@@ -521,9 +521,15 @@ $controller = 'index';
               var html = '';
               if (data && data.length > 0) {
                   $.each(data, function(idx, item) {
-                      var statusBadge = (item.no_sertifikat === 'Belum Bersertifikat') 
-                          ? '<span class="label label-danger" style="font-size: 10px;">Belum Bersertifikat</span>' 
-                          : '<span class="label label-success" style="font-size: 10px;"><i class="fa fa-certificate"></i> ' + item.no_sertifikat + '</span>';
+                      var certStatus = item.cert_status || ((item.no_sertifikat === 'Belum Bersertifikat') ? 'missing' : 'active');
+                      var statusBadge = '';
+                      if (certStatus === 'missing') {
+                          statusBadge = '<span class="label label-danger" style="font-size: 10px; font-weight:700;">Belum Bersertifikat</span>';
+                      } else if (certStatus === 'expired') {
+                          statusBadge = '<span class="label label-warning" style="font-size: 10px; font-weight:700; color:#1f2937; background:#facc15;"><i class="fa fa-exclamation-triangle"></i> ' + item.no_sertifikat + '</span>';
+                      } else {
+                          statusBadge = '<span class="label label-success" style="font-size: 10px; font-weight:700;"><i class="fa fa-check-circle"></i> ' + item.no_sertifikat + '</span>';
+                      }
 
                       html += '<tr>' +
                           '<td class="text-center">' + (idx + 1) + '</td>' +
