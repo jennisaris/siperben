@@ -175,7 +175,7 @@ class Registrasi extends CI_Controller {
 
         $old = array(
             'nip' => $reg ? $reg->nip : '',
-            'nama_lengkap' => $reg ? $reg->nama_lengkap : ($user ? $user->realname : ''),
+            'nama_lengkap' => $reg ? $reg->nama_lengkap : '',
             'satuan_kerja' => $reg ? $reg->satuan_kerja : $satker_label,
             'pangkat_golongan' => $reg ? $reg->pangkat_golongan : '',
             'no_hp' => $reg ? $reg->no_hp : '',
@@ -360,3 +360,4 @@ class Registrasi extends CI_Controller {
         return $pangkat !== '' ? $pangkat . ' (' . $nama . ')' : $nama;
     }
 }
+

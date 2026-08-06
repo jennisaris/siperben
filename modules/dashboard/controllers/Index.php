@@ -664,7 +664,18 @@ class Index extends MX_Controller {
 			}
 		}
 
+		// Batasi detail hanya pada kode satker aktif dari master Excel aktif.
+		$active_satkers = get_active_excel_satker_codes();
+		$active_lookup = array();
+		if (!empty($active_satkers)) {
+			$active_lookup = array_flip(array_map('trim', $active_satkers));
+			$excel_satkers = array_values(array_unique(array_filter($excel_satkers, function($code) use ($active_lookup) {
+				return isset($active_lookup[trim($code)]);
+			})));
+		}
+
 		$details = array();
+		$detail_satker_seen = array();
 		if (!empty($excel_satkers)) {
 			// Map jab_type ke cjabid2 & nama kolom sertifikat
 			$jab_ids = array();
@@ -728,13 +739,17 @@ class Index extends MX_Controller {
 				if (!empty($pegs)) {
 					foreach ($pegs as $p) {
 						$pegawai_satker_code = !empty($p['peg_kode_satker']) ? trim($p['peg_kode_satker']) : (!empty($p['ckduker']) ? trim($p['ckduker']) : $top_ksat);
+						if (!empty($active_lookup) && !isset($active_lookup[$pegawai_satker_code])) {
+							continue;
+						}
+						if (isset($detail_satker_seen[$pegawai_satker_code])) {
+							continue;
+						}
+						$detail_satker_seen[$pegawai_satker_code] = true;
 						$pegawai_satker_name = get_excel_satker_name($pegawai_satker_code, !empty($p['peg_nama_unor']) ? $p['peg_nama_unor'] : $top['nama']);
 						$details[] = array(
 							'kode_satker' => $pegawai_satker_code,
-							'nama_satker' => $pegawai_satker_name,
-							'nip'         => !empty($p['cnip']) ? $p['cnip'] : '-',
-							'nama_pegawai'=> !empty($p['vname']) ? $p['vname'] : '-',
-							'no_sertifikat'=> !empty($p['cert_no']) ? $p['cert_no'] : 'Belum Bersertifikat'
+							'nama_satker' => $pegawai_satker_name
 						);
 					}
 				}
@@ -757,3 +772,4 @@ class Index extends MX_Controller {
 		}
 	}
 }
+

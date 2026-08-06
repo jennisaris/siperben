@@ -3,6 +3,8 @@
 			<li>      					
 				<?php if ( isset($this->session->userdata['logged_in']) ) {
 						//echo $CI->mylibraryext->rekursifAdminLTE(0, $this->session->userdata['groupid'], 1);
-						echo $this->session->userdata[$this->config->item('session').'_ar_menu'];
+						$menu_html = $this->session->userdata[$this->config->item('session').'_ar_menu'];
+						if (function_exists('inject_perbend_menu_badges')) $menu_html = inject_perbend_menu_badges($menu_html);
+						echo $menu_html;
 				}?>
 			</ul>

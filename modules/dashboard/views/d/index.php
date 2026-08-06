@@ -466,7 +466,7 @@ $controller = 'index';
           <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <h5 id="modalCertSubtitle" style="margin: 0; font-weight: 600; color: #1e293b; font-size: 13px;"></h5>
             <div style="position: relative; width: 240px;">
-              <input type="text" id="searchModalCert" class="form-control input-sm" placeholder="Cari Satker / Nama / NIP..." style="border-radius: 8px; font-size: 11px; height: 28px; padding-left: 26px;">
+              <input type="text" id="searchModalCert" class="form-control input-sm" placeholder="Cari Kode / Nama Satker..." style="border-radius: 8px; font-size: 11px; height: 28px; padding-left: 26px;">
               <i class="fa fa-search" style="position: absolute; left: 8px; top: 7px; color: #94a3b8; font-size: 11px;"></i>
             </div>
           </div>
@@ -475,11 +475,8 @@ $controller = 'index';
               <thead style="position: sticky; top: 0; background: #f1f5f9; z-index: 10;">
                 <tr>
                   <th style="width: 40px; text-align: center;">No</th>
-                  <th style="width: 90px; text-align: center;">Kode Satker</th>
+                  <th style="width: 120px; text-align: center;">Kode Satker</th>
                   <th>Nama Satuan Kerja</th>
-                  <th style="width: 150px;">NIP</th>
-                  <th style="width: 180px;">Nama Pejabat</th>
-                  <th id="thCertHeader" style="width: 200px;">No. Sertifikat</th>
                 </tr>
               </thead>
               <tbody>
@@ -497,18 +494,8 @@ $controller = 'index';
 
   <script type="text/javascript">
   function show_cert_detail(unit, jab, status, label) {
-      var headerTitle = 'No. Sertifikat';
-      if (jab === 'bnd') {
-          headerTitle = 'No. BNT';
-      } else if (jab === 'ppk') {
-          headerTitle = 'No. PNT';
-      } else if (jab === 'ppspm') {
-          headerTitle = 'No. SNT';
-      }
-      $('#thCertHeader').text(headerTitle);
-
       $('#modalCertSubtitle').html('Unit Utama: <b>' + unit + '</b> | Status: <b>' + label + '</b>');
-      $('#tblModalCert tbody').html('<tr><td colspan="6" class="text-center" style="padding: 30px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><br/><span style="margin-top: 8px; display: inline-block; font-size: 12px;">Memuat data detail satker...</span></td></tr>');
+      $('#tblModalCert tbody').html('<tr><td colspan="3" class="text-center" style="padding: 30px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><br/><span style="margin-top: 8px; display: inline-block; font-size: 12px;">Memuat data satker aktif...</span></td></tr>');
       $('#searchModalCert').val('');
       $('#modalCertDetail').modal('show');
 
@@ -521,26 +508,19 @@ $controller = 'index';
               var html = '';
               if (data && data.length > 0) {
                   $.each(data, function(idx, item) {
-                      var statusBadge = (item.no_sertifikat === 'Belum Bersertifikat') 
-                          ? '<span class="label label-danger" style="font-size: 10px;">Belum Bersertifikat</span>' 
-                          : '<span class="label label-success" style="font-size: 10px;"><i class="fa fa-certificate"></i> ' + item.no_sertifikat + '</span>';
-                      
                       html += '<tr>' +
                           '<td class="text-center">' + (idx + 1) + '</td>' +
                           '<td class="text-center"><b>' + item.kode_satker + '</b></td>' +
                           '<td>' + item.nama_satker + '</td>' +
-                          '<td>' + item.nip + '</td>' +
-                          '<td><b>' + item.nama_pegawai + '</b></td>' +
-                          '<td>' + statusBadge + '</td>' +
                       '</tr>';
                   });
               } else {
-                  html = '<tr><td colspan="6" class="text-center" style="padding: 20px; color: #64748b;"><b>Tidak ada data pejabat untuk kategori ini</b></td></tr>';
+                  html = '<tr><td colspan="3" class="text-center" style="padding: 20px; color: #64748b;"><b>Tidak ada satker aktif untuk kategori ini</b></td></tr>';
               }
               $('#tblModalCert tbody').html(html);
           },
           error: function() {
-              $('#tblModalCert tbody').html('<tr><td colspan="6" class="text-center text-danger" style="padding: 20px;">Gagal memuat data detail satker. Silakan coba lagi.</td></tr>');
+              $('#tblModalCert tbody').html('<tr><td colspan="3" class="text-center text-danger" style="padding: 20px;">Gagal memuat data detail satker. Silakan coba lagi.</td></tr>');
           }
       });
   }
