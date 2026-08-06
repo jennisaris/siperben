@@ -300,25 +300,27 @@ class Index extends MX_Controller {
 	  }
 	  
 	  // OPTIMIZED: JOIN menggantikan correlated subquery
+	  $tahun = !empty($this->session->settahun) ? $this->session->settahun : date('Y');
   $sql = "Select p.ijabid2, count(p.cnip) as total 
               From app_t_usulan_pegawai p
               INNER JOIN app_m_unor u ON u.kode = p.ckduker AND u.deleted = 0
+              LEFT JOIN app_t_usulan us ON us.id = p.iusulanid
               where {$q_ijabid2} ";
     if ($q_kd_satker !='') $sql.= $q_kd_satker;
 	/*$sql .= " and case 
 		when p.ijabid2 not in (4,5,6,7) then p.inoskid IS NOT NULL and p.inoskid !=0 and p.isnonaktif = 0
-		else p.isnonaktif = 0 and p.istatus != 0 and p.istatus2 != 0
+		else p.isnonaktif = 0 and p.istatus != 0 and p.istatus2 != 0 and us.ctahun = '{$tahun}'
 		end ";*/
 		
 	if ( empty($kd_satker_) ) {
 		$sql .= " and case 
 			when p.ijabid2 not in (4,5,6,7) then p.inoskid IS NOT NULL and p.inoskid !=0 and p.isnonaktif = 0
-			else p.isnonaktif = 0 and p.istatus != 0 and p.istatus2 != 0
+			else p.isnonaktif = 0 and p.istatus != 0 and p.istatus2 != 0 and us.ctahun = '{$tahun}'
 			end ";
 	} else {
 		$sql .= " and case 
 			when p.ijabid2 not in (4,5,6,7) then p.inoskid IS NOT NULL and p.inoskid !=0 and p.isnonaktif = 0
-			else p.isnonaktif = 0 and p.istatus != 0 and p.istatus2 != 0
+			else p.isnonaktif = 0 and p.istatus != 0 and p.istatus2 != 0 and us.ctahun = '{$tahun}'
 			end ";
 	}
     //$sql .= " and p.inoskid IS NOT NULL and p.inoskid != 0 and p.isnonaktif = 0";
