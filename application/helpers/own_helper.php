@@ -432,5 +432,25 @@ if (!function_exists('inject_perbend_menu_badges')) {
     }
 }
 
+if (!function_exists('get_nama_panjang_eselon')) {
+    function get_nama_panjang_eselon($abbrv, $fallback = '') {
+        static $map = array(
+            'GTK'             => 'Direktorat Jenderal Guru dan Tenaga Kependidikan',
+            'ITJEN'           => 'Inspektorat Jenderal',
+            'BAHASA'          => 'Badan Pengembangan dan Pembinaan Bahasa',
+            'VOKASI'          => 'Direktorat Jenderal Pendidikan Vokasi',
+            'BSKAP'           => 'Badan Standar, Kurikulum, dan Asesmen Pendidikan',
+            'PAUD, DIKDASMEN' => 'Direktorat Jenderal PAUD, Dikdas dan Dikmen',
+            'SETJEN'          => 'Sekretariat Jenderal'
+        );
+        $key = strtoupper(trim($abbrv));
+        if (isset($map[$key])) {
+            return $map[$key];
+        }
+        return !empty($fallback) ? $fallback : $abbrv;
+    }
+}
+
 ?>
+
 
