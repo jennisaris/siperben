@@ -361,8 +361,60 @@ $controller = 'index';
           </div>
         </div>
       </div>
+  </div>
+
+  <!-- ROW 3.5: GRAFIK INFORMASI REKENING SATKER (2 Columns Side-by-Side) -->
+  <?php if (!empty($rekening_info)) { $rek_kpi = $rekening_info['kpi']; ?>
+  <div class="row">
+    <!-- Chart Status Rekening (Doughnut) -->
+    <div class="col-md-5 col-sm-12">
+      <div class="box box-info" style="margin-bottom: 20px; border-top-color: #0284c7;">
+        <div class="box-header with-border" style="background: #f0f9ff;">
+          <h3 class="box-title" style="color: #0369a1; font-weight: 700;"><i class="fa fa-university"></i> Status Keaktifan Rekening Satker</h3>
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="box-body text-center">
+          <div style="display: flex; justify-content: space-around; margin-bottom: 10px; background: #f8fafc; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div>
+              <span style="font-size: 10px; color: #64748b; font-weight: 600;">TOTAL REKENING</span>
+              <div style="font-size: 14px; font-weight: 700; color: #1e293b;"><?= number_format($rek_kpi['total']); ?></div>
+            </div>
+            <div>
+              <span style="font-size: 10px; color: #059669; font-weight: 600;">AKTIF (0)</span>
+              <div style="font-size: 14px; font-weight: 700; color: #10b981;"><?= number_format($rek_kpi['aktif']); ?></div>
+            </div>
+            <div>
+              <span style="font-size: 10px; color: #dc2626; font-weight: 600;">NON AKTIF (1)</span>
+              <div style="font-size: 14px; font-weight: 700; color: #ef4444;"><?= number_format($rek_kpi['nonaktif']); ?></div>
+            </div>
+          </div>
+          <div style="height: 190px; position: relative;">
+            <canvas id="chartStatusRekening"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Jenis Rekening (Bar Chart Aktif vs Non-Aktif) -->
+    <div class="col-md-7 col-sm-12">
+      <div class="box box-info" style="margin-bottom: 20px; border-top-color: #0284c7;">
+        <div class="box-header with-border" style="background: #f0f9ff;">
+          <h3 class="box-title" style="color: #0369a1; font-weight: 700;"><i class="fa fa-bar-chart"></i> Distribusi per Jenis Rekening Satker</h3>
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="box-body">
+          <div style="height: 236px; position: relative;">
+            <canvas id="chartJenisRekening"></canvas>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  <?php } ?>
 
   <!-- ROW 4: TABEL REKAP STATUS SERTIFIKASI (Full Width col-md-12) -->
   <?php if (!empty($unit_cert_breakdown)) { ?>
@@ -911,5 +963,77 @@ $(document).ready(function() {
       }
     });
   }
+
+  // Render Chart 3: Status Keaktifan Rekening Satker (Doughnut Chart)
+  <?php if (!empty($rekening_info['kpi'])) { 
+    $rek_kpi_vals = json_encode(array($rekening_info['kpi']['aktif'], $rekening_info['kpi']['nonaktif']));
+  ?>
+  if ($('#chartStatusRekening').length && typeof Chart !== 'undefined') {
+    var ctx3 = document.getElementById('chartStatusRekening').getContext('2d');
+    new Chart(ctx3, {
+      type: 'doughnut',
+      data: {
+        labels: ['Aktif (0)', 'Non-Aktif (1)'],
+        datasets: [{
+          data: <?= $rek_kpi_vals; ?>,
+          backgroundColor: ['#10b981', '#ef4444'],
+          borderWidth: 2,
+          borderColor: '#ffffff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          position: 'right',
+          labels: { boxWidth: 12, fontSize: 11 }
+        }
+      }
+    });
+  }
+  <?php } ?>
+
+  // Render Chart 4: Distribusi per Jenis Rekening Satker (Grouped Bar Chart)
+  <?php if (!empty($rekening_info['chart_jenis'])) { 
+    $j_labels = json_encode($rekening_info['chart_jenis']['labels']);
+    $j_aktif  = json_encode($rekening_info['chart_jenis']['aktif']);
+    $j_nonaktif = json_encode($rekening_info['chart_jenis']['nonaktif']);
+  ?>
+  if ($('#chartJenisRekening').length && typeof Chart !== 'undefined') {
+    var ctx4 = document.getElementById('chartJenisRekening').getContext('2d');
+    new Chart(ctx4, {
+      type: 'bar',
+      data: {
+        labels: <?= $j_labels; ?>,
+        datasets: [
+          {
+            label: 'Aktif (0)',
+            data: <?= $j_aktif; ?>,
+            backgroundColor: '#10b981'
+          },
+          {
+            label: 'Non-Aktif (1)',
+            data: <?= $j_nonaktif; ?>,
+            backgroundColor: '#ef4444'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          position: 'top',
+          labels: { boxWidth: 12, fontSize: 11 }
+        },
+        scales: {
+          xAxes: [{ stacked: false }],
+          yAxes: [{
+            ticks: { beginAtZero: true, precision: 0 }
+          }]
+        }
+      }
+    });
+  }
+  <?php } ?>
 });
 </script>
