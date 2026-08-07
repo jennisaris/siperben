@@ -32,8 +32,89 @@ class Index extends MX_Controller {
 		$data['summary_info'] = $this->get_dashboard_summary();
 		$data['unit_cert_breakdown'] = $this->get_unit_cert_breakdown();
 		$data['rekening_info'] = $this->_get_rekening_summary();
+		$data['unit_rekening_breakdown'] = $this->get_unit_rekening_breakdown();
 		
 		$this->template->display('d/index', $data, TRUE);
+	}
+
+	private function get_unit_rekening_breakdown() {
+		$order_map = array(
+			'13801' => 'SEKRETARIAT JENDERAL',
+			'13802' => 'INSPEKTORAT JENDERAL',
+			'13803' => 'DIREKTORAT JENDERAL GURU, TENAGA KEPENDIDIKAN, DAN PENDIDIKAN GURU',
+			'13804' => 'DIREKTORAT JENDERAL PENDIDIKAN ANAK USIA DINI, PENDIDIKAN DASAR, DAN PENDIDIKAN MENENGAH',
+			'13805' => 'DIREKTORAT JENDERAL PENDIDIKAN VOKASI, PENDIDIKAN KHUSUS, DAN PENDIDIKAN LAYANAN KHUSUS',
+			'13811' => 'BADAN STANDAR KURIKULUM DAN ASESMEN PENDIDIKAN',
+			'13812' => 'BADAN PENGEMBANGAN DAN PEMBINAAN BAHASA'
+		);
+
+		$results = array();
+
+		foreach ($order_map as $kode_uu => $nama_uu) {
+			$sql = "SELECT 
+				COUNT(*) as total_aktif,
+				SUM(CASE WHEN j.nama LIKE '%RKK%' OR r.jenis_rekening = 5 THEN 1 ELSE 0 END) as rkk,
+				SUM(CASE WHEN j.nama LIKE '%BPG%' OR j.nama LIKE '%Pengeluaran%' OR r.jenis_rekening = 1 THEN 1 ELSE 0 END) as bpg,
+				SUM(CASE WHEN j.nama LIKE '%BPN%' OR j.nama LIKE '%Penerimaan%' OR r.jenis_rekening = 2 THEN 1 ELSE 0 END) as bpn,
+				SUM(CASE WHEN j.nama LIKE '%RPL%' OR j.nama LIKE '%Lainnya%' OR r.jenis_rekening = 3 THEN 1 ELSE 0 END) as rpl
+			FROM app_m_unor_rekening r
+			JOIN app_m_unor u ON r.kode_satker = u.kode
+			LEFT JOIN app_m_jenis_rekening j ON r.jenis_rekening = j.id
+			WHERE r.istatus = 0 AND (u.kode_atasan = '{$kode_uu}' OR u.kode = '{$kode_uu}')";
+
+			$row = $this->db->query($sql)->row();
+
+			$results[] = array(
+				'kode_unit' => $kode_uu,
+				'nama_unit' => $nama_uu,
+				'total'     => (int)($row ? $row->total_aktif : 0),
+				'rkk'       => (int)($row ? $row->rkk : 0),
+				'bpg'       => (int)($row ? $row->bpg : 0),
+				'bpn'       => (int)($row ? $row->bpn : 0),
+				'rpl'       => (int)($row ? $row->rpl : 0)
+			);
+		}
+
+		return $results;
+	}
+
+	public function get_unit_rekening_detail() {
+		$unit_code  = $this->input->post('unit_code');
+		$jenis_type = $this->input->post('jenis_type');
+
+		$q_jenis = "";
+		if ($jenis_type === 'rkk') {
+			$q_jenis = " AND (j.nama LIKE '%RKK%' OR r.jenis_rekening = 5)";
+		} else if ($jenis_type === 'bpg') {
+			$q_jenis = " AND (j.nama LIKE '%BPG%' OR j.nama LIKE '%Pengeluaran%' OR r.jenis_rekening = 1)";
+		} else if ($jenis_type === 'bpn') {
+			$q_jenis = " AND (j.nama LIKE '%BPN%' OR j.nama LIKE '%Penerimaan%' OR r.jenis_rekening = 2)";
+		} else if ($jenis_type === 'rpl') {
+			$q_jenis = " AND (j.nama LIKE '%RPL%' OR j.nama LIKE '%Lainnya%' OR r.jenis_rekening = 3)";
+		}
+
+		$esc_unit = $this->db->escape($unit_code);
+
+		$sql = "SELECT 
+			r.id, r.kode_satker, u.nama as nama_satker, r.no_rekening, r.nama_rekening, r.nama_bank,
+			COALESCE(j.nama, 'Lainnya') as jenis_nama,
+			(SELECT COUNT(*) FROM app_m_unor_rekening r1 WHERE r1.kode_satker = r.kode_satker AND r1.istatus = 0 AND (r1.jenis_rekening = 1 OR r1.nama_rekening LIKE '%BPG%' OR r1.nama_rekening LIKE '%Pengeluaran%')) as cnt_bpg,
+			(SELECT COUNT(*) FROM app_m_unor_rekening r2 WHERE r2.kode_satker = r.kode_satker AND r2.istatus = 0 AND (r2.jenis_rekening = 2 OR r2.nama_rekening LIKE '%BPN%' OR r2.nama_rekening LIKE '%Penerimaan%')) as cnt_bpn,
+			(SELECT COUNT(*) FROM app_m_unor_rekening r3 WHERE r3.kode_satker = r.kode_satker AND r3.istatus = 0 AND (r3.jenis_rekening = 3 OR r3.nama_rekening LIKE '%RPL%' OR r3.nama_rekening LIKE '%Lainnya%')) as cnt_rpl
+		FROM app_m_unor_rekening r
+		JOIN app_m_unor u ON r.kode_satker = u.kode
+		LEFT JOIN app_m_jenis_rekening j ON r.jenis_rekening = j.id
+		WHERE r.istatus = 0 AND (u.kode_atasan = {$esc_unit} OR u.kode = {$esc_unit}) {$q_jenis}
+		ORDER BY u.nama ASC, r.no_rekening ASC";
+
+		$rows = $this->db->query($sql)->result();
+
+		if (ob_get_length()) {
+			@ob_clean();
+		}
+		header('Content-Type: application/json; charset=utf-8');
+		echo json_encode(array('status' => true, 'data' => $rows));
+		exit;
 	}
 
 	private function _get_rekening_summary() {

@@ -363,42 +363,78 @@ $controller = 'index';
       </div>
   </div>
 
-  <!-- ROW 3.5: GRAFIK INFORMASI REKENING SATKER (2 Columns Side-by-Side) -->
-  <?php if (!empty($rekening_info)) { $rek_kpi = $rekening_info['kpi']; ?>
+  <!-- ROW 3.5: TABEL MATRIKS REKAPITULASI REKENING PER UNIT UTAMA & GRAFIK DISTRIBUSI -->
+  <?php if (!empty($unit_rekening_breakdown)) { ?>
   <div class="row">
-    <!-- Chart Status Rekening (Doughnut) -->
-    <div class="col-md-5 col-sm-12">
+    <!-- Tabel Matriks Rekening per Unit Utama -->
+    <div class="col-md-6 col-sm-12">
       <div class="box box-info" style="margin-bottom: 20px; border-top-color: #0284c7;">
         <div class="box-header with-border" style="background: #f0f9ff;">
-          <h3 class="box-title" style="color: #0369a1; font-weight: 700;"><i class="fa fa-university"></i> Status Keaktifan Rekening Satker</h3>
+          <h3 class="box-title" style="color: #0369a1; font-weight: 700;"><i class="fa fa-university"></i> Matriks Rekening per Unit Utama</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
           </div>
         </div>
-        <div class="box-body text-center">
-          <div style="display: flex; justify-content: space-around; margin-bottom: 10px; background: #f8fafc; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <div>
-              <span style="font-size: 10px; color: #64748b; font-weight: 600;">TOTAL REKENING</span>
-              <div style="font-size: 14px; font-weight: 700; color: #1e293b;"><?= number_format($rek_kpi['total']); ?></div>
-            </div>
-            <div>
-              <span style="font-size: 10px; color: #059669; font-weight: 600;">AKTIF (0)</span>
-              <div style="font-size: 14px; font-weight: 700; color: #10b981;"><?= number_format($rek_kpi['aktif']); ?></div>
-            </div>
-            <div>
-              <span style="font-size: 10px; color: #dc2626; font-weight: 600;">NON AKTIF (1)</span>
-              <div style="font-size: 14px; font-weight: 700; color: #ef4444;"><?= number_format($rek_kpi['nonaktif']); ?></div>
-            </div>
-          </div>
-          <div style="height: 190px; position: relative;">
-            <canvas id="chartStatusRekening"></canvas>
+        <div class="box-body" style="padding: 10px;">
+          <div style="overflow-x: auto;">
+            <table class="table table-bordered table-striped table-condensed" style="font-size: 11px; margin-bottom: 0;">
+              <thead>
+                <tr style="background: #e0f2fe; color: #0369a1;">
+                  <th style="width: 30px; text-align: center;">No.</th>
+                  <th>Unit Utama</th>
+                  <th style="width: 60px; text-align: center; background: #0284c7; color: #ffffff;">Jumlah</th>
+                  <th style="width: 50px; text-align: center; background: #ef4444; color: #ffffff;">RKK</th>
+                  <th style="width: 50px; text-align: center; background: #10b981; color: #ffffff;">BPG</th>
+                  <th style="width: 50px; text-align: center; background: #8b5cf6; color: #ffffff;">BPn</th>
+                  <th style="width: 50px; text-align: center; background: #0ea5e9; color: #ffffff;">RPL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php 
+                $r_no = 1;
+                foreach ($unit_rekening_breakdown as $r_row) {
+                  $u_code = htmlspecialchars($r_row['kode_unit'], ENT_QUOTES);
+                  $u_name = htmlspecialchars($r_row['nama_unit'], ENT_QUOTES);
+                ?>
+                <tr>
+                  <td class="text-center" style="font-weight: 600; color: #64748b;"><?= $r_no++; ?></td>
+                  <td><strong><?= $u_name; ?></strong></td>
+                  <td class="text-center" style="background: #f0f9ff;">
+                    <a href="javascript:void(0);" onclick="show_rekening_detail('<?= $u_code; ?>', 'all', 'Semua Rekening Aktif', '<?= $u_name; ?>');" style="color: #0284c7; font-weight: 700; text-decoration: underline; display: block;">
+                      <?= number_format($r_row['total']); ?>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <a href="javascript:void(0);" onclick="show_rekening_detail('<?= $u_code; ?>', 'rkk', 'Rekening Kas Kecil (RKK)', '<?= $u_name; ?>');" style="color: #dc2626; font-weight: 700; text-decoration: underline; display: block;">
+                      <?= number_format($r_row['rkk']); ?>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <a href="javascript:void(0);" onclick="show_rekening_detail('<?= $u_code; ?>', 'bpg', 'Rekening Bendahara Pengeluaran (BPG)', '<?= $u_name; ?>');" style="color: #059669; font-weight: 700; text-decoration: underline; display: block;">
+                      <?= number_format($r_row['bpg']); ?>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <a href="javascript:void(0);" onclick="show_rekening_detail('<?= $u_code; ?>', 'bpn', 'Rekening Bendahara Penerimaan (BPn)', '<?= $u_name; ?>');" style="color: #7c3aed; font-weight: 700; text-decoration: underline; display: block;">
+                      <?= number_format($r_row['bpn']); ?>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <a href="javascript:void(0);" onclick="show_rekening_detail('<?= $u_code; ?>', 'rpl', 'Rekening Penampungan Lainnya (RPL)', '<?= $u_name; ?>');" style="color: #0284c7; font-weight: 700; text-decoration: underline; display: block;">
+                      <?= number_format($r_row['rpl']); ?>
+                    </a>
+                  </td>
+                </tr>
+                <?php } ?>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Chart Jenis Rekening (Bar Chart Aktif vs Non-Aktif) -->
-    <div class="col-md-7 col-sm-12">
+    <!-- Chart Jenis Rekening (Bar Chart Aktif) -->
+    <div class="col-md-6 col-sm-12">
       <div class="box box-info" style="margin-bottom: 20px; border-top-color: #0284c7;">
         <div class="box-header with-border" style="background: #f0f9ff;">
           <h3 class="box-title" style="color: #0369a1; font-weight: 700;"><i class="fa fa-bar-chart"></i> Distribusi Jenis Rekening Satker (Aktif)</h3>
@@ -407,7 +443,7 @@ $controller = 'index';
           </div>
         </div>
         <div class="box-body">
-          <div style="height: 236px; position: relative;">
+          <div style="height: 254px; position: relative;">
             <canvas id="chartJenisRekening"></canvas>
           </div>
         </div>
@@ -554,7 +590,99 @@ $controller = 'index';
     </div>
   </div>
 
+  <!-- Modal Detail Satker Rekening -->
+  <div class="modal fade" id="modalRekeningDetail" tabindex="-1" role="dialog" aria-labelledby="modalRekeningDetailLabel">
+    <div class="modal-dialog modal-lg" role="document" style="width: 85%; max-width: 1050px;">
+      <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);">
+        <div class="modal-header" style="background: linear-gradient(135deg, #0369a1, #0284c7); color: #fff; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 14px 20px;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8;"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="modalRekeningDetailLabel" style="font-weight: 600; font-size: 14px;"><i class="fa fa-university" style="margin-right: 8px;"></i> Pemetaan & Rincian Rekening Satker</h4>
+        </div>
+        <div class="modal-body" style="padding: 20px;">
+          <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <h5 id="modalRekeningSubtitle" style="margin: 0; font-weight: 600; color: #1e293b; font-size: 13px;"></h5>
+            <div style="position: relative; width: 260px;">
+              <input type="text" id="searchModalRekening" class="form-control input-sm" placeholder="Cari Kode / Nama Satker / No.Rek..." style="border-radius: 8px; font-size: 11px; height: 28px; padding-left: 26px;">
+              <i class="fa fa-search" style="position: absolute; left: 8px; top: 7px; color: #94a3b8; font-size: 11px;"></i>
+            </div>
+          </div>
+          <div style="max-height: 420px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <table id="tblModalRekening" class="table table-bordered table-striped table-hover" style="font-size: 11px; margin-bottom: 0;">
+              <thead style="position: sticky; top: 0; background: #f1f5f9; z-index: 10;">
+                <tr>
+                  <th style="width: 35px; text-align: center;">No</th>
+                  <th style="width: 85px; text-align: center;">Kode Satker</th>
+                  <th>Nama Satuan Kerja</th>
+                  <th style="width: 140px; text-align: center;">Kelengkapan Satker</th>
+                  <th style="width: 150px;">No. Rekening</th>
+                  <th style="width: 180px;">Nama Rekening</th>
+                  <th style="width: 110px;">Bank</th>
+                  <th style="width: 80px; text-align: center;">Jenis</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dynamic JS content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer" style="background: #f8fafc; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; padding: 10px 20px;">
+          <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" style="border-radius: 6px; font-weight: 500;">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="text/javascript">
+  function show_rekening_detail(unitCode, jenisType, titleLabel, unitFullName) {
+      $('#modalRekeningSubtitle').html('Unit Utama: <b>' + unitFullName + '</b> | Filter: <b>' + titleLabel + '</b>');
+      $('#tblModalRekening tbody').html('<tr><td colspan="8" class="text-center" style="padding: 30px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><br/><span style="margin-top: 8px; display: inline-block; font-size: 12px;">Memuat data rekening satker...</span></td></tr>');
+      $('#searchModalRekening').val('');
+      $('#modalRekeningDetail').modal('show');
+
+      $.ajax({
+          url: '<?= base_url("dashboard/index/get_unit_rekening_detail"); ?>',
+          type: 'POST',
+          data: { unit_code: unitCode, jenis_type: jenisType },
+          dataType: 'json',
+          success: function(res) {
+              var html = '';
+              if (res && res.data && res.data.length > 0) {
+                  $.each(res.data, function(idx, item) {
+                      var bpgBadge = (item.cnt_bpg > 0) ? '<span class="label label-success" style="font-size:9px;">BPG ✓</span>' : '<span class="label label-danger" style="font-size:9px;">BPG ✗</span>';
+                      var bpnBadge = (item.cnt_bpn > 0) ? '<span class="label label-purple" style="font-size:9px; background:#8b5cf6; color:#fff;">BPn ✓</span>' : '<span class="label label-default" style="font-size:9px;">BPn -</span>';
+                      var rplBadge = (item.cnt_rpl > 0) ? '<span class="label label-info" style="font-size:9px;">' + item.cnt_rpl + ' RPL</span>' : '';
+                      var mapBadges = bpgBadge + ' ' + bpnBadge + ' ' + rplBadge;
+
+                      html += '<tr>' +
+                          '<td class="text-center">' + (idx + 1) + '</td>' +
+                          '<td class="text-center"><b>' + item.kode_satker + '</b></td>' +
+                          '<td>' + item.nama_satker + '</td>' +
+                          '<td class="text-center">' + mapBadges + '</td>' +
+                          '<td><b style="color:#0284c7;">' + item.no_rekening + '</b></td>' +
+                          '<td>' + (item.nama_rekening || '-') + '</td>' +
+                          '<td>' + (item.nama_bank || '-') + '</td>' +
+                          '<td class="text-center"><span class="label label-info" style="font-size:10px;">' + item.jenis_nama + '</span></td>' +
+                      '</tr>';
+                  });
+              } else {
+                  html = '<tr><td colspan="8" class="text-center" style="padding: 20px; color: #64748b;"><b>Tidak ada rekening aktif untuk kategori ini</b></td></tr>';
+              }
+              $('#tblModalRekening tbody').html(html);
+          },
+          error: function() {
+              $('#tblModalRekening tbody').html('<tr><td colspan="8" class="text-center text-danger" style="padding: 20px;">Gagal memuat detail rekening. Silakan coba lagi.</td></tr>');
+          }
+      });
+  }
+
+  $('#searchModalRekening').on('keyup', function() {
+      var val = $(this).val().toLowerCase();
+      $('#tblModalRekening tbody tr').filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(val) > -1);
+      });
+  });
+
   function show_cert_detail(unit, jab, status, label, unitFullName) {
       var headerTitle = 'No. Sertifikat';
       if (jab === 'bnd') {
