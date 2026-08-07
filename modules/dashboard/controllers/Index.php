@@ -50,38 +50,31 @@ class Index extends MX_Controller {
 		);
 
 		$sql_jenis = "SELECT 
-			j.nama as jenis_nama, 
-			COUNT(*) as total,
-			SUM(CASE WHEN r.istatus = 0 THEN 1 ELSE 0 END) as aktif,
-			SUM(CASE WHEN r.istatus = 1 THEN 1 ELSE 0 END) as nonaktif
+			COALESCE(j.nama, 'Lainnya') as jenis_nama, 
+			SUM(CASE WHEN r.istatus = 0 THEN 1 ELSE 0 END) as total_aktif
 		FROM app_m_unor_rekening r
 		LEFT JOIN app_m_jenis_rekening j ON r.jenis_rekening = j.id
+		WHERE r.istatus = 0
 		GROUP BY r.jenis_rekening, j.nama
-		ORDER BY total DESC";
+		ORDER BY total_aktif DESC";
 		
 		$res_jenis = $this->db->query($sql_jenis)->result();
 
-		$j_labels   = array();
-		$j_total    = array();
-		$j_aktif    = array();
-		$j_nonaktif = array();
+		$j_labels = array();
+		$j_aktif  = array();
 
 		if (!empty($res_jenis)) {
 			foreach ($res_jenis as $rj) {
-				$j_labels[]   = !empty($rj->jenis_nama) ? $rj->jenis_nama : 'Lainnya';
-				$j_total[]    = (int)$rj->total;
-				$j_aktif[]    = (int)$rj->aktif;
-				$j_nonaktif[] = (int)$rj->nonaktif;
+				$j_labels[] = $rj->jenis_nama;
+				$j_aktif[]  = (int)$rj->total_aktif;
 			}
 		}
 
 		return array(
 			'kpi' => $kpi,
 			'chart_jenis' => array(
-				'labels'   => $j_labels,
-				'total'    => $j_total,
-				'aktif'    => $j_aktif,
-				'nonaktif' => $j_nonaktif
+				'labels' => $j_labels,
+				'aktif'  => $j_aktif
 			)
 		);
 	}

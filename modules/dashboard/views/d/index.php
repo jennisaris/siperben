@@ -401,7 +401,7 @@ $controller = 'index';
     <div class="col-md-7 col-sm-12">
       <div class="box box-info" style="margin-bottom: 20px; border-top-color: #0284c7;">
         <div class="box-header with-border" style="background: #f0f9ff;">
-          <h3 class="box-title" style="color: #0369a1; font-weight: 700;"><i class="fa fa-bar-chart"></i> Distribusi per Jenis Rekening Satker</h3>
+          <h3 class="box-title" style="color: #0369a1; font-weight: 700;"><i class="fa fa-bar-chart"></i> Distribusi Jenis Rekening Satker (Aktif)</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
           </div>
@@ -993,11 +993,10 @@ $(document).ready(function() {
   }
   <?php } ?>
 
-  // Render Chart 4: Distribusi per Jenis Rekening Satker (Grouped Bar Chart)
+  // Render Chart 4: Distribusi per Jenis Rekening Satker Aktif (Bar Chart)
   <?php if (!empty($rekening_info['chart_jenis'])) { 
     $j_labels = json_encode($rekening_info['chart_jenis']['labels']);
     $j_aktif  = json_encode($rekening_info['chart_jenis']['aktif']);
-    $j_nonaktif = json_encode($rekening_info['chart_jenis']['nonaktif']);
   ?>
   if ($('#chartJenisRekening').length && typeof Chart !== 'undefined') {
     var ctx4 = document.getElementById('chartJenisRekening').getContext('2d');
@@ -1007,26 +1006,18 @@ $(document).ready(function() {
         labels: <?= $j_labels; ?>,
         datasets: [
           {
-            label: 'Aktif (0)',
+            label: 'Jumlah Rekening Aktif',
             data: <?= $j_aktif; ?>,
-            backgroundColor: '#10b981'
-          },
-          {
-            label: 'Non-Aktif (1)',
-            data: <?= $j_nonaktif; ?>,
-            backgroundColor: '#ef4444'
+            backgroundColor: ['#10b981', '#0ea5e9', '#f59e0b', '#8b5cf6', '#ef4444'],
+            borderRadius: 6
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        legend: {
-          position: 'top',
-          labels: { boxWidth: 12, fontSize: 11 }
-        },
+        legend: { display: false },
         scales: {
-          xAxes: [{ stacked: false }],
           yAxes: [{
             ticks: { beginAtZero: true, precision: 0 }
           }]
