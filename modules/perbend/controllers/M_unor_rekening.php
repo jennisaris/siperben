@@ -108,6 +108,9 @@ class M_unor_rekening extends MX_Controller {
 			}
         }
 
+        // HANYA TAMPILKAN REKENING AKTIF (istatus = 0) DI TABEL LIST (Data non-aktif tetap aman tersimpan di DB)
+        $this->_addQuery($table, "istatus = 0", 'and', '', true);
+
 
         //clear session header_controller
 		$this->session->unset_userdata('header_controller');/* 
