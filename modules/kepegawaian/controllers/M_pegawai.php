@@ -35,17 +35,35 @@ class M_pegawai extends MX_Controller {
 		$this->_addField($table, 'ikduker', 'Unit Kerja', true);
 		$this->_addField($table, 'ikduker3', 'Unit Kerja (Sharing)', false);
 		//$this->_addField($table, 'vnmuker', 'Nama Unit Kerja', true);
+		// Sertifikasi Bendahara (BNT)
 		$this->_addField($table, 'cnobnt', 'No. BNT', false);
-		$this->_addField($table, 'cnosnt', 'No. SNT', false);
+		$this->_addField($table, 'dtgltbnt', 'Tgl. Sertifikat BNT', false);
+		$this->_addField($table, 'dtglkbnt', 'Tgl. Kadaluarsa BNT', false);
+
+		// Sertifikasi PPK (PNT)
 		$this->_addField($table, 'cnopnt', 'No. PNT', false);
+		$this->_addField($table, 'dtgltpnt', 'Tgl. Sertifikat PNT', false);
+		$this->_addField($table, 'dtglkpnt', 'Tgl. Kadaluarsa PNT', false);
+
+		// Sertifikasi PPSPM (SNT)
+		$this->_addField($table, 'cnosnt', 'No. SNT', false);
+		$this->_addField($table, 'dtgltsnt', 'Tgl. Sertifikat SNT', false);
+		$this->_addField($table, 'dtglksnt', 'Tgl. Kadaluarsa SNT', false);
+
 		$this->_addField($table, 'istatus', 'Kedudukan Hukum', true);
 		$this->_addField($table, 'tcreated', 'Waktu dibuat', false, true);
 		$this->_addField($table, 'ccreatedby', 'Dibuat oleh', false, true);
 		$this->_addField($table, 'tupdated', 'Waktu ubah', false, true);
 		$this->_addField($table, 'cupdatedby', 'Diubah oleh', false, true);
 
-		//$this->_add2ListField($table, 'ifrom, cnip, vname, vgolnm, vjabnm, vnmuker, tupdated, cupdatedby');
-		$this->_add2ListField($table, 'ifrom, cnip, vname, cgolid, ijabid, ikduker, ikduker3, cnobnt, cnosnt, cnopnt, istatus, tupdated, cupdatedby');
+		$this->_add2ListField($table, 'ifrom, cnip, vname, cgolid, ijabid, ikduker, ikduker3, cnobnt, dtgltbnt, dtglkbnt, cnopnt, dtgltpnt, dtglkpnt, cnosnt, dtgltsnt, dtglksnt, istatus, tupdated, cupdatedby');
+		
+		$this->_changeType($table, 'dtgltbnt', 'date', 'd-m-Y');
+		$this->_changeType($table, 'dtglkbnt', 'date', 'd-m-Y');
+		$this->_changeType($table, 'dtgltpnt', 'date', 'd-m-Y');
+		$this->_changeType($table, 'dtglkpnt', 'date', 'd-m-Y');
+		$this->_changeType($table, 'dtgltsnt', 'date', 'd-m-Y');
+		$this->_changeType($table, 'dtglksnt', 'date', 'd-m-Y');
 		
 		$this->_changeType($table, 'ifrom', 'combobox', 
 		$this->session->sysparam->ifrom);
@@ -150,6 +168,48 @@ class M_pegawai extends MX_Controller {
 		$this->session->unset_userdata('header_controller');
 	}
 	
+	function listBox_kepeg_m_pegawai_dtgltbnt($value, $datas) {
+		if (!empty($value) && $value !== '0000-00-00') {
+			return date('d-m-Y', strtotime($value));
+		}
+		return '-';
+	}
+
+	function listBox_kepeg_m_pegawai_dtglkbnt($value, $datas) {
+		if (!empty($value) && $value !== '0000-00-00') {
+			return date('d-m-Y', strtotime($value));
+		}
+		return '-';
+	}
+
+	function listBox_kepeg_m_pegawai_dtgltpnt($value, $datas) {
+		if (!empty($value) && $value !== '0000-00-00') {
+			return date('d-m-Y', strtotime($value));
+		}
+		return '-';
+	}
+
+	function listBox_kepeg_m_pegawai_dtglkpnt($value, $datas) {
+		if (!empty($value) && $value !== '0000-00-00') {
+			return date('d-m-Y', strtotime($value));
+		}
+		return '-';
+	}
+
+	function listBox_kepeg_m_pegawai_dtgltsnt($value, $datas) {
+		if (!empty($value) && $value !== '0000-00-00') {
+			return date('d-m-Y', strtotime($value));
+		}
+		return '-';
+	}
+
+	function listBox_kepeg_m_pegawai_dtglksnt($value, $datas) {
+		if (!empty($value) && $value !== '0000-00-00') {
+			return date('d-m-Y', strtotime($value));
+		}
+		return '-';
+	}
+
 	function listBox_kepeg_m_pegawai_ikduker($value, $datas) {
 	  /*$sql = "Select a.kode, a.kode_atasan, 
         	  a.nama, (select nama from kepeg_m_unor 

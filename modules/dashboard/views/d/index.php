@@ -388,6 +388,7 @@ $controller = 'index';
             <table id="tblUnitUtama" class="table table-bordered table-striped table-condensed" style="font-size: 11px; margin-bottom: 0;">
               <thead>
                 <tr style="background: #f8fafc;">
+                  <th rowspan="2" style="vertical-align: middle; text-align: center; width: 40px;">No.</th>
                   <th rowspan="2" style="vertical-align: middle; text-align: center;"><?= ($this->session->superuser) ? 'Unit Utama' : 'Satuan Kerja'; ?></th>
                   <th colspan="2" style="text-align: center; background: #e0f2fe; color: #0369a1;">Bendahara</th>
                   <th colspan="2" style="text-align: center; background: #fef3c7; color: #92400e;">PPK</th>
@@ -403,38 +404,42 @@ $controller = 'index';
                 </tr>
               </thead>
               <tbody>
-                <?php foreach ($unit_cert_breakdown as $row) { 
+                <?php 
+                $no = 1;
+                foreach ($unit_cert_breakdown as $row) { 
                   $uName = htmlspecialchars($row['unit'], ENT_QUOTES);
+                  $uFullName = htmlspecialchars(get_nama_panjang_eselon($row['unit']), ENT_QUOTES);
                 ?>
                 <tr>
-                  <td><strong><?= $uName; ?></strong></td>
+                  <td class="text-center" style="vertical-align: middle; color: #64748b; font-weight: 600;"><?= $no++; ?></td>
+                  <td><strong><?= $uFullName; ?></strong></td>
                   <td class="text-center">
-                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'bnd', 'cert', 'Bendahara Aktif Bersertifikat');" style="color: #0284c7; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'bnd', 'cert', 'Bendahara Aktif Bersertifikat', '<?= $uFullName; ?>');" style="color: #0284c7; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
                       <?= number_format($row['bnd_cert']); ?>
                     </a>
                   </td>
                   <td class="text-center">
-                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'bnd', 'uncert', 'Bendahara Belum Bersertifikat');" style="color: #dc2626; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'bnd', 'uncert', 'Bendahara Belum Bersertifikat', '<?= $uFullName; ?>');" style="color: #dc2626; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
                       <?= number_format($row['bnd_uncert']); ?>
                     </a>
                   </td>
                   <td class="text-center">
-                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppk', 'cert', 'PPK Aktif Bersertifikat');" style="color: #d97706; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppk', 'cert', 'PPK Aktif Bersertifikat', '<?= $uFullName; ?>');" style="color: #d97706; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
                       <?= number_format($row['ppk_cert']); ?>
                     </a>
                   </td>
                   <td class="text-center">
-                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppk', 'uncert', 'PPK Belum Bersertifikat');" style="color: #dc2626; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppk', 'uncert', 'PPK Belum Bersertifikat', '<?= $uFullName; ?>');" style="color: #dc2626; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
                       <?= number_format($row['ppk_uncert']); ?>
                     </a>
                   </td>
                   <td class="text-center">
-                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppspm', 'cert', 'PPSPM Aktif Bersertifikat');" style="color: #7c3aed; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppspm', 'cert', 'PPSPM Aktif Bersertifikat', '<?= $uFullName; ?>');" style="color: #7c3aed; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
                       <?= number_format($row['ppspm_cert']); ?>
                     </a>
                   </td>
                   <td class="text-center">
-                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppspm', 'uncert', 'PPSPM Belum Bersertifikat');" style="color: #dc2626; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
+                    <a href="javascript:void(0);" onclick="show_cert_detail('<?= $uName; ?>', 'ppspm', 'uncert', 'PPSPM Belum Bersertifikat', '<?= $uFullName; ?>');" style="color: #dc2626; font-weight: 700; text-decoration: underline; display: block; padding: 2px;">
                       <?= number_format($row['ppspm_uncert']); ?>
                     </a>
                   </td>
@@ -477,9 +482,11 @@ $controller = 'index';
                   <th style="width: 40px; text-align: center;">No</th>
                   <th style="width: 90px; text-align: center;">Kode Satker</th>
                   <th>Nama Satuan Kerja</th>
-                  <th style="width: 150px;">NIP</th>
-                  <th style="width: 180px;">Nama Pegawai</th>
-                  <th id="thCertHeader" style="width: 200px;">No. Sertifikat</th>
+                  <th style="width: 140px;">NIP</th>
+                  <th style="width: 160px;">Nama Pegawai</th>
+                  <th id="thCertHeader" style="width: 180px;">No. Sertifikat</th>
+                  <th style="width: 100px; text-align: center;">Tgl Sertifikat</th>
+                  <th style="width: 100px; text-align: center;">Tgl Kadaluarsa</th>
                 </tr>
               </thead>
               <tbody>
@@ -496,7 +503,7 @@ $controller = 'index';
   </div>
 
   <script type="text/javascript">
-  function show_cert_detail(unit, jab, status, label) {
+  function show_cert_detail(unit, jab, status, label, unitFullName) {
       var headerTitle = 'No. Sertifikat';
       if (jab === 'bnd') {
           headerTitle = 'No. BNT';
@@ -507,8 +514,9 @@ $controller = 'index';
       }
       $('#thCertHeader').text(headerTitle);
 
-      $('#modalCertSubtitle').html('Unit Utama: <b>' + unit + '</b> | Status: <b>' + label + '</b>');
-      $('#tblModalCert tbody').html('<tr><td colspan="6" class="text-center" style="padding: 30px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><br/><span style="margin-top: 8px; display: inline-block; font-size: 12px;">Memuat data detail satker...</span></td></tr>');
+      var displayUnit = unitFullName || unit;
+      $('#modalCertSubtitle').html('Unit Utama: <b>' + displayUnit + '</b> | Status: <b>' + label + '</b>');
+      $('#tblModalCert tbody').html('<tr><td colspan="8" class="text-center" style="padding: 30px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><br/><span style="margin-top: 8px; display: inline-block; font-size: 12px;">Memuat data detail satker...</span></td></tr>');
       $('#searchModalCert').val('');
       $('#modalCertDetail').modal('show');
 
@@ -525,11 +533,14 @@ $controller = 'index';
                       var statusBadge = '';
                       if (certStatus === 'missing') {
                           statusBadge = '<span class="label label-danger" style="font-size: 10px; font-weight:700;">Belum Bersertifikat</span>';
-                      } else if (certStatus === 'expired') {
+                      } else if (certStatus === 'warning' || certStatus === 'expired') {
                           statusBadge = '<span class="label label-warning" style="font-size: 10px; font-weight:700; color:#1f2937; background:#facc15;"><i class="fa fa-exclamation-triangle"></i> ' + item.no_sertifikat + '</span>';
                       } else {
                           statusBadge = '<span class="label label-success" style="font-size: 10px; font-weight:700;"><i class="fa fa-check-circle"></i> ' + item.no_sertifikat + '</span>';
                       }
+
+                      var tglSert = item.tgl_sertifikat || '-';
+                      var tglKad  = item.tgl_kadaluarsa || '-';
 
                       html += '<tr>' +
                           '<td class="text-center">' + (idx + 1) + '</td>' +
@@ -538,15 +549,17 @@ $controller = 'index';
                           '<td>' + item.nip + '</td>' +
                           '<td><b>' + item.nama_pegawai + '</b></td>' +
                           '<td>' + statusBadge + '</td>' +
+                          '<td class="text-center">' + tglSert + '</td>' +
+                          '<td class="text-center">' + tglKad + '</td>' +
                       '</tr>';
                   });
               } else {
-                  html = '<tr><td colspan="6" class="text-center" style="padding: 20px; color: #64748b;"><b>Tidak ada satker aktif untuk kategori ini</b></td></tr>';
+                  html = '<tr><td colspan="8" class="text-center" style="padding: 20px; color: #64748b;"><b>Tidak ada satker aktif untuk kategori ini</b></td></tr>';
               }
               $('#tblModalCert tbody').html(html);
           },
           error: function() {
-              $('#tblModalCert tbody').html('<tr><td colspan="6" class="text-center text-danger" style="padding: 20px;">Gagal memuat data detail satker. Silakan coba lagi.</td></tr>');
+              $('#tblModalCert tbody').html('<tr><td colspan="8" class="text-center text-danger" style="padding: 20px;">Gagal memuat data detail satker. Silakan coba lagi.</td></tr>');
           }
       });
   }
@@ -561,7 +574,7 @@ $controller = 'index';
           var matchedRows = [];
 
           $allRows.each(function() {
-              var text = $(this).find('td:first').text().toLowerCase();
+              var text = $(this).find('td:eq(1)').text().toLowerCase();
               if (text.indexOf(searchTerm) !== -1) {
                   matchedRows.push($(this));
               } else {

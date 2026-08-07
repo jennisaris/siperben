@@ -106,7 +106,8 @@ class Index extends MX_Controller {
 						SUM(CASE WHEN p.cjabid2 = 4 AND (p.cnosnt IS NOT NULL AND p.cnosnt != '') THEN 1 ELSE 0 END) AS ppspm_cert,
 						SUM(CASE WHEN p.cjabid2 = 4 AND (p.cnosnt IS NULL OR p.cnosnt = '') THEN 1 ELSE 0 END) AS ppspm_uncert
 					FROM kepeg_m_pegawai p
-					WHERE (p.ikduker IN ({$str_ids}) OR p.ckduker IN ({$str_kodes}))";
+					WHERE p.cjabid2 IN (2,3,4,5,6)
+					  AND (p.ikduker IN ({$str_ids}) OR p.ckduker IN ({$str_kodes}))";
 
 			$row = $this->db->query($sql)->row();
 
@@ -120,6 +121,22 @@ class Index extends MX_Controller {
 				'ppspm_uncert' => (int)($row ? $row->ppspm_uncert : 0)
 			);
 		}
+
+		$order_map = array(
+			'13801' => 1, 'SETJEN' => 1, 'SEKRETARIAT JENDERAL' => 1,
+			'13802' => 2, 'ITJEN' => 2, 'INSPEKTORAT JENDERAL' => 2,
+			'13803' => 3, 'GTK' => 3, 'DIREKTORAT JENDERAL GURU DAN TENAGA KEPENDIDIKAN' => 3, 'DIREKTORAT JENDERAL GURU, TENAGA KEPENDIDIKAN, DAN PENDIDIKAN GURU' => 3,
+			'13804' => 4, 'PAUD, DIKDASMEN' => 4, 'PAUD' => 4, 'DIREKTORAT JENDERAL PAUD, DIKDAS DAN DIKMEN' => 4, 'DIREKTORAT JENDERAL PENDIDIKAN ANAK USIA DINI, PENDIDIKAN DASAR, DAN PENDIDIKAN MENENGAH' => 4,
+			'13805' => 5, 'VOKASI' => 5, 'DIREKTORAT JENDERAL PENDIDIKAN VOKASI' => 5, 'DIREKTORAT JENDERAL PENDIDIKAN VOKASI, PENDIDIKAN KHUSUS, DAN PENDIDIKAN LAYANAN KHUSUS' => 5,
+			'13811' => 6, 'BSKAP' => 6, 'BADAN STANDAR, KURIKULUM, DAN ASESMEN PENDIDIKAN' => 6, 'BADAN STANDAR KURIKULUM DAN ASESMEN PENDIDIKAN' => 6,
+			'13812' => 7, 'BAHASA' => 7, 'BADAN PENGEMBANGAN DAN PEMBINAAN BAHASA' => 7
+		);
+
+		usort($results, function($a, $b) use ($order_map) {
+			$valA = isset($order_map[strtoupper(trim($a['unit']))]) ? $order_map[strtoupper(trim($a['unit']))] : 99;
+			$valB = isset($order_map[strtoupper(trim($b['unit']))]) ? $order_map[strtoupper(trim($b['unit']))] : 99;
+			return $valA - $valB;
+		});
 
 		return $results;
 	}
@@ -688,15 +705,23 @@ class Index extends MX_Controller {
 			// Map jab_type ke cjabid2 & nama kolom sertifikat
 			$jab_ids = array();
 			$cert_col = '';
+			$tgl_sert_col = '';
+			$tgl_kad_col = '';
 			if ($jab_type === 'bnd') {
 				$jab_ids = array(2, 3, 6);
 				$cert_col = 'cnobnt';
+				$tgl_sert_col = 'dtgltbnt';
+				$tgl_kad_col = 'dtglkbnt';
 			} elseif ($jab_type === 'ppk') {
 				$jab_ids = array(5);
 				$cert_col = 'cnopnt';
+				$tgl_sert_col = 'dtgltpnt';
+				$tgl_kad_col = 'dtglkpnt';
 			} elseif ($jab_type === 'ppspm') {
 				$jab_ids = array(4);
 				$cert_col = 'cnosnt';
+				$tgl_sert_col = 'dtgltsnt';
+				$tgl_kad_col = 'dtglksnt';
 			}
 
 			$str_jab = implode(',', $jab_ids);
@@ -728,13 +753,11 @@ class Index extends MX_Controller {
 				if (!empty($top['kode'])) $kodes[trim($top['kode'])] = $this->db->escape(trim($top['kode']));
 				if (!empty($top_ksat)) $kodes[$top_ksat] = $this->db->escape($top_ksat);
 
-				// Samakan filter modal dengan angka summary: gunakan satker referensi langsung,
-				// bukan seluruh anak hirarki unor, agar jumlah detail = jumlah pada tabel utama.
-
 				$str_ids = !empty($ids) ? implode(',', array_values($ids)) : "'0'";
 				$str_kodes = !empty($kodes) ? implode(',', array_values($kodes)) : "''";
 
 				$sql_peg = "SELECT p.cnip, p.vname, p.{$cert_col} as cert_no,
+							p.{$tgl_sert_col} as tgl_sert, p.{$tgl_kad_col} as tgl_kad, p.dtglsertifikat, p.dtglkadaluarsa,
 							p.ikduker, p.ckduker,
 							u.id AS peg_unor_id,
 							u.kode_satker AS peg_kode_satker,
@@ -792,14 +815,24 @@ class Index extends MX_Controller {
 						$fallback_satker_name = !empty($p['ckduker_nama_unor']) ? $p['ckduker_nama_unor'] : (!empty($p['peg_nama_unor']) ? $p['peg_nama_unor'] : $top['nama']);
 						$pegawai_satker_name = get_excel_satker_name($pegawai_satker_code, $fallback_satker_name);
 						$cert_no = !empty($p['cert_no']) ? trim($p['cert_no']) : '';
-						$cert_status = $this->_get_cert_status($cert_no);
+						
+						$raw_tgl_sert = (!empty($cert_no) && !empty($p['tgl_sert'])) ? $p['tgl_sert'] : (!empty($cert_no) ? $p['dtglsertifikat'] : '');
+						$raw_tgl_kad  = (!empty($cert_no) && !empty($p['tgl_kad']))  ? $p['tgl_kad']  : (!empty($cert_no) ? $p['dtglkadaluarsa']  : '');
+						
+						$tgl_sert_val = (!empty($raw_tgl_sert) && $raw_tgl_sert !== '0000-00-00') ? date('d/m/Y', strtotime($raw_tgl_sert)) : '-';
+						$tgl_kad_val  = (!empty($raw_tgl_kad)  && $raw_tgl_kad  !== '0000-00-00') ? date('d/m/Y', strtotime($raw_tgl_kad))  : '-';
+						
+						$cert_status = $this->_get_cert_status_by_date($raw_tgl_kad, $raw_tgl_sert, $cert_no);
+
 						$details[] = array(
-							'kode_satker' => $pegawai_satker_code,
-							'nama_satker' => $pegawai_satker_name,
-							'nip'         => !empty($p['cnip']) ? $p['cnip'] : '-',
-							'nama_pegawai'=> !empty($p['vname']) ? $p['vname'] : '-',
+							'kode_satker'  => $pegawai_satker_code,
+							'nama_satker'  => $pegawai_satker_name,
+							'nip'          => !empty($p['cnip']) ? $p['cnip'] : '-',
+							'nama_pegawai' => !empty($p['vname']) ? $p['vname'] : '-',
 							'no_sertifikat'=> $cert_no !== '' ? $cert_no : 'Belum Bersertifikat',
-							'cert_status' => $cert_status
+							'tgl_sertifikat'=> $tgl_sert_val,
+							'tgl_kadaluarsa'=> $tgl_kad_val,
+							'cert_status'  => $cert_status
 						);
 					}
 				}
@@ -809,7 +842,30 @@ class Index extends MX_Controller {
 		echo json_encode($details);
 	}
 
-
+	private function _get_cert_status_by_date($tgl_kad, $tgl_sert, $cert_no) {
+		$cert_no = trim($cert_no);
+		if ($cert_no === '') {
+			return 'missing';
+		}
+		if (!empty($tgl_kad) && $tgl_kad !== '0000-00-00') {
+			$today = date('Y-m-d');
+			if ($tgl_kad < $today) {
+				return 'warning'; // KUNING (Kadaluarsa)
+			} else {
+				return 'active'; // HIJAU (Aktif)
+			}
+		}
+		if (!empty($tgl_sert) && $tgl_sert !== '0000-00-00') {
+			$sert_time = strtotime($tgl_sert);
+			$five_years_ago = strtotime('-5 years');
+			if ($sert_time < $five_years_ago) {
+				return 'warning'; // KUNING (> 5 tahun)
+			} else {
+				return 'active'; // HIJAU (Aktif)
+			}
+		}
+		return $this->_get_cert_status($cert_no);
+	}
 
 	private function _get_cert_status($cert_no) {
 		$cert_no = trim($cert_no);
@@ -819,7 +875,7 @@ class Index extends MX_Controller {
 		if (preg_match('/(19|20)\d{2}(?!.*(19|20)\d{2})/', $cert_no, $m)) {
 			$year = (int)$m[0];
 			$current_year = (int)date('Y');
-			return (($current_year - $year) > 5) ? 'expired' : 'active';
+			return (($current_year - $year) > 5) ? 'warning' : 'active';
 		}
 		return 'active';
 	}

@@ -435,13 +435,21 @@ if (!function_exists('inject_perbend_menu_badges')) {
 if (!function_exists('get_nama_panjang_eselon')) {
     function get_nama_panjang_eselon($abbrv, $fallback = '') {
         static $map = array(
-            'GTK'             => 'Direktorat Jenderal Guru dan Tenaga Kependidikan',
-            'ITJEN'           => 'Inspektorat Jenderal',
-            'BAHASA'          => 'Badan Pengembangan dan Pembinaan Bahasa',
-            'VOKASI'          => 'Direktorat Jenderal Pendidikan Vokasi',
-            'BSKAP'           => 'Badan Standar, Kurikulum, dan Asesmen Pendidikan',
-            'PAUD, DIKDASMEN' => 'Direktorat Jenderal PAUD, Dikdas dan Dikmen',
-            'SETJEN'          => 'Sekretariat Jenderal'
+            '13801'           => 'SEKRETARIAT JENDERAL',
+            'SETJEN'          => 'SEKRETARIAT JENDERAL',
+            '13802'           => 'INSPEKTORAT JENDERAL',
+            'ITJEN'           => 'INSPEKTORAT JENDERAL',
+            '13803'           => 'DIREKTORAT JENDERAL GURU, TENAGA KEPENDIDIKAN, DAN PENDIDIKAN GURU',
+            'GTK'             => 'DIREKTORAT JENDERAL GURU, TENAGA KEPENDIDIKAN, DAN PENDIDIKAN GURU',
+            '13804'           => 'DIREKTORAT JENDERAL PENDIDIKAN ANAK USIA DINI, PENDIDIKAN DASAR, DAN PENDIDIKAN MENENGAH',
+            'PAUD, DIKDASMEN' => 'DIREKTORAT JENDERAL PENDIDIKAN ANAK USIA DINI, PENDIDIKAN DASAR, DAN PENDIDIKAN MENENGAH',
+            'PAUD'            => 'DIREKTORAT JENDERAL PENDIDIKAN ANAK USIA DINI, PENDIDIKAN DASAR, DAN PENDIDIKAN MENENGAH',
+            '13805'           => 'DIREKTORAT JENDERAL PENDIDIKAN VOKASI, PENDIDIKAN KHUSUS, DAN PENDIDIKAN LAYANAN KHUSUS',
+            'VOKASI'          => 'DIREKTORAT JENDERAL PENDIDIKAN VOKASI, PENDIDIKAN KHUSUS, DAN PENDIDIKAN LAYANAN KHUSUS',
+            '13811'           => 'BADAN STANDAR KURIKULUM DAN ASESMEN PENDIDIKAN',
+            'BSKAP'           => 'BADAN STANDAR KURIKULUM DAN ASESMEN PENDIDIKAN',
+            '13812'           => 'BADAN PENGEMBANGAN DAN PEMBINAAN BAHASA',
+            'BAHASA'          => 'BADAN PENGEMBANGAN DAN PEMBINAAN BAHASA'
         );
         $key = strtoupper(trim($abbrv));
         if (isset($map[$key])) {

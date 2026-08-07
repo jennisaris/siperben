@@ -49,14 +49,17 @@ class Ews extends MX_Controller {
 		else $style = '';
 
 		$html  = "<form id='t_terbit_sk_form-edit'>";
+		$html  = "<form id='t_terbit_sk_form-edit'>";
 		$html .= "<table {$style} class='table table-responsive table-condensed table-bordered'>
 					<thead>
 						<tr class='active'>
-							<th style='text-align:center; width:50px;'>No.</th>
+							<th style='text-align:center; width:40px;'>No.</th>
 							<th>Nama, NIP</th>
 							<th>Jabatan</th>
 							<th>Satuan Kerja</th>
 							<th>No. Sertifikat</th>
+							<th style='text-align:center;'>Tgl Sertifikat</th>
+							<th style='text-align:center;'>Tgl Kadaluarsa</th>
 							<th style='text-align:center;'>Status</th>
 						</tr>
 					</thead>";
@@ -64,37 +67,33 @@ class Ews extends MX_Controller {
 		// Membangun Kueri Berdasarkan Tab Sertifikasi
 		$where_tab = "";
 		$nosert_field = "";
-		$status_field = "";
+		$tglsert_field = "";
+		$tglkad_field = "";
 
 		if ($tab === 'ppk') {
 			$where_tab = "((kepeg_m_pegawai.cjabid2 = 5) OR (kepeg_m_pegawai.cnopnt IS NOT NULL AND kepeg_m_pegawai.cnopnt != ''))";
 			$nosert_field = "kepeg_m_pegawai.cnopnt";
-			$status_field = "Case 
-				When (cnopnt IS NOT NULL AND cnopnt != '' AND Right(cnopnt, 4) + 4 < year(curdate())) then 'Expired'
-				When (cnopnt IS NOT NULL AND cnopnt != '' AND Right(cnopnt, 4) + 4 = year(curdate())) then 'PPL'
-				When (cnopnt IS NOT NULL AND cnopnt != '') then 'Aktif'
-				Else '-'
-			End";
+			$tglsert_field = "COALESCE(kepeg_m_pegawai.dtgltpnt, kepeg_m_pegawai.dtglsertifikat)";
+			$tglkad_field = "COALESCE(kepeg_m_pegawai.dtglkpnt, kepeg_m_pegawai.dtglkadaluarsa)";
 		} else if ($tab === 'ppspm') {
 			$where_tab = "((kepeg_m_pegawai.cjabid2 = 4) OR (kepeg_m_pegawai.cnosnt IS NOT NULL AND kepeg_m_pegawai.cnosnt != ''))";
 			$nosert_field = "kepeg_m_pegawai.cnosnt";
-			$status_field = "Case 
-				When (cnosnt IS NOT NULL AND cnosnt != '' AND Right(cnosnt, 4) + 4 < year(curdate())) then 'Expired'
-				When (cnosnt IS NOT NULL AND cnosnt != '' AND Right(cnosnt, 4) + 4 = year(curdate())) then 'PPL'
-				When (cnosnt IS NOT NULL AND cnosnt != '') then 'Aktif'
-				Else '-'
-			End";
+			$tglsert_field = "COALESCE(kepeg_m_pegawai.dtgltsnt, kepeg_m_pegawai.dtglsertifikat)";
+			$tglkad_field = "COALESCE(kepeg_m_pegawai.dtglksnt, kepeg_m_pegawai.dtglkadaluarsa)";
 		} else {
 			// Default Tab: Bendahara (BP, BPn, BPP)
 			$where_tab = "((kepeg_m_pegawai.cjabid2 IN (2,3,6)) OR (kepeg_m_pegawai.cnobnt IS NOT NULL AND kepeg_m_pegawai.cnobnt != ''))";
 			$nosert_field = "kepeg_m_pegawai.cnobnt";
-			$status_field = "Case 
-				When (cnobnt IS NOT NULL AND cnobnt != '' AND Right(cnobnt, 4) + 4 < year(curdate())) then 'Expired'
-				When (cnobnt IS NOT NULL AND cnobnt != '' AND Right(cnobnt, 4) + 4 = year(curdate())) then 'PPL'
-				When (cnobnt IS NOT NULL AND cnobnt != '') then 'Aktif'
-				Else '-'
-			End";
+			$tglsert_field = "COALESCE(kepeg_m_pegawai.dtgltbnt, kepeg_m_pegawai.dtglsertifikat)";
+			$tglkad_field = "COALESCE(kepeg_m_pegawai.dtglkbnt, kepeg_m_pegawai.dtglkadaluarsa)";
 		}
+
+		$status_field = "Case 
+			When ({$tglkad_field} IS NOT NULL AND {$tglkad_field} != '0000-00-00' AND {$tglkad_field} < CURDATE()) then 'Expired'
+			When ({$tglkad_field} IS NOT NULL AND {$tglkad_field} != '0000-00-00' AND YEAR({$tglkad_field}) = YEAR(CURDATE())) then 'PPL'
+			When ({$nosert_field} IS NOT NULL AND {$nosert_field} != '') then 'Aktif'
+			Else '-'
+		End";
 
 		$sql = "SELECT kepeg_m_pegawai.id, kepeg_m_pegawai.cnip, kepeg_m_pegawai.vname, kepeg_m_pegawai.cjabid2,
 				case
@@ -104,6 +103,8 @@ class Ews extends MX_Controller {
 				kepeg_m_pegawai.ckduker2,
 				(select nama from app_m_unor where kode = (select kode_satker from kepeg_m_unor where id = kepeg_m_pegawai.ikduker)) as nama_satker,
 				{$nosert_field} as nosert,
+				{$tglsert_field} as tgl_sert,
+				{$tglkad_field} as tgl_kad,
 				{$status_field} as status
 				from kepeg_m_pegawai 
 				where {$where_tab}
@@ -148,6 +149,8 @@ class Ews extends MX_Controller {
 			foreach ($rows as $r) {
 				$norut = ($offset == 0) ? $i : ($i + $offset);
 				$nosert_val = !empty($r->nosert) ? $r->nosert : '-';
+				$tgl_sert_val = (!empty($r->tgl_sert) && $r->tgl_sert !== '0000-00-00') ? date('d/m/Y', strtotime($r->tgl_sert)) : '-';
+				$tgl_kad_val  = (!empty($r->tgl_kad)  && $r->tgl_kad  !== '0000-00-00') ? date('d/m/Y', strtotime($r->tgl_kad))  : '-';
 				
 				$status_badge = "<span class='label label-default'>-</span>";
 				if ($r->status === 'Aktif') {
@@ -164,13 +167,15 @@ class Ews extends MX_Controller {
 				$html .= "<td>".html_escape($r->nama_jabatan)."</td>";
 				$html .= "<td>".html_escape($r->nama_satker)."</td>";
 				$html .= "<td>".html_escape($nosert_val)."</td>";
+				$html .= "<td style='text-align:center;'>".$tgl_sert_val."</td>";
+				$html .= "<td style='text-align:center;'>".$tgl_kad_val."</td>";
 				$html .= "<td style='text-align:center;'>".$status_badge."</td>";
 				$html .= "</tr>";
 
 				$i++;
 			}
 		} else {
-			$html .= "<tr><td colspan='6' style='text-align:center;'>Data pegawai bersertifikasi untuk Kementerian Kode 138 tidak ditemukan</td></tr>";
+			$html .= "<tr><td colspan='8' style='text-align:center;'>Data pegawai bersertifikasi untuk Kementerian Kode 138 tidak ditemukan</td></tr>";
 		}
 
 		$html .= "</tbody>
