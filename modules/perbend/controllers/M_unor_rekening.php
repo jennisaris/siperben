@@ -155,11 +155,15 @@ class M_unor_rekening extends MX_Controller {
     }
 
     function listBox_app_m_unor_rekening_tipe($value, $datas) {
-        return $this->getrow('', 'app_m_tipe_rekening', 'nama', ['id'=>$value])->nama;
+        if (empty($value)) return '-';
+        $r = $this->getrow('', 'app_m_tipe_rekening', 'nama', ['id'=>$value]);
+        return ($r && isset($r->nama)) ? $r->nama : '-';
     }
 
     function listBox_app_m_unor_rekening_cluster($value, $datas) {
-        return $this->getrow('', 'app_m_cluster_rekening', 'nama', ['id'=>$value])->nama;
+        if (empty($value)) return '-';
+        $r = $this->getrow('', 'app_m_cluster_rekening', 'nama', ['id'=>$value]);
+        return ($r && isset($r->nama)) ? $r->nama : '-';
     }
 
     function app_m_unor_rekening_output() {
@@ -292,7 +296,7 @@ class M_unor_rekening extends MX_Controller {
                 where kode_satker='{$kodesatker}' and no_rekening = '{$norek}'";
         $row = $this->db->query($sql)->row();
 
-        if ( sizeOf($row) != 0 )
+        if ( !empty($row) )
             $data = ['status'=>true, 'nama_rekening'=>$row->nama_rekening, 'issync'=>1];
         else
             $data = ['status'=>false, 'nama_rekening'=>'', 'issync'=>0];
