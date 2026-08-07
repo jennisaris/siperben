@@ -53,10 +53,10 @@ class Index extends MX_Controller {
 		foreach ($order_map as $kode_uu => $nama_uu) {
 			$sql = "SELECT 
 				COUNT(*) as total_aktif,
-				SUM(CASE WHEN j.nama LIKE '%RKK%' OR r.jenis_rekening = 5 THEN 1 ELSE 0 END) as rkk,
-				SUM(CASE WHEN j.nama LIKE '%BPG%' OR j.nama LIKE '%Pengeluaran%' OR r.jenis_rekening = 1 THEN 1 ELSE 0 END) as bpg,
-				SUM(CASE WHEN j.nama LIKE '%BPN%' OR j.nama LIKE '%Penerimaan%' OR r.jenis_rekening = 2 THEN 1 ELSE 0 END) as bpn,
-				SUM(CASE WHEN j.nama LIKE '%RPL%' OR j.nama LIKE '%Lainnya%' OR r.jenis_rekening = 3 THEN 1 ELSE 0 END) as rpl
+				SUM(CASE WHEN r.jenis_rekening = 4 OR j.nama LIKE '%RKK%' THEN 1 ELSE 0 END) as rkk,
+				SUM(CASE WHEN r.jenis_rekening = 2 OR j.nama LIKE '%BPG%' THEN 1 ELSE 0 END) as bpg,
+				SUM(CASE WHEN r.jenis_rekening = 5 OR j.nama LIKE '%BPN%' THEN 1 ELSE 0 END) as bpn,
+				SUM(CASE WHEN r.jenis_rekening = 1 OR j.nama LIKE '%RPL%' THEN 1 ELSE 0 END) as rpl
 			FROM app_m_unor_rekening r
 			JOIN app_m_unor u ON r.kode_satker = u.kode
 			LEFT JOIN app_m_jenis_rekening j ON r.jenis_rekening = j.id
@@ -84,13 +84,13 @@ class Index extends MX_Controller {
 
 		$q_jenis = "";
 		if ($jenis_type === 'rkk') {
-			$q_jenis = " AND (j.nama LIKE '%RKK%' OR r.jenis_rekening = 5)";
+			$q_jenis = " AND (r.jenis_rekening = 4 OR j.nama LIKE '%RKK%')";
 		} else if ($jenis_type === 'bpg') {
-			$q_jenis = " AND (j.nama LIKE '%BPG%' OR j.nama LIKE '%Pengeluaran%' OR r.jenis_rekening = 1)";
+			$q_jenis = " AND (r.jenis_rekening = 2 OR j.nama LIKE '%BPG%' OR j.nama LIKE '%Pengeluaran%')";
 		} else if ($jenis_type === 'bpn') {
-			$q_jenis = " AND (j.nama LIKE '%BPN%' OR j.nama LIKE '%Penerimaan%' OR r.jenis_rekening = 2)";
+			$q_jenis = " AND (r.jenis_rekening = 5 OR j.nama LIKE '%BPN%' OR j.nama LIKE '%Penerimaan%')";
 		} else if ($jenis_type === 'rpl') {
-			$q_jenis = " AND (j.nama LIKE '%RPL%' OR j.nama LIKE '%Lainnya%' OR r.jenis_rekening = 3)";
+			$q_jenis = " AND (r.jenis_rekening = 1 OR j.nama LIKE '%RPL%' OR j.nama LIKE '%Lainnya%')";
 		}
 
 		$esc_unit = $this->db->escape($unit_code);
@@ -98,9 +98,9 @@ class Index extends MX_Controller {
 		$sql = "SELECT 
 			r.id, r.kode_satker, u.nama as nama_satker, r.no_rekening, r.nama_rekening, r.nama_bank,
 			COALESCE(j.nama, 'Lainnya') as jenis_nama,
-			(SELECT COUNT(*) FROM app_m_unor_rekening r1 WHERE r1.kode_satker = r.kode_satker AND r1.istatus = 0 AND (r1.jenis_rekening = 1 OR r1.nama_rekening LIKE '%BPG%' OR r1.nama_rekening LIKE '%Pengeluaran%')) as cnt_bpg,
-			(SELECT COUNT(*) FROM app_m_unor_rekening r2 WHERE r2.kode_satker = r.kode_satker AND r2.istatus = 0 AND (r2.jenis_rekening = 2 OR r2.nama_rekening LIKE '%BPN%' OR r2.nama_rekening LIKE '%Penerimaan%')) as cnt_bpn,
-			(SELECT COUNT(*) FROM app_m_unor_rekening r3 WHERE r3.kode_satker = r.kode_satker AND r3.istatus = 0 AND (r3.jenis_rekening = 3 OR r3.nama_rekening LIKE '%RPL%' OR r3.nama_rekening LIKE '%Lainnya%')) as cnt_rpl
+			(SELECT COUNT(*) FROM app_m_unor_rekening r1 WHERE r1.kode_satker = r.kode_satker AND r1.istatus = 0 AND (r1.jenis_rekening = 2 OR r1.nama_rekening LIKE '%BPG%' OR r1.nama_rekening LIKE '%Pengeluaran%')) as cnt_bpg,
+			(SELECT COUNT(*) FROM app_m_unor_rekening r2 WHERE r2.kode_satker = r.kode_satker AND r2.istatus = 0 AND (r2.jenis_rekening = 5 OR r2.nama_rekening LIKE '%BPN%' OR r2.nama_rekening LIKE '%Penerimaan%')) as cnt_bpn,
+			(SELECT COUNT(*) FROM app_m_unor_rekening r3 WHERE r3.kode_satker = r.kode_satker AND r3.istatus = 0 AND (r3.jenis_rekening = 1 OR r3.nama_rekening LIKE '%RPL%' OR r3.nama_rekening LIKE '%Lainnya%')) as cnt_rpl
 		FROM app_m_unor_rekening r
 		JOIN app_m_unor u ON r.kode_satker = u.kode
 		LEFT JOIN app_m_jenis_rekening j ON r.jenis_rekening = j.id

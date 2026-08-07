@@ -443,7 +443,7 @@ $controller = 'index';
           </div>
         </div>
         <div class="box-body">
-          <div style="height: 254px; position: relative;">
+          <div style="height: 268px; position: relative;">
             <canvas id="chartJenisRekening"></canvas>
           </div>
         </div>
