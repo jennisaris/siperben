@@ -53,6 +53,14 @@ class Index extends MX_Controller {
 				$excel_satkers = get_excel_satkers_by_eselon($unit_ksat);
 			}
 
+			$active_satkers = get_active_excel_satker_codes();
+			if (!empty($active_satkers) && !empty($excel_satkers)) {
+				$active_lookup = array_flip(array_map('trim', $active_satkers));
+				$excel_satkers = array_values(array_unique(array_filter($excel_satkers, function($code) use ($active_lookup) {
+					return isset($active_lookup[trim($code)]);
+				})));
+			}
+
 			$ids = array();
 			$kodes = array();
 
@@ -675,6 +683,7 @@ class Index extends MX_Controller {
 		}
 
 		$details = array();
+		$seen_pegs = array();
 		if (!empty($excel_satkers)) {
 			// Map jab_type ke cjabid2 & nama kolom sertifikat
 			$jab_ids = array();
@@ -749,6 +758,11 @@ class Index extends MX_Controller {
 				$pegs = $this->db->query($sql_peg)->result_array();
 				if (!empty($pegs)) {
 					foreach ($pegs as $p) {
+						$peg_key = !empty($p['cnip']) ? trim($p['cnip']) : trim($p['vname']);
+						if (isset($seen_pegs[$peg_key])) {
+							continue;
+						}
+
 						$pegawai_satker_code = '';
 						if (!empty($p['peg_kode_satker']) && preg_match('/^[0-9]+$/', trim($p['peg_kode_satker']))) {
 							$pegawai_satker_code = trim($p['peg_kode_satker']);
@@ -773,6 +787,8 @@ class Index extends MX_Controller {
 						if (!empty($active_lookup) && !isset($active_lookup[$pegawai_satker_code])) {
 							continue;
 						}
+
+						$seen_pegs[$peg_key] = true;
 						$fallback_satker_name = !empty($p['ckduker_nama_unor']) ? $p['ckduker_nama_unor'] : (!empty($p['peg_nama_unor']) ? $p['peg_nama_unor'] : $top['nama']);
 						$pegawai_satker_name = get_excel_satker_name($pegawai_satker_code, $fallback_satker_name);
 						$cert_no = !empty($p['cert_no']) ? trim($p['cert_no']) : '';
