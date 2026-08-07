@@ -96,14 +96,16 @@ class M_unor_rekening extends MX_Controller {
 
         $this->_changeType($table, 'kode_satker', 'combobox2', $ar_satker);
 
-        if ( $this->session->isadmin == 0 ) {
-			if ( sizeOf($this->session->orgs2) > 0 ) {
-				$orgs = "'".implode("','", $this->session->orgs2)."'";
-				$this->_addQuery($this->table, "kode in (".$orgs.")", 'and', '', true);
+        if ( isset($this->session->isadmin) && $this->session->isadmin == 0 ) {
+			if ( !empty($this->session->orgs2) && is_array($this->session->orgs2) && count($this->session->orgs2) > 0 ) {
+				$orgs = "'".implode("','", array_map(array($this->db, 'escape_str'), $this->session->orgs2))."'";
+				$this->_addQuery($table, "kode_satker in (".$orgs.")", 'and', '', true);
 			}
 		} else {
-            //if (!$this->session->superuser) $this->_addQuery($this->table, "kode_atasan = '".trim($this->session->username)."'", 'and', '', true); 
-			if (!$this->session->superuser) $this->_addQuery($this->table, " (kode = '".trim($this->session->username)."' OR kode_atasan = '".trim($this->session->username)."') ", 'and', '', true); 
+			if (empty($this->session->superuser)) {
+				$uname = $this->db->escape_str(trim($this->session->username));
+				$this->_addQuery($table, " (kode_satker = '{$uname}' OR {$table2}.kode_atasan = '{$uname}') ", 'and', '', true); 
+			}
         }
 
 
