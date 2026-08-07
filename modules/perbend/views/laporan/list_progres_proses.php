@@ -19,10 +19,30 @@
         </div>
     </div>
     <div class="panel-body" id="panel-body-list" style="padding: 20px;">
-        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; background: #f8fafc; padding: 12px 16px; border-radius: 10px; border: 1px solid #e2e8f0;">
+        <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; background: #f8fafc; padding: 14px 18px; border-radius: 10px; border: 1px solid #e2e8f0;">
             <div>
-                <label style="font-size: 11px; color: #475569; margin-bottom: 4px; display: block;">Filter Bulan Usulan:</label>
-                <select onChange="apply_progres_proses_filter();" name='pub_proses_bulan' id='pub_proses_bulan' class='form-control input-sm' style='width:220px; border-radius: 8px;'>
+                <label style="font-size: 11px; color: #475569; margin-bottom: 4px; display: block; font-weight: 600;">Filter Tahun Usulan:</label>
+                <select onChange="apply_progres_proses_filter();" name='pub_proses_tahun' id='pub_proses_tahun' class='form-control input-sm' style='width:180px; border-radius: 8px; font-weight: 600;'>
+                    <option value='0'>-- Semua Tahun --</option>
+                    <?php
+                        $selected_yr = !empty($settahun) ? $settahun : date('Y');
+                        if (!empty($available_years)) {
+                            foreach($available_years as $yr) {
+                                $y_val = $yr['ctahun'];
+                                $sel = ($y_val == $selected_yr) ? "selected='selected'" : "";
+                                echo "<option value='{$y_val}' {$sel}>Tahun {$y_val}</option>";
+                            }
+                        } else {
+                            echo "<option value='2026' selected='selected'>Tahun 2026</option>";
+                            echo "<option value='2025'>Tahun 2025</option>";
+                        }
+                    ?>
+                </select>
+            </div>
+
+            <div>
+                <label style="font-size: 11px; color: #475569; margin-bottom: 4px; display: block; font-weight: 600;">Filter Bulan Usulan:</label>
+                <select onChange="apply_progres_proses_filter();" name='pub_proses_bulan' id='pub_proses_bulan' class='form-control input-sm' style='width:200px; border-radius: 8px;'>
                     <option value='0'>-- Semua Bulan --</option>
                     <?php
                       if (!empty($this->session->sysparam->nama_bulan)) {
@@ -35,12 +55,37 @@
                     ?>
                 </select>
             </div>
+
+            <div style="margin-left: auto;">
+                <button type="button" onclick="apply_progres_proses_filter();" class="btn btn-warning btn-sm" style="border-radius: 8px; font-weight: 600; margin-top: 16px;">
+                    <i class="fa fa-filter"></i> Terapkan Filter
+                </button>
+            </div>
         </div>
+
         <script type="text/javascript">
             function apply_progres_proses_filter() {
+                var tahun = $('#pub_proses_tahun').val() || '0';
                 var bulan = $('#pub_proses_bulan').val() || '0';
-                var url = '<?=base_url();?>perbend/progress_usulan_satker/progres_proses_lists/1/' + bulan;
-                reload_grid(url, 'progres_proses');
+                var reqUrl = "<?=base_url();?>perbend/progress_usulan_satker/progres_proses_lists/1?pub_proses_tahun=" + encodeURIComponent(tahun) + "&pub_proses_bulan=" + encodeURIComponent(bulan);
+                
+                $.ajax({
+                    type: 'POST',
+                    url: reqUrl,
+                    async: true,
+                    cache: false,
+                    success: function(responseText) {
+                        try {
+                            var o = (typeof responseText === 'object') ? responseText : JSON.parse(responseText);
+                            var html = (o.html && o.html.html !== undefined) ? o.html.html : (o.html || '');
+                            var pagination = o.pagination || '';
+                            $('#progres_proses_table-data').html(html);
+                            $('#progres_proses_paging-table-data').html(pagination);
+                        } catch(e) {
+                            console.error(e);
+                        }
+                    }
+                });
             }
         </script>
 
@@ -52,6 +97,39 @@
 
 <script type='text/javascript'>
 $(document).ready(function() {
-    reload_grid("<?=base_url();?>perbend/progress_usulan_satker/progres_proses_lists/1", 'progres_proses');
+    var searchParams = new URLSearchParams(window.location.search);
+    var idParam = searchParams.get('id');
+    var qParam = searchParams.get('q');
+    var reqUrl = "<?=base_url();?>perbend/progress_usulan_satker/progres_proses_lists/1";
+    
+    if (idParam) {
+        reqUrl += "?id=" + encodeURIComponent(idParam);
+    } else if (qParam) {
+        reqUrl += "?q=" + encodeURIComponent(qParam);
+    } else {
+        var defaultTahun = $('#pub_proses_tahun').val() || '<?=!empty($settahun) ? $settahun : date("Y");?>';
+        reqUrl += "?pub_proses_tahun=" + encodeURIComponent(defaultTahun);
+    }
+    
+    $.ajax({
+        type: 'POST',
+        url: reqUrl,
+        async: true,
+        cache: false,
+        success: function(responseText) {
+            try {
+                var o = (typeof responseText === 'object') ? responseText : JSON.parse(responseText);
+                var html = (o.html && o.html.html !== undefined) ? o.html.html : (o.html || '');
+                var pagination = o.pagination || '';
+                $('#progres_proses_table-data').html(html);
+                $('#progres_proses_paging-table-data').html(pagination);
+            } catch(e) {
+                apply_progres_proses_filter();
+            }
+        },
+        error: function() {
+            apply_progres_proses_filter();
+        }
+    });
 });
 </script>

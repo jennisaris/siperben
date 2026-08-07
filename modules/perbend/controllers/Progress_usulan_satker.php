@@ -274,6 +274,11 @@ class Progress_usulan_satker extends MX_Controller {
 	public function progres_proses() {
 		$data = array();
 		$data['title'] = 'Notifikasi Progres Usulan Satker (Sedang Diproses)';
+		$data['settahun'] = !empty($this->session->settahun) ? $this->session->settahun : date('Y');
+		
+		$q_years = $this->db->query("SELECT DISTINCT ctahun FROM app_t_usulan WHERE ctahun != '' AND ijns = 1 ORDER BY ctahun DESC");
+		$data['available_years'] = $q_years ? $q_years->result_array() : array();
+
 		$this->_setTitle('Notifikasi Progres Usulan Satker (Sedang Diproses)');
 		$this->template->display('laporan/list_progres_proses', $data, TRUE);
 	}
@@ -309,7 +314,8 @@ class Progress_usulan_satker extends MX_Controller {
 		$settahun = !empty($this->session->settahun) ? $this->session->settahun : date('Y');
 
 		$qsatker = "";
-		if (!$this->session->superuser) {
+		$is_admin = (!empty($this->session->superuser) || !empty($this->session->isadmin) || (isset($this->session->groupid) && in_array((int)$this->session->groupid, array(1, 7, 8, 10, 11, 12, 13, 14, 15, 16))));
+		if (!$is_admin) {
 			if (!empty($this->session->orgs) && (is_array($this->session->orgs) || is_object($this->session->orgs))) {
 				$orgs = array();
 				foreach($this->session->orgs as $k=>$v) {
@@ -319,6 +325,9 @@ class Progress_usulan_satker extends MX_Controller {
 					$str_orgs = implode(',', $orgs);
 					$qsatker = " AND iunorid IN ({$str_orgs})";
 				}
+			} else if (!empty($this->session->username)) {
+				$user_satker = $this->db->escape(trim($this->session->username));
+				$qsatker = " AND (iunorid = {$user_satker} OR ccreatedby = {$user_satker})";
 			}
 		} else {
 			$active_codes = get_active_excel_satker_codes();
@@ -329,15 +338,62 @@ class Progress_usulan_satker extends MX_Controller {
 		}
 
 		$qq = "";
-		if (!empty(trim($q)) && $q !== '0') {
-			$q_val = (int)$q;
-			$qq = " AND month(dtglusul) = '{$q_val}'";
+		if (isset($_REQUEST['id']) && !empty($_REQUEST['id'])) {
+			$raw_id = $_REQUEST['id'];
+			if (strpos($raw_id, '/') !== false) {
+				$raw_id = explode('/', $raw_id)[0];
+			}
+			$usulan_id = (int)$raw_id;
+			if ($usulan_id > 0) {
+				$qq = " AND id = {$usulan_id}";
+			}
+		} 
+		
+		if (empty($qq)) {
+			// Filter Tahun dari Dropdown atau Fallback ke $settahun
+			if (isset($_REQUEST['pub_proses_tahun']) && $_REQUEST['pub_proses_tahun'] !== '' && $_REQUEST['pub_proses_tahun'] !== '0') {
+				$f_tahun = $this->db->escape_like_str(trim($_REQUEST['pub_proses_tahun']));
+				$qq .= " AND ctahun = '{$f_tahun}'";
+			} else if (isset($_REQUEST['tahun']) && $_REQUEST['tahun'] !== '' && $_REQUEST['tahun'] !== '0') {
+				$f_tahun = $this->db->escape_like_str(trim($_REQUEST['tahun']));
+				$qq .= " AND ctahun = '{$f_tahun}'";
+			} else if (!isset($_REQUEST['pub_proses_tahun']) && !isset($_REQUEST['id']) && !isset($_REQUEST['q']) && !isset($_REQUEST['search_usul'])) {
+				$qq .= " AND ctahun = '{$settahun}'";
+			}
+
+			// Filter Bulan Usulan
+			if (isset($_REQUEST['pub_proses_bulan']) && !empty($_REQUEST['pub_proses_bulan']) && $_REQUEST['pub_proses_bulan'] !== '0') {
+				$f_bulan = (int)$_REQUEST['pub_proses_bulan'];
+				$qq .= " AND month(dtglusul) = '{$f_bulan}'";
+			}
+
+			// Filter Pencarian No. Usul / String
+			if (isset($_REQUEST['search_usul']) && !empty($_REQUEST['search_usul'])) {
+				$raw_q = trim($_REQUEST['search_usul']);
+				$q_clean = $this->db->escape_like_str($raw_q);
+				$qq .= " AND cnousul LIKE '%{$q_clean}%'";
+			} else if (isset($_REQUEST['q']) && !empty(trim($_REQUEST['q'])) && $_REQUEST['q'] !== '0') {
+				$q_str = trim($_REQUEST['q']);
+				if (preg_match('/^(\d+)\/\d+$/', $q_str, $m)) {
+					$q_str = $m[1];
+				}
+				if (is_numeric($q_str) && (int)$q_str >= 1 && (int)$q_str <= 12) {
+					$q_val = (int)$q_str;
+					$qq .= " AND month(dtglusul) = '{$q_val}'";
+				} else {
+					if (substr($q_str, -2) === '/0' || substr($q_str, -2) === '/1') {
+						$q_str = substr($q_str, 0, -2);
+					}
+					$q_clean = $this->db->escape_like_str($q_str);
+					$qq .= " AND cnousul LIKE '%{$q_clean}%'";
+				}
+			}
 		}
 
 		// KETAT: Hanya usulan perubahan SK yang SEDANG DIPROSES (istatus != 0 DRAFT dan istatus != 7 SELESAI)
 		$sql = "SELECT id, ijns, iunorid, cnousul, dtglusul, istatusid, tcreated, ijnsprubhnid, istatus 
 				FROM app_t_usulan 
-				WHERE ijns = 1 AND ctahun = '{$settahun}' AND istatus != 0 AND istatus != 7 {$qq} {$qsatker}
+				WHERE ijns = 1 AND istatus != 0 AND istatus != 7 {$qq} {$qsatker}
 				ORDER BY dtglusul DESC, id DESC";
 
 		$query = $this->db->query($sql);
@@ -349,14 +405,14 @@ class Progress_usulan_satker extends MX_Controller {
 		$html = "<table class='table table-bordered table-striped table-condensed' style='font-size:11px; margin-bottom:0; width:100%; table-layout:fixed;'>";
 		$html .= "<colgroup>
 			<col style='width:3%;'>
-			<col style='width:18%;'>
-			<col style='width:20%;'>
+			<col style='width:22%;'>
+			<col style='width:22%;'>
 			<col style='width:14%;'>
+			<col style='width:7%;'>
+			<col style='width:8%;'>
 			<col style='width:8%;'>
 			<col style='width:9%;'>
-			<col style='width:10%;'>
-			<col style='width:10%;'>
-			<col style='width:8%;'>
+			<col style='width:7%;'>
 		</colgroup>";
 		$html .= "<thead>
 			<tr style='background: #fff7ed;'>
@@ -376,12 +432,10 @@ class Progress_usulan_satker extends MX_Controller {
 			$rows = $query_paged->result();
 
 			$unor_rows = $this->getall('', 'app_m_unor', 'kode, kode_atasan, nama', array('deleted' => 0));
-			$unor_map = [];
 			$unor_nama_map = [];
 			if (!empty($unor_rows)) {
 				foreach ($unor_rows as $u) {
-					$unor_map[$u->kode] = ['nama' => $u->nama, 'kode_atasan' => $u->kode_atasan];
-					$unor_nama_map[$u->kode] = $u->nama;
+					$unor_nama_map[trim($u->kode)] = $u->nama;
 				}
 			}
 
@@ -389,9 +443,14 @@ class Progress_usulan_satker extends MX_Controller {
 			foreach ($rows as $kode) {
 				$norut = ($offset == 0) ? $no : ($no + $offset);
 
-				$unor_atasan_kode = isset($unor_map[$kode->iunorid]) ? $unor_map[$kode->iunorid]['kode_atasan'] : '';
-				$unor_atasan_nama = isset($unor_nama_map[$unor_atasan_kode]) ? $unor_nama_map[$unor_atasan_kode] : '-';
-				$satker_nama = isset($unor_nama_map[$kode->iunorid]) ? $unor_nama_map[$kode->iunorid] : $kode->iunorid;
+				$satker_code = trim($kode->iunorid);
+				$fallback_nama = isset($unor_nama_map[$satker_code]) ? $unor_nama_map[$satker_code] : 'Satker ' . $satker_code;
+				$satker_nama = get_excel_satker_name($satker_code, $fallback_nama);
+				
+				$eselon_nama = function_exists('get_nama_panjang_eselon') ? get_nama_panjang_eselon($satker_code) : '-';
+				if (empty($eselon_nama) || $eselon_nama === '-' || $eselon_nama === $satker_code) {
+					$eselon_nama = 'KEMENTERIAN PENDIDIKAN DAN KEBUDAYAAN';
+				}
 
 				$st_id = isset($ar_statusid[$kode->istatusid]) ? $ar_statusid[$kode->istatusid] : '-';
 				$st_perubahan = isset($ar_statusperubahan[$kode->ijnsprubhnid]) ? $ar_statusperubahan[$kode->ijnsprubhnid] : '-';
@@ -410,9 +469,10 @@ class Progress_usulan_satker extends MX_Controller {
 
 				$html .= "<tr>";
 				$html .= "<td class='text-center'>".$norut."</td>";
-				$html .= "<td><strong>".strtoupper($unor_atasan_nama)."</strong></td>";
-				$html .= "<td>".$satker_nama." (<b>".$kode->iunorid."</b>)</td>";
-				$html .= "<td class='text-center'><a href='".base_url()."perbend/t_usulan_satker' style='font-weight: 700; text-decoration: underline; color: #0284c7;'>".$kode->cnousul."</a></td>";
+				$html .= "<td><strong>".strtoupper($eselon_nama)."</strong></td>";
+				$html .= "<td>".$satker_nama." (<b>".$satker_code."</b>)</td>";
+				$target_mod = (!empty($this->session->superuser) || !empty($this->session->isadmin)) ? 't_usulan_verifikator' : 't_usulan_satker';
+				$html .= "<td class='text-center'><a href='".base_url()."perbend/".$target_mod."?q=".urlencode($kode->cnousul)."' style='font-weight: 700; text-decoration: underline; color: #0284c7;'>".$kode->cnousul."</a></td>";
 				$html .= "<td class='text-center'>".(!empty($kode->dtglusul) && $kode->dtglusul != '0000-00-00' ? date('d-m-Y', strtotime($kode->dtglusul)) : '-')."</td>";
 				$html .= "<td>".$st_id."</td>";
 				$html .= "<td>".$st_perubahan."</td>";

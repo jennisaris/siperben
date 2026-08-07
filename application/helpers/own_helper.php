@@ -12,8 +12,11 @@ if (!function_exists('access_menu')){
   				  max(b.iallowadd) as iallowadd, max(b.iallowedit) as iallowedit, 
   				  max(b.iallowdelete) as iallowdelete 
   				  FROM {$prefix}t_menu a, {$prefix}t_menu_group_privileges b
-  				  WHERE a.id = b.imenuid and a.cmenucontroller = '{$menu_controller}'
-  				  and b.igroupid in ({$group_id}) group by b.imenuid";
+  				  WHERE a.id = b.imenuid 
+  				  AND (a.cmenucontroller = '{$menu_controller}' 
+  				       OR '{$menu_controller}' LIKE CONCAT(a.cmenucontroller, '%')
+  				       OR a.cmenucontroller LIKE CONCAT('{$menu_controller}', '%'))
+  				  AND b.igroupid IN ({$group_id}) GROUP BY b.imenuid";
   		//echo $sql;
   		//exit;
   		$query = $CI->db->query($sql);
@@ -89,20 +92,27 @@ if (!function_exists('get_app_notifications')) {
         if ($is_admin) {
             // === SUPERADMIN NOTIFICATIONS ===
 
-            // 1. Progress Usulan Bendahara yang belum selesai selama tahun berjalan
-            //    Mengikuti logika Progress_usulan_satker: ijns=1, ctahun berjalan, istatus != 7 (belum selesai)
+            // 1. Progress Usulan Bendahara yang sedang diproses (istatus != 0 DRAFT, istatus != 7 SELESAI, ctahun = tahun_berjalan, Satker Aktif)
+            $tahun_berjalan = !empty($CI->session->settahun) ? $CI->session->settahun : date('Y');
+            $active_codes = get_active_excel_satker_codes();
+            $qsatker_notif = "";
+            if (!empty($active_codes)) {
+                $str_active = implode(',', array_map(array($CI->db, 'escape'), $active_codes));
+                $qsatker_notif = " AND u.iunorid IN ({$str_active})";
+            }
             $sql_usulan = "SELECT COUNT(*) AS total_usulan
                            FROM app_t_usulan u
                            WHERE u.ijns = 1
-                             AND u.ctahun = ?
-                             AND u.istatus != 7";
-            $q_usulan = $CI->db->query($sql_usulan, array($tahun_berjalan))->row();
+                             AND u.istatus != 0
+                             AND u.istatus != 7
+                             AND u.ctahun = '{$tahun_berjalan}' {$qsatker_notif}";
+            $q_usulan = $CI->db->query($sql_usulan)->row();
             $total_incomp = !empty($q_usulan) ? (int)$q_usulan->total_usulan : 0;
             if ($total_incomp > 0) {
                 $notifs[] = array(
                     'icon'  => 'fas fa-file-invoice text-warning',
                     'title' => 'Usulan Perubahan SK',
-                    'msg'   => "Ada $total_incomp usulan SK satker yang sedang diajukan / belum selesai.",
+                    'msg'   => "Ada $total_incomp usulan SK satker tahun $tahun_berjalan yang sedang diajukan / belum selesai.",
                     // Mengarah ke halaman tersendiri Notifikasi Progres Usulan Satker (Sedang Diproses)
                     'url'   => base_url('perbend/progress_usulan_satker/progres_proses'),
                     'badge' => 'label-warning'
