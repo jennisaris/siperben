@@ -95,28 +95,20 @@ class Ews extends MX_Controller {
 			Else '-'
 		End";
 
-		$sql = "SELECT kepeg_m_pegawai.id, kepeg_m_pegawai.cnip, kepeg_m_pegawai.vname, kepeg_m_pegawai.cjabid2,
-				case
-					when kepeg_m_pegawai.cjabid2 IS NULL THEN (Select nama from kepeg_m_jabatan where id = ijabid) 
-					else (Select vname from app_m_jabatan where id = cjabid2) 
-				end as nama_jabatan,
-				kepeg_m_pegawai.ckduker2,
-				(select nama from app_m_unor where kode = (select kode_satker from kepeg_m_unor where id = kepeg_m_pegawai.ikduker)) as nama_satker,
-				{$nosert_field} as nosert,
-				{$tglsert_field} as tgl_sert,
-				{$tglkad_field} as tgl_kad,
-				{$status_field} as status
-				from kepeg_m_pegawai 
-				where {$where_tab}
-				and (select kode_satker from kepeg_m_unor where id = kepeg_m_pegawai.ikduker) in (select kode from app_m_unor where kode like '138%' or kode_atasan like '138%')";
+		// Query count terpisah yang sangat efisien untuk kalkulasi pagination
+		$count_sql = "SELECT COUNT(*) as total
+				FROM kepeg_m_pegawai
+				LEFT JOIN kepeg_m_unor kep_u ON kepeg_m_pegawai.ikduker = kep_u.id
+				LEFT JOIN app_m_unor app_u ON kep_u.kode_satker = app_u.kode
+				WHERE {$where_tab}
+				  AND (app_u.kode LIKE '138%' OR app_u.kode_atasan LIKE '138%')";
 
-		// Filter pencarian jika ada input kata kunci
+		$where_extra = "";
 		if (!empty($this->kriteria->key)) {
 			$key = $this->db->escape_like_str($this->kriteria->key);
-			$sql .= " and (kepeg_m_pegawai.vname LIKE '%{$key}%' OR kepeg_m_pegawai.cnip LIKE '%{$key}%' OR {$nosert_field} LIKE '%{$key}%')";
+			$where_extra .= " AND (kepeg_m_pegawai.vname LIKE '%{$key}%' OR kepeg_m_pegawai.cnip LIKE '%{$key}%' OR {$nosert_field} LIKE '%{$key}%')";
 		}
 
-		// Filter Satker jika bukan Superuser
 		if ($this->session->superuser != 1) {
 			$orgs = [trim($this->session->username)];
 			if (!empty($this->session->orgs) && is_array($this->session->orgs)) {
@@ -125,18 +117,38 @@ class Ews extends MX_Controller {
 				}
 			}
 			$kd_satker = "'".implode("','", array_unique($orgs))."'";
-			$sql .= " and (select kode_satker from kepeg_m_unor where id = kepeg_m_pegawai.ikduker) in ({$kd_satker})";
+			$where_extra .= " AND kep_u.kode_satker IN ({$kd_satker})";
 		}
 
-		$sql .= " ORDER BY kepeg_m_pegawai.vname ASC";
-
-		$query = $this->db->query($sql);
+		$count_sql .= $where_extra;
 		
 		if (!$reports) {
-			$this->session->jum_rec  = $query ? $query->num_rows() : 0;
+			$count_row = $this->db->query($count_sql)->row();
+			$this->session->jum_rec  = $count_row ? (int)$count_row->total : 0;
 			$this->session->jum_page = ceil($this->session->jum_rec / $this->limit);
+		}
 
-			$sql .= " limit {$this->limit} offset {$offset}";
+		// Query data utama menggunakan JOIN (Bebas dari N+1 subquery)
+		$sql = "SELECT kepeg_m_pegawai.id, kepeg_m_pegawai.cnip, kepeg_m_pegawai.vname, kepeg_m_pegawai.cjabid2,
+				COALESCE(app_j.vname, kep_j.nama) as nama_jabatan,
+				kepeg_m_pegawai.ckduker2,
+				app_u.nama as nama_satker,
+				{$nosert_field} as nosert,
+				{$tglsert_field} as tgl_sert,
+				{$tglkad_field} as tgl_kad,
+				{$status_field} as status
+				FROM kepeg_m_pegawai 
+				LEFT JOIN kepeg_m_jabatan kep_j ON kepeg_m_pegawai.ijabid = kep_j.id
+				LEFT JOIN app_m_jabatan app_j ON kepeg_m_pegawai.cjabid2 = app_j.id
+				LEFT JOIN kepeg_m_unor kep_u ON kepeg_m_pegawai.ikduker = kep_u.id
+				LEFT JOIN app_m_unor app_u ON kep_u.kode_satker = app_u.kode
+				WHERE {$where_tab}
+				  AND (app_u.kode LIKE '138%' OR app_u.kode_atasan LIKE '138%')
+				  {$where_extra}
+				ORDER BY kepeg_m_pegawai.vname ASC";
+
+		if (!$reports) {
+			$sql .= " LIMIT {$this->limit} OFFSET {$offset}";
 		}
 		
 		$query = $this->db->query($sql); 

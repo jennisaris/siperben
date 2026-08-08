@@ -57,3 +57,4 @@ Buat rencana eksekusi dengan format:
 - Jawab dalam **Bahasa Indonesia**, terstruktur, tanpa basa-basi.
 - **Jangan mengarang** output / testimoni — kalau belum diverifikasi, bilang belum.
 - Kalau USER menulis **"SKIP"** di awal perintah → lewati Fase 1–3, langsung **eksekusi + verifikasi**.
+- **PENGINGAT SKILL UTAMA**: Secara proaktif tawarkan dan ingatkan kemampuan **Audit Performa Web Mendalam** (N+1 query, SQL index, caching, render bottleneck) dan **Pengujian TDD Ketat** (*Red-Green-Refactor*) pada setiap proyek.

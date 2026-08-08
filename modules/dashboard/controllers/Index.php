@@ -48,22 +48,35 @@ class Index extends MX_Controller {
 			'13812' => 'BADAN PENGEMBANGAN DAN PEMBINAAN BAHASA'
 		);
 
+		// Single aggregated query replacing 7 separate queries in loop
+		$sql = "SELECT 
+			CASE 
+				WHEN u.kode_atasan IN ('13801','13802','13803','13804','13805','13811','13812') THEN u.kode_atasan
+				ELSE u.kode
+			END as unit_kode,
+			COUNT(*) as total_aktif,
+			SUM(CASE WHEN r.jenis_rekening = 4 OR j.nama LIKE '%RKK%' THEN 1 ELSE 0 END) as rkk,
+			SUM(CASE WHEN r.jenis_rekening = 2 OR j.nama LIKE '%BPG%' THEN 1 ELSE 0 END) as bpg,
+			SUM(CASE WHEN r.jenis_rekening = 5 OR j.nama LIKE '%BPN%' THEN 1 ELSE 0 END) as bpn,
+			SUM(CASE WHEN r.jenis_rekening = 1 OR j.nama LIKE '%RPL%' THEN 1 ELSE 0 END) as rpl
+		FROM app_m_unor_rekening r
+		JOIN app_m_unor u ON r.kode_satker = u.kode
+		LEFT JOIN app_m_jenis_rekening j ON r.jenis_rekening = j.id
+		WHERE r.istatus = 0 
+		  AND (u.kode_atasan IN ('13801','13802','13803','13804','13805','13811','13812') OR u.kode IN ('13801','13802','13803','13804','13805','13811','13812'))
+		GROUP BY unit_kode";
+
+		$query_rows = $this->db->query($sql)->result();
+		$lookup = array();
+		if (!empty($query_rows)) {
+			foreach ($query_rows as $row) {
+				$lookup[$row->unit_kode] = $row;
+			}
+		}
+
 		$results = array();
-
 		foreach ($order_map as $kode_uu => $nama_uu) {
-			$sql = "SELECT 
-				COUNT(*) as total_aktif,
-				SUM(CASE WHEN r.jenis_rekening = 4 OR j.nama LIKE '%RKK%' THEN 1 ELSE 0 END) as rkk,
-				SUM(CASE WHEN r.jenis_rekening = 2 OR j.nama LIKE '%BPG%' THEN 1 ELSE 0 END) as bpg,
-				SUM(CASE WHEN r.jenis_rekening = 5 OR j.nama LIKE '%BPN%' THEN 1 ELSE 0 END) as bpn,
-				SUM(CASE WHEN r.jenis_rekening = 1 OR j.nama LIKE '%RPL%' THEN 1 ELSE 0 END) as rpl
-			FROM app_m_unor_rekening r
-			JOIN app_m_unor u ON r.kode_satker = u.kode
-			LEFT JOIN app_m_jenis_rekening j ON r.jenis_rekening = j.id
-			WHERE r.istatus = 0 AND (u.kode_atasan = '{$kode_uu}' OR u.kode = '{$kode_uu}')";
-
-			$row = $this->db->query($sql)->row();
-
+			$row = isset($lookup[$kode_uu]) ? $lookup[$kode_uu] : null;
 			$results[] = array(
 				'kode_unit' => $kode_uu,
 				'nama_unit' => $nama_uu,

@@ -10,6 +10,10 @@ class M_pegawai extends MX_Controller {
   var $ar_m_unor = array();
   var $ar_m_kedudukan_hukum = array();
   
+  protected static $cache_m_jabatan = array();
+  protected static $cache_m_golongan = array();
+  protected static $cache_m_kedudukan_hukum = array();
+  
   var $m_unor;
 	public function __construct() {
 		parent::__construct();
@@ -68,31 +72,35 @@ class M_pegawai extends MX_Controller {
 		$this->_changeType($table, 'ifrom', 'combobox', 
 		$this->session->sysparam->ifrom);
 		
-		$rows = $this->getall('', $this->prefix.'_m_jabatan', 'id, nama');
-		foreach($rows as $r) {
-			$this->ar_m_jabatan[$r->id] = $r->id.' - '.$r->nama;
+		if (empty(self::$cache_m_jabatan)) {
+			$rows = $this->getall('', $this->prefix.'_m_jabatan', 'id, nama');
+			foreach($rows as $r) {
+				self::$cache_m_jabatan[$r->id] = $r->id.' - '.$r->nama;
+			}
 		}
+		$this->ar_m_jabatan = self::$cache_m_jabatan;
 		
 		$this->_changeType($table, 'ijabid', 'combobox2', 
 		$this->ar_m_jabatan);
 		
-		$rows = $this->getall('', $this->prefix.'_m_golongan', 'id, concat(pangkat, \', \', nama) as pangkat');
-		foreach($rows as $r) {
-		$this->ar_m_golongan[$r->id] = $r->pangkat;
+		if (empty(self::$cache_m_golongan)) {
+			$rows = $this->getall('', $this->prefix.'_m_golongan', 'id, concat(pangkat, \', \', nama) as pangkat');
+			foreach($rows as $r) {
+				self::$cache_m_golongan[$r->id] = $r->pangkat;
+			}
 		}
+		$this->ar_m_golongan = self::$cache_m_golongan;
 		
 		$this->_changeType($table, 'cgolid', 'combobox2', 
 		$this->ar_m_golongan);
-		
-		/* $rows = $this->getall('', $this->prefix.'_m_unor', 'id, kode, nama', array('date_expired'=>NULL));//, array('kode'=>'8ae483a67355ebc601736a3c0cf35654'));
-		foreach($rows as $r) {
-			$this->ar_m_unor[$r->id] = $r->id.' - '.$r->nama;
-		} */
 
-		$rows = $this->getall('', $this->prefix.'_m_kedudukan_hukum', 'id, keterangan');
-		foreach($rows as $r) {
-			$this->ar_m_kedudukan_hukum[$r->id] = $r->id.' - '.$r->keterangan;
+		if (empty(self::$cache_m_kedudukan_hukum)) {
+			$rows = $this->getall('', $this->prefix.'_m_kedudukan_hukum', 'id, keterangan');
+			foreach($rows as $r) {
+				self::$cache_m_kedudukan_hukum[$r->id] = $r->id.' - '.$r->keterangan;
+			}
 		}
+		$this->ar_m_kedudukan_hukum = self::$cache_m_kedudukan_hukum;
 		
 		$this->_changeType($table, 'istatus', 'combobox2', 
 		$this->ar_m_kedudukan_hukum);
