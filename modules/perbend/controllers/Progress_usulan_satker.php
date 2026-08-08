@@ -273,11 +273,8 @@ class Progress_usulan_satker extends MX_Controller {
 
 	public function progres_proses() {
 		$data = array();
-		$data['title'] = 'Notifikasi Progres Usulan Satker (Sedang Diproses)';
+		$data['title']    = 'Notifikasi Progres Usulan Satker (Sedang Diproses)';
 		$data['settahun'] = !empty($this->session->settahun) ? $this->session->settahun : date('Y');
-		
-		$q_years = $this->db->query("SELECT DISTINCT ctahun FROM app_t_usulan WHERE ctahun != '' AND ijns = 1 ORDER BY ctahun DESC");
-		$data['available_years'] = $q_years ? $q_years->result_array() : array();
 
 		$this->_setTitle('Notifikasi Progres Usulan Satker (Sedang Diproses)');
 		$this->template->display('laporan/list_progres_proses', $data, TRUE);
