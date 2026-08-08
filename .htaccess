@@ -26,10 +26,15 @@
 # Nonaktifkan direktori listing
 Options -Indexes
 
-# Blokir akses ke file penting
-<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql|env|bak|conf|zip|tar|gz|phps)$">
+# Blokir akses ke file penting dan file backup/quarantine
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql|env|bak|conf|zip|tar|gz|phps|quarantine|REMOVED_SECURITY|MALWARE_BACKUP)$">
     Require all denied
 </FilesMatch>
+
+# [SECURITY FIX 2026-08-08] Blokir akses ke folder sensitif
+<IfModule mod_rewrite.c>
+    RewriteRule ^(archives_backup|scratch|graphify-out|tmp|db|mysql-config|excel)(/|$) - [F,L]
+</IfModule>
 
 # Proteksi file .htaccess
 <Files ".htaccess">
