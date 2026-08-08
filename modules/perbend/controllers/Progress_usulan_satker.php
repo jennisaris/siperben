@@ -428,11 +428,15 @@ class Progress_usulan_satker extends MX_Controller {
 		if ($query_paged && $query_paged->num_rows() > 0) {
 			$rows = $query_paged->result();
 
-			$unor_rows = $this->getall('', 'app_m_unor', 'kode, kode_atasan, nama', array('deleted' => 0));
-			$unor_nama_map = [];
-			if (!empty($unor_rows)) {
-				foreach ($unor_rows as $u) {
-					$unor_nama_map[trim($u->kode)] = $u->nama;
+			// Muat seluruh data unor (tanpa filter deleted) agar satker lama tetap bisa di-lookup
+			$unor_raw   = $this->db->query("SELECT kode, kode_atasan, nama FROM app_m_unor")->result();
+			$unor_nama_map    = []; // kode => nama
+			$unor_atasan_map  = []; // kode => kode_atasan
+			if (!empty($unor_raw)) {
+				foreach ($unor_raw as $u) {
+					$k = trim($u->kode);
+					$unor_nama_map[$k]   = $u->nama;
+					$unor_atasan_map[$k] = trim($u->kode_atasan);
 				}
 			}
 
@@ -440,13 +444,17 @@ class Progress_usulan_satker extends MX_Controller {
 			foreach ($rows as $kode) {
 				$norut = ($offset == 0) ? $no : ($no + $offset);
 
-				$satker_code = trim($kode->iunorid);
+				$satker_code  = trim($kode->iunorid);
 				$fallback_nama = isset($unor_nama_map[$satker_code]) ? $unor_nama_map[$satker_code] : 'Satker ' . $satker_code;
-				$satker_nama = get_excel_satker_name($satker_code, $fallback_nama);
-				
-				$eselon_nama = function_exists('get_nama_panjang_eselon') ? get_nama_panjang_eselon($satker_code) : '-';
-				if (empty($eselon_nama) || $eselon_nama === '-' || $eselon_nama === $satker_code) {
-					$eselon_nama = 'KEMENTERIAN PENDIDIKAN DAN KEBUDAYAAN';
+				$satker_nama  = get_excel_satker_name($satker_code, $fallback_nama);
+
+				// Lookup Eselon I: ambil kode_atasan dari satker, lalu cari nama atasan tersebut
+				$kode_atasan = isset($unor_atasan_map[$satker_code]) ? $unor_atasan_map[$satker_code] : '';
+				$eselon_nama = (!empty($kode_atasan) && isset($unor_nama_map[$kode_atasan]))
+					? $unor_nama_map[$kode_atasan]
+					: (function_exists('get_nama_panjang_eselon') ? get_nama_panjang_eselon($satker_code) : '');
+				if (empty($eselon_nama)) {
+					$eselon_nama = 'KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI';
 				}
 
 				$st_id = isset($ar_statusid[$kode->istatusid]) ? $ar_statusid[$kode->istatusid] : '-';
