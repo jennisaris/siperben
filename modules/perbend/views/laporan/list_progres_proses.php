@@ -25,15 +25,13 @@
                 <select onChange="apply_progres_proses_filter();" name='pub_proses_tahun' id='pub_proses_tahun' class='form-control input-sm' style='width:180px; border-radius: 8px; font-weight: 600;'>
                     <option value='0'>-- Semua Tahun --</option>
                     <?php
-                        $selected_yr = !empty($settahun) ? $settahun : date('Y');
                         if (!empty($available_years)) {
                             foreach($available_years as $yr) {
                                 $y_val = $yr['ctahun'];
-                                $sel = ($y_val == $selected_yr) ? "selected='selected'" : "";
-                                echo "<option value='{$y_val}' {$sel}>Tahun {$y_val}</option>";
+                                echo "<option value='{$y_val}'>Tahun {$y_val}</option>";
                             }
                         } else {
-                            echo "<option value='2026' selected='selected'>Tahun 2026</option>";
+                            echo "<option value='2026'>Tahun 2026</option>";
                             echo "<option value='2025'>Tahun 2025</option>";
                         }
                     ?>
@@ -107,8 +105,8 @@ $(document).ready(function() {
     } else if (qParam) {
         reqUrl += "?q=" + encodeURIComponent(qParam);
     } else {
-        var defaultTahun = $('#pub_proses_tahun').val() || '<?=!empty($settahun) ? $settahun : date("Y");?>';
-        reqUrl += "?pub_proses_tahun=" + encodeURIComponent(defaultTahun);
+        // Default: load semua data tanpa filter tahun (tampilkan semua)
+        reqUrl += "?pub_proses_tahun=0";
     }
     
     $.ajax({
