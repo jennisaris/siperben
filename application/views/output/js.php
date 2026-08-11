@@ -17,6 +17,27 @@
         statusDisplay.textContent = result ? "Online" : "OFFline";
     }, 3000); // probably too often, try 30000 for every 30 seconds*/
 
+    function parse_clean_html_response(responseText) {
+        if (typeof responseText === 'string' && responseText.trim().startsWith('{')) {
+            try {
+                var o = JSON.parse(responseText);
+                if (o && typeof o === 'object') {
+                    if (o.html) {
+                        if (typeof o.html === 'object' && o.html.html !== undefined) {
+                            return o.html.html;
+                        } else if (typeof o.html === 'string') {
+                            return o.html;
+                        }
+                    }
+                    if (o.msg) {
+                        return '<div class="alert alert-warning" style="margin:10px;"><i class="fa fa-warning"></i> ' + o.msg + '</div>';
+                    }
+                }
+            } catch(e) {}
+        }
+        return responseText;
+    }
+
     function getHTML2(url_, kriteria, page) {
         var request_url = (typeof page !== 'undefined' && page !== null && page !== '') ? url_+'/'+page : url_;
         var xhr = new XMLHttpRequest();
@@ -36,7 +57,7 @@
         } catch (e) {
             console.error("XMLHttpRequest failed: ", e);
         }
-        return xhr.responseText;
+        return parse_clean_html_response(xhr.responseText);
     }
 
     function getHTML3(url_, kriteria, page) {
@@ -66,7 +87,7 @@
         } catch (e) {
             console.error("XMLHttpRequest failed: ", e);
         }
-        var hasil = xhr.responseText;
+        var hasil = parse_clean_html_response(xhr.responseText);
         if (hasil == '') {
             bootbox.alert('Sesi anda sudah habis. Silahkan login kembali. ');
             if (typeof debug !== 'undefined' && !debug) {
@@ -110,7 +131,7 @@
         } catch (e) {
             console.error("XMLHttpRequest failed: ", e);
         }
-        var hasil = xhr.responseText;
+        var hasil = parse_clean_html_response(xhr.responseText);
         if (hasil == '') {
             bootbox.alert('Sesi anda sudah habis. Silahkan login kembali. ');
             if (typeof debug !== 'undefined' && !debug) {
@@ -589,7 +610,16 @@
     }
 
     function bootbox_alert(milliseconds='', title='', message='', timeout=false, isok=true){
-        if (milliseconds=='') milliseconds=1200;
+        if (milliseconds=='') milliseconds=400;
+
+        if (typeof message === 'string' && message.trim().startsWith('{')) {
+            try {
+                var _json_msg = JSON.parse(message);
+                if (_json_msg && _json_msg.msg) {
+                    message = _json_msg.msg;
+                }
+            } catch(e) {}
+        }
 
         var _successmessage = '<div style="text-align:center;">';
             _successmessage += '<span style="vertical-align:4px;font-size: 48px; color: ___color___;">';
@@ -619,6 +649,7 @@
             var dialog = bootbox.dialog({
                 title:title,
                 message: _successmessage,
+                animate: false,
                 closeButton: false,
                 buttons: {
                     cancel:{
@@ -631,6 +662,7 @@
             var dialog = bootbox.dialog({
                 title:title,
                 message: _successmessage,
+                animate: false,
                 closeButton: false
             });
         }
@@ -644,9 +676,8 @@
 
 
         setTimeout(function(){ 
-            console.log('>>> reset_width <<<<');
             $('body').css('padding-right', 0);
-        }, 3000); 
+        }, 400); 
     }
     
 </script>

@@ -1,45 +1,54 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 if (!function_exists('access_menu')){
   function access_menu($menu_controller, $group_id) {
-		  $menu_controller = trim($menu_controller);
-    	$CI =&get_instance();
-      $prefix   = $CI->config->item('dbprefix');
+      $menu_controller = trim($menu_controller);
+      $CI =& get_instance();
+      $prefix = $CI->config->item('dbprefix');
         
-  		if ( $group_id == '' ) $group_id = 0;
-  		else $group_id = trim($group_id);
-  		
-  		$sql = "SELECT b.imenuid, max(b.iallowview) as iallowview, 
-  				  max(b.iallowadd) as iallowadd, max(b.iallowedit) as iallowedit, 
-  				  max(b.iallowdelete) as iallowdelete 
-  				  FROM {$prefix}t_menu a, {$prefix}t_menu_group_privileges b
-  				  WHERE a.id = b.imenuid 
-  				  AND (a.cmenucontroller = '{$menu_controller}' 
-  				       OR '{$menu_controller}' LIKE CONCAT(a.cmenucontroller, '%')
-  				       OR a.cmenucontroller LIKE CONCAT('{$menu_controller}', '%'))
-  				  AND b.igroupid IN ({$group_id}) GROUP BY b.imenuid";
-  		//echo $sql;
-  		//exit;
-  		$query = $CI->db->query($sql);
-  		if ( $query ) {
-  			$row = $query->row();
-  
-  			//session
-  			$CI->session->set_userdata('allowview', $row->iallowview);
-  			$CI->session->set_userdata('allowadd', $row->iallowadd);
-  			$CI->session->set_userdata('allowedit', $row->iallowedit);
-  			$CI->session->set_userdata('allowdelete', $row->iallowdelete);
-  			
-  			//$CI->session->set_userdata('tes_saja', 'ok => 1 => '.$row->iallowadd);
-  
-  			//echo '1 : ';
-  			//print_r($CI->session->userdata);
-  			//exit;
-  			//echo 'set...';
-  			//
-  		} else {
-  			return false;
-  		}
-	 }
+      if ( $group_id == '' ) $group_id = 0;
+      else $group_id = trim($group_id);
+
+      $cache_key = 'access_menu_' . md5($menu_controller . '_' . $group_id);
+      $cached = $CI->session->userdata($cache_key);
+      if (is_array($cached) && isset($cached['allowview'])) {
+          $CI->session->set_userdata('allowview', $cached['allowview']);
+          $CI->session->set_userdata('allowadd', $cached['allowadd']);
+          $CI->session->set_userdata('allowedit', $cached['allowedit']);
+          $CI->session->set_userdata('allowdelete', $cached['allowdelete']);
+          return true;
+      }
+      
+      $sql = "SELECT b.imenuid, max(b.iallowview) as iallowview, 
+              max(b.iallowadd) as iallowadd, max(b.iallowedit) as iallowedit, 
+              max(b.iallowdelete) as iallowdelete 
+              FROM {$prefix}t_menu a, {$prefix}t_menu_group_privileges b
+              WHERE a.id = b.imenuid 
+              AND (a.cmenucontroller = '{$menu_controller}' 
+                   OR '{$menu_controller}' LIKE CONCAT(a.cmenucontroller, '%')
+                   OR a.cmenucontroller LIKE CONCAT('{$menu_controller}', '%'))
+              AND b.igroupid IN ({$group_id}) GROUP BY b.imenuid";
+      
+      $query = $CI->db->query($sql);
+      if ( $query && $query->num_rows() > 0 ) {
+          $row = $query->row();
+
+          $data = array(
+              'allowview' => $row->iallowview,
+              'allowadd' => $row->iallowadd,
+              'allowedit' => $row->iallowedit,
+              'allowdelete' => $row->iallowdelete
+          );
+          $CI->session->set_userdata($cache_key, $data);
+
+          $CI->session->set_userdata('allowview', $row->iallowview);
+          $CI->session->set_userdata('allowadd', $row->iallowadd);
+          $CI->session->set_userdata('allowedit', $row->iallowedit);
+          $CI->session->set_userdata('allowdelete', $row->iallowdelete);
+          return true;
+      } else {
+          return false;
+      }
+   }
 }
 
 if ( ! function_exists('write_log')) {

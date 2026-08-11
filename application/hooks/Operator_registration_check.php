@@ -20,6 +20,11 @@ class Operator_registration_check {
             return;
         }
 
+        // Fast-Path: Jika kedua tahap registrasi & usulan pejabat sudah tuntas di session, langsung return (0 ms overhead)
+        if ($CI->session->userdata('registration_completed') === true && $CI->session->userdata('pejabat_lainnya_completed') === true) {
+            return;
+        }
+
         // Pengecekan Eselon I: jika username memiliki daftar satker anak di Excel Eselon I Map
         if (function_exists('get_excel_satkers_by_eselon') && !empty(get_excel_satkers_by_eselon($username))) {
             return;

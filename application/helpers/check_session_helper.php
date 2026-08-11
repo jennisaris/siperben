@@ -12,7 +12,7 @@ $dashboard_index    = $CI->config->item('dashboard_index');
 $redirect_dashboard = $CI->config->item('redirect_dashboard');
 $exclude_ext 		= $CI->config->item('exclude_ext');
 
-write_log();
+// write_log(); // Disabled automatic per-request logging to prevent severe DB write overhead
 
 if ( empty($user) && strtolower($controller) != "user_authentication" ) {
 	if ( !$CI->input->is_ajax_request() ) {
