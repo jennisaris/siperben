@@ -132,6 +132,8 @@ class Operator_registration_check {
         if ($CI->input->is_ajax_request()) {
             header('Content-Type: application/json');
             echo json_encode(array(
+                'html' => array('html' => '<tr><td colspan="12"><div class="alert alert-warning" style="margin:10px;"><i class="fa fa-warning"></i> Akses dibatasi. Selesaikan usulan pejabat perbendaharaan lainnya terlebih dahulu.</div></td></tr>'),
+                'pagination' => '',
                 'status' => false,
                 'msg' => 'Akses dibatasi. Selesaikan usulan pejabat perbendaharaan lainnya terlebih dahulu.'
             ));

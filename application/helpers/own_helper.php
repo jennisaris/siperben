@@ -76,6 +76,58 @@ if ( ! function_exists('write_log')) {
     }   
 }
 
+if (!function_exists('siperben_session_cache_get')) {
+    function siperben_session_cache_get($key) {
+        $CI =& get_instance();
+        $cached = $CI->session->userdata($key);
+        if (is_array($cached) && isset($cached['expires_at']) && $cached['expires_at'] >= time()) {
+            return isset($cached['data']) ? $cached['data'] : null;
+        }
+        return null;
+    }
+}
+
+if (!function_exists('siperben_session_cache_set')) {
+    function siperben_session_cache_set($key, $data, $ttl = 30) {
+        $CI =& get_instance();
+        $CI->session->set_userdata($key, array(
+            'expires_at' => time() + (int)$ttl,
+            'data' => $data
+        ));
+    }
+}
+
+if (!function_exists('siperben_file_cache_get')) {
+    function siperben_file_cache_get($key, $source_file) {
+        $cache_file = APPPATH . 'cache' . DIRECTORY_SEPARATOR . $key . '.cache';
+        if (!is_file($cache_file)) return null;
+
+        $cached = @unserialize((string)@file_get_contents($cache_file));
+        if (!is_array($cached) || !array_key_exists('data', $cached)) return null;
+
+        $source_mtime = is_file($source_file) ? filemtime($source_file) : 0;
+        if (!isset($cached['source_mtime']) || (int)$cached['source_mtime'] !== (int)$source_mtime) {
+            return null;
+        }
+
+        return $cached['data'];
+    }
+}
+
+if (!function_exists('siperben_file_cache_set')) {
+    function siperben_file_cache_set($key, $source_file, $data) {
+        $cache_dir = APPPATH . 'cache';
+        if (!is_dir($cache_dir) || !is_writable($cache_dir)) return;
+
+        $payload = array(
+            'source_mtime' => is_file($source_file) ? filemtime($source_file) : 0,
+            'data' => $data
+        );
+
+        @file_put_contents($cache_dir . DIRECTORY_SEPARATOR . $key . '.cache', serialize($payload), LOCK_EX);
+    }
+}
+
 if (!function_exists('get_app_notifications')) {
     function get_app_notifications() {
         $CI =& get_instance();
@@ -86,6 +138,11 @@ if (!function_exists('get_app_notifications')) {
         $is_admin = (!empty($CI->session->isadmin) || !empty($CI->session->superuser) || (isset($CI->session->groupid) && $CI->session->groupid == 1));
         $username = (string)$CI->session->userdata('username');
         $tahun_berjalan = !empty($CI->session->settahun) ? $CI->session->settahun : date('Y');
+        $cache_key = 'siperben_app_notifications_' . md5($username . '|' . $tahun_berjalan . '|' . (int)$is_admin);
+        $cached_notifs = siperben_session_cache_get($cache_key);
+        if ($cached_notifs !== null) {
+            return $cached_notifs;
+        }
 
         $notifs = array();
 
@@ -189,6 +246,7 @@ if (!function_exists('get_app_notifications')) {
             }
         }
 
+        siperben_session_cache_set($cache_key, $notifs, 30);
         return $notifs;
     }
 }
@@ -199,6 +257,12 @@ if (!function_exists('get_active_excel_satker_codes')) {
         if ($cached_codes !== null) return $cached_codes;
 
         $filepath = (defined('FCPATH') ? FCPATH : 'C:/xampp/htdocs/siperben/') . 'db' . DIRECTORY_SEPARATOR . 'DAFTAR SATKER.xlsx';
+        $file_cached_codes = siperben_file_cache_get('active_excel_satker_codes', $filepath);
+        if ($file_cached_codes !== null) {
+            $cached_codes = $file_cached_codes;
+            return $cached_codes;
+        }
+
         $satker_codes = array();
 
         if (file_exists($filepath)) {
@@ -244,6 +308,7 @@ if (!function_exists('get_active_excel_satker_codes')) {
         }
 
         $cached_codes = !empty($satker_codes) ? $satker_codes : array();
+        siperben_file_cache_set('active_excel_satker_codes', $filepath, $cached_codes);
         return $cached_codes;
     }
 }
@@ -254,6 +319,12 @@ if (!function_exists('get_excel_eselon_satker_map')) {
         if ($map !== null) return $map;
 
         $filepath = (defined('FCPATH') ? FCPATH : 'C:/xampp/htdocs/siperben/') . 'db' . DIRECTORY_SEPARATOR . 'DAFTAR SATKER.xlsx';
+        $file_cached_map = siperben_file_cache_get('excel_eselon_satker_map', $filepath);
+        if ($file_cached_map !== null) {
+            $map = $file_cached_map;
+            return $map;
+        }
+
         $map = array();
 
         if (file_exists($filepath)) {
@@ -316,6 +387,7 @@ if (!function_exists('get_excel_eselon_satker_map')) {
             }
         }
 
+        siperben_file_cache_set('excel_eselon_satker_map', $filepath, $map);
         return $map;
     }
 }
@@ -337,6 +409,12 @@ if (!function_exists('get_excel_satker_name_map')) {
         if ($name_map !== null) return $name_map;
 
         $filepath = (defined('FCPATH') ? FCPATH : 'C:/xampp/htdocs/siperben/') . 'db' . DIRECTORY_SEPARATOR . 'DAFTAR SATKER.xlsx';
+        $file_cached_name_map = siperben_file_cache_get('excel_satker_name_map', $filepath);
+        if ($file_cached_name_map !== null) {
+            $name_map = $file_cached_name_map;
+            return $name_map;
+        }
+
         $name_map = array();
 
         if (file_exists($filepath)) {
@@ -384,6 +462,7 @@ if (!function_exists('get_excel_satker_name_map')) {
             }
         }
 
+        siperben_file_cache_set('excel_satker_name_map', $filepath, $name_map);
         return $name_map;
     }
 }
@@ -404,6 +483,13 @@ if (!function_exists('get_perbend_menu_badge_counts')) {
     function get_perbend_menu_badge_counts() {
         $CI =& get_instance();
         $tahun = !empty($CI->session->settahun) ? $CI->session->settahun : date('Y');
+        $username = (string)$CI->session->userdata('username');
+        $cache_key = 'siperben_perbend_menu_badges_' . md5($username . '|' . $tahun . '|' . (int)$CI->session->superuser);
+        $cached_counts = siperben_session_cache_get($cache_key);
+        if ($cached_counts !== null) {
+            return $cached_counts;
+        }
+
         $q_satker = '';
 
         if (!$CI->session->superuser && !empty($CI->session->orgs)) {
@@ -426,6 +512,7 @@ if (!function_exists('get_perbend_menu_badge_counts')) {
                 $counts[$status_to_menu[$status]] += (int)$row->total;
             }
         }
+        siperben_session_cache_set($cache_key, $counts, 30);
         return $counts;
     }
 }

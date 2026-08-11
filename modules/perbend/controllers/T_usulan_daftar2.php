@@ -352,6 +352,10 @@ class T_usulan_daftar2 extends MX_Controller {
 						var certNo = item && item.cnobnt ? $.trim(item.cnobnt) : '';
 						var expiredAt = item && item.dtglkbnt ? $.trim(item.dtglkbnt) : '';
 
+						if (item && item.isboleh == 1) {
+							return {required:false, active:true, certNo:certNo, expiredAt:expiredAt, message:''};
+						}
+
 						if (!bendaharaJabatan[ijabid2]) {
 							return {required:false, active:true, certNo:certNo, expiredAt:expiredAt, message:''};
 						}

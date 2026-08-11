@@ -595,7 +595,9 @@ class M_pegawai extends MX_Controller {
 		if ( $this->input->post('iscekboleh') !== null ) {
 			//cek apakah boleh ?
 			$add_boleh = "";
-			if ( $this->getrow('', 'app_m_unor', 'isboleh', ['kode'=>$this->input->post('filter')])->isboleh != 1 && $ijabid2 != 1 ) { //!=KPA
+			$unor_boleh = $this->getrow('', 'app_m_unor', 'isboleh', ['kode'=>$this->input->post('filter')]);
+			$isboleh_val = ($unor_boleh && isset($unor_boleh->isboleh)) ? (int)$unor_boleh->isboleh : 0;
+			if ( $isboleh_val != 1 && $ijabid2 != 1 ) { //!=KPA
 				$add_boleh = " and a.cnobnt IS NOT NULL and a.cnobnt != '' ";
 			}
 			$sql = "SELECT a.id, a.ifrom as ifrom, a.cnip as nip, a.vname as nama,
@@ -640,6 +642,7 @@ class M_pegawai extends MX_Controller {
 					$row_array['cnobnt']   = trim($line['cnobnt']);
 					$row_array['cnosnt']   = trim($line['cnosnt']);
 					$row_array['cnopnt']   = trim($line['cnopnt']);
+					$row_array['isboleh']  = isset($isboleh_val) ? $isboleh_val : 0;
 					$row_array['dtgltbnt'] = trim($line['dtgltbnt']);
 					$row_array['dtglkbnt'] = trim($line['dtglkbnt']);
 					$row_array['dtgltpnt'] = trim($line['dtgltpnt']);
