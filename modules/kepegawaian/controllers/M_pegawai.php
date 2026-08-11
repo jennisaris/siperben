@@ -562,23 +562,24 @@ class M_pegawai extends MX_Controller {
 		$add_filter = "";
 		/*if ( $filter != '' ) $add_filter = " and b.kode_satker = '{$filter}' ";*/
 		if ( $filter != '' ) {
-		  if ($this->session->superuser) {
-			$orgs = [];
-		    $kode_units = $this->getall($this->db, 'kepeg_m_unor', 'id', array('kode_satker'=>$filter));
+			$orgs = array();
+			$kode_units = $this->getall($this->db, 'kepeg_m_unor', 'id', array('kode_satker'=>$filter));
 			foreach($kode_units as $k) {
 				$orgs = $this->m_unor->getRekursifUnit2($k->id, $orgs);
 				array_push($orgs, $k->id);
-				//echo '1';
-				//print_r($kode_unit);
-				//echo '2';
-				//print_r($orgs);
-				//exit;
 			}
-			$filter = "'".implode("','", $orgs)."'";
-		  } else {
-		    $filter = "'".implode("','", $this->session->orgs2)."'";
-		  }
-		  $add_filter = " and ( a.ikduker in ({$filter}) OR a.ikduker3 in ({$filter}) )";
+			if (empty($orgs)) {
+				$orgs[] = $filter;
+			}
+			$orgs = array_values(array_unique(array_filter(array_map('trim', $orgs))));
+			$filter_orgs = "'".implode("','", $orgs)."'";
+			$add_filter = " and ( a.ikduker in ({$filter_orgs}) OR a.ikduker3 in ({$filter_orgs}) )";
+
+			if (!$this->session->superuser && !empty($this->session->orgs2) && is_array($this->session->orgs2)) {
+				$allowed_orgs = array_values(array_unique(array_filter(array_map('trim', $this->session->orgs2))));
+				$allowed_filter = "'".implode("','", $allowed_orgs)."'";
+				$add_filter .= " and ( a.ikduker in ({$allowed_filter}) OR a.ikduker3 in ({$allowed_filter}) )";
+			}
 		}
 
 		/*$sql = "SELECT a.id, a.ifrom as ifrom, a.cnip as nip, a.vname as nama,
@@ -601,7 +602,8 @@ class M_pegawai extends MX_Controller {
 				a.cgolid as golid, (select concat(pangkat, ', ',nama) from kepeg_m_golongan where id = a.cgolid) as nama_pangkat, 
 				a.ijabid as jabid, (select nama from kepeg_m_jabatan where id = a.ijabid) as nama_jabatan, 
 				b.kode_satker as kduker, 
-				(select nama from app_m_unor where kode = b.kode_satker) as nama_unor, a.cnobnt, a.cnosnt, a.cnopnt
+				(select nama from app_m_unor where kode = b.kode_satker) as nama_unor, a.cnobnt, a.cnosnt, a.cnopnt,
+				a.dtgltbnt, a.dtglkbnt, a.dtgltpnt, a.dtglkpnt, a.dtgltsnt, a.dtglksnt
 				from kepeg_m_pegawai a, kepeg_m_unor b
 				where a.ikduker = b.id and (a.vname like '%".$kriteria."%'
 				OR a.cnip like '%".$kriteria."%') {$add_filter} {$add_boleh} 
@@ -611,7 +613,8 @@ class M_pegawai extends MX_Controller {
 				a.cgolid as golid, (select concat(pangkat, ', ',nama) from kepeg_m_golongan where id = a.cgolid) as nama_pangkat, 
 				a.ijabid as jabid, (select nama from kepeg_m_jabatan where id = a.ijabid) as nama_jabatan, 
 				b.kode_satker as kduker, 
-				(select nama from app_m_unor where kode = b.kode_satker) as nama_unor, a.cnobnt, a.cnosnt, a.cnopnt
+				(select nama from app_m_unor where kode = b.kode_satker) as nama_unor, a.cnobnt, a.cnosnt, a.cnopnt,
+				a.dtgltbnt, a.dtglkbnt, a.dtgltpnt, a.dtglkpnt, a.dtgltsnt, a.dtglksnt
 				from kepeg_m_pegawai a, kepeg_m_unor b
 				where a.ikduker = b.id and (a.vname like '%".$kriteria."%'
 				OR a.cnip like '%".$kriteria."%') {$add_filter}    
@@ -637,6 +640,12 @@ class M_pegawai extends MX_Controller {
 					$row_array['cnobnt']   = trim($line['cnobnt']);
 					$row_array['cnosnt']   = trim($line['cnosnt']);
 					$row_array['cnopnt']   = trim($line['cnopnt']);
+					$row_array['dtgltbnt'] = trim($line['dtgltbnt']);
+					$row_array['dtglkbnt'] = trim($line['dtglkbnt']);
+					$row_array['dtgltpnt'] = trim($line['dtgltpnt']);
+					$row_array['dtglkpnt'] = trim($line['dtglkpnt']);
+					$row_array['dtgltsnt'] = trim($line['dtgltsnt']);
+					$row_array['dtglksnt'] = trim($line['dtglksnt']);
 					
 					array_push($data, $row_array);
 			}

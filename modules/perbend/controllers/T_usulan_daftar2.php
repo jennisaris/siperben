@@ -103,9 +103,10 @@ class T_usulan_daftar2 extends MX_Controller {
 		  $ar_jabatan[$r->id] = $r->ckode;
 		}
 		
-		 if ( $this->getrow('', 'app_m_perubahan', 'cjabid2', array('id'=>trim($this->uri->segment(5))))->cjabid2 != '' ) {
-		   foreach(explode(',',  
-		   $this->getrow('', 'app_m_perubahan', 'cjabid2', array('id'=>trim($this->uri->segment(5))))->cjabid2) as $p ) {
+		$ijnsprubhnid = trim($this->uri->segment(5));
+		$perubahan = !empty($ijnsprubhnid) ? $this->getrow('', 'app_m_perubahan', 'cjabid2', array('id'=>$ijnsprubhnid)) : null;
+		 if ( $perubahan && trim($perubahan->cjabid2) != '' ) {
+		   foreach(explode(',', $perubahan->cjabid2) as $p ) {
 		     $this->ar_jabatan[$p] = $ar_jabatan[$p];
 		   }
 		 } else $this->ar_jabatan = $ar_jabatan;
@@ -149,11 +150,11 @@ class T_usulan_daftar2 extends MX_Controller {
 			$this->_add2ListField($this->table, "cnip, vname, cgolid, cnosertifikat, ijabid2, cnipold, status");//, tupdated, cupdatedby');
 		}
 		
-		$this->_setParams(array('ijnsprubhnid'=>trim($this->uri->segment(5))));
+		$this->_setParams(array('ijnsprubhnid'=>$ijnsprubhnid));
 
 		//clear session header_controller
 		$this->session->unset_userdata('header_controller');
-		$header_controller = array('header_controller' => 'perbend/t_usulan_satker');
+		$header_controller = array('header_controller' => 'perbend/'.($this->url_opener == 't_usulan_satker2' ? 't_usulan_satker2' : 't_usulan_satker'));
 		$this->session->set_userdata($header_controller);
 	}
 	
@@ -336,11 +337,75 @@ class T_usulan_daftar2 extends MX_Controller {
 	      
 	       $(document).ready(function() {
 					var filter = $('#app_t_usulan_iunorid').val();
+					var selectedEmployee = null;
+					var no_sertifikat = {};
+					var bendaharaJabatan = {'2':true, '3':true, '6':true};
+
+					function formatDateId(dateText) {
+						if (!dateText || dateText == '0000-00-00') return '-';
+						var parts = dateText.split('-');
+						if (parts.length != 3) return dateText;
+						return parts[2] + '-' + parts[1] + '-' + parts[0];
+					}
+
+					function getBendaharaCertificationStatus(item, ijabid2) {
+						var certNo = item && item.cnobnt ? $.trim(item.cnobnt) : '';
+						var expiredAt = item && item.dtglkbnt ? $.trim(item.dtglkbnt) : '';
+
+						if (!bendaharaJabatan[ijabid2]) {
+							return {required:false, active:true, certNo:certNo, expiredAt:expiredAt, message:''};
+						}
+
+						if (certNo == '') {
+							return {
+								required:true,
+								active:false,
+								certNo:'',
+								expiredAt:expiredAt,
+								message:'Pegawai tersebut tidak memiliki sertifikasi Bendahara.'
+							};
+						}
+
+						if (expiredAt == '' || expiredAt == '0000-00-00' || expiredAt < '".date('Y-m-d')."') {
+							return {
+								required:true,
+								active:false,
+								certNo:certNo,
+								expiredAt:expiredAt,
+								message:'Sertifikasi Bendahara pegawai tersebut tidak aktif. No. sertifikat: ' + certNo + ', berlaku sampai: ' + formatDateId(expiredAt) + '.'
+							};
+						}
+
+						return {
+							required:true,
+							active:true,
+							certNo:certNo,
+							expiredAt:expiredAt,
+							message:'Sertifikasi Bendahara aktif. No. sertifikat: ' + certNo + ', berlaku sampai: ' + formatDateId(expiredAt) + '.'
+						};
+					}
+
+					function showCertificationStatus(item) {
+						var ijabid2 = $('#app_t_usulan_pegawai_ijabid2').val();
+						var status = getBendaharaCertificationStatus(item, ijabid2);
+						if (!status.required) return true;
+
+						$('#app_t_usulan_pegawai_cnosertifikat').val(status.certNo);
+						$('#app_t_usulan_pegawai_cnosertifikat').prop('readonly', true);
+
+						if (status.active) {
+							bootbox_alert('', '', status.message, true);
+							return true;
+						}
+
+						bootbox_alert('', '', status.message, false, false);
+						return false;
+					}
 					
 					//alert($('#{$this->table}_ijnsprubhnid').val());
 					//alert($('#{$this->table}_ijnsprubhnid').val());
 					
-					if ($('#{$this->table}_ijnsprubhnid').val() != 1 && $('#{$this->table}_ijnsprubhnid').val() != 9) {
+					if ($('#{$this->table}_ijnsprubhnid').val() != '' && $('#{$this->table}_ijnsprubhnid').val() != 1 && $('#{$this->table}_ijnsprubhnid').val() != 9) {
 					   
 					   var url_ = '".base_url()."perbend/t_usulan_daftar2/getemployeeold';
 					   var kriteria = 'filter='+filter+'&filter2='+$('#{$this->table}_ijabid2').val();
@@ -358,11 +423,12 @@ class T_usulan_daftar2 extends MX_Controller {
 						}
 					});
 					
+					var employeeTypeahead = {};
 					$('#{$this->table}_cnip').typeahead({
 						source: function (query, result) {
 							$.ajax({
 								url: '".base_url()."kepegawaian/m_pegawai/getemployee',
-								data: 'query='+query+'&filter='+filter,
+								data: {query: query, filter: filter},
 								dataType: 'json',
 								type: 'POST',
 								beforeSend: function() {
@@ -375,14 +441,35 @@ class T_usulan_daftar2 extends MX_Controller {
 									}
 								},
 								success: function (data) {
-									result($.map(data, function (item) {
-										return item;
-									}));
+									employeeTypeahead = {};
+									var labels = $.map(data, function (item) {
+										var label = item.name ? item.name : ((item.value ? item.value : '') + (item.nip ? ' [' + item.nip + ']' : ''));
+										if (label == '') return null;
+										employeeTypeahead[label] = item;
+										return label;
+									});
+									result(labels);
+								},
+								error: function() {
+									result([]);
+								},
+								complete: function() {
+									$(\"#divLoading\").removeClass('show');
+									$('button').removeAttr('disabled');
+									$('.btn_save').html(\"<i class='fa fa-save' aria-hidden='true'> </i> Simpan {$this->title}\");
 								}
 							});
 						},
+						matcher: function(item) {
+							if (!item) return false;
+							var label = item.toLowerCase ? item.toLowerCase() : '';
+							var q    = this.query ? this.query.toLowerCase() : '';
+							return (~label.indexOf(q)) ? true : false;
+						},
 						items: 20,
 						updater: function (item) {
+							item = employeeTypeahead[item] ? employeeTypeahead[item] : item;
+							if (typeof item == 'string') return item;
 							$('#app_t_usulan_pegawai_vname').val(item.value);
 							$('#app_t_usulan_pegawai_vname').attr('readonly', true);
 
@@ -395,6 +482,7 @@ class T_usulan_daftar2 extends MX_Controller {
 
 							$('#app_t_usulan_pegawai_ifrom').val(item.ifrom);
 							
+							selectedEmployee = item;
 							no_sertifikat = {
 							  '2':item.cnobnt,
 							  '3':item.cnobnt,
@@ -404,6 +492,7 @@ class T_usulan_daftar2 extends MX_Controller {
 							}
 							
 							$('#app_t_usulan_pegawai_cnosertifikat').val(no_sertifikat[$('#app_t_usulan_pegawai_ijabid2').val()]);
+							showCertificationStatus(item);
 							/*if ( typeof(no_sertifikat[$('#app_t_usulan_pegawai_ijabid2').val()]) != 'undefined' 
 									&& no_sertifikat[$('#app_t_usulan_pegawai_ijabid2').val()] != '' ) 
 								$('#app_t_usulan_pegawai_cnosertifikat').prop('readonly', true);
@@ -425,6 +514,7 @@ class T_usulan_daftar2 extends MX_Controller {
 					  //alert($(this).val());
 					  //alert(no_sertifikat[$(this).val()]);
 					  $('#{$this->table}_cnosertifikat').val(no_sertifikat[$(this).val()]);
+					  if (selectedEmployee) showCertificationStatus(selectedEmployee);
 					  /*if ( typeof(no_sertifikat[$(this).val()]) != 'undefined' 
 					  && no_sertifikat[$(this).val()] != '' ) 
 					    $('#app_t_usulan_pegawai_cnosertifikat').prop('readonly', true);
@@ -432,7 +522,7 @@ class T_usulan_daftar2 extends MX_Controller {
 					    $('#app_t_usulan_pegawai_cnosertifikat').prop('readonly', false);
 					 */
 					 
-					 if ($('#{$this->table}_ijnsprubhnid').val() != 1 && $('#{$this->table}_ijnsprubhnid').val() != 9) {
+					 if ($('#{$this->table}_ijnsprubhnid').val() != '' && $('#{$this->table}_ijnsprubhnid').val() != 1 && $('#{$this->table}_ijnsprubhnid').val() != 9) {
 					   
 					   var url_ = '".base_url()."perbend/t_usulan_daftar2/getemployeeold';
 					   var kriteria = 'filter='+filter+'&filter2='+$(this).val();
@@ -677,15 +767,54 @@ class T_usulan_daftar2 extends MX_Controller {
 				} else {
 				  //echo 'ok';
 				  //print_r($post->app_t_usulan_pegawai_ijnsprubhnid);
-				  return $this->check_nip_old($post);
+				  return $this->check_required_pegawai($post);
 				}
 			}
 		} else {
 		  //cekncek nip old
-		  return $this->check_nip_old($post);
+		  return $this->check_required_pegawai($post);
 		}
 		
 		//print_r($data);exit;
+
+		return $data;
+	}
+
+	function check_required_pegawai($post) {
+		$data = $this->check_bendahara_certification($post);
+		if (isset($data['status']) && $data['status'] === false) {
+			return $data;
+		}
+
+		return $this->check_nip_old($post);
+	}
+
+	function check_bendahara_certification($post) {
+		$data['status'] = true;
+		$ijabid2 = isset($post->app_t_usulan_pegawai_ijabid2) ? trim($post->app_t_usulan_pegawai_ijabid2) : '';
+		$nip = isset($post->app_t_usulan_pegawai_cnip) ? trim($post->app_t_usulan_pegawai_cnip) : '';
+
+		if (!in_array($ijabid2, array('2', '3', '6'), true) || $nip == '') {
+			return $data;
+		}
+
+		$row = $this->getrow('', 'kepeg_m_pegawai', 'cnobnt, dtglkbnt', array('cnip'=>$nip));
+		$cert_no = $row && !empty($row->cnobnt) ? trim($row->cnobnt) : '';
+		$expired_at = $row && !empty($row->dtglkbnt) ? trim($row->dtglkbnt) : '';
+
+		if ($cert_no == '') {
+			$data['status'] = false;
+			$data['msg'] = 'Pegawai tersebut tidak memiliki sertifikasi Bendahara.';
+			$data['obj'] = 'app_t_usulan_pegawai_cnip';
+			return $data;
+		}
+
+		if ($expired_at == '' || $expired_at == '0000-00-00' || $expired_at < date('Y-m-d')) {
+			$data['status'] = false;
+			$data['msg'] = 'Sertifikasi Bendahara pegawai tersebut tidak aktif. No. sertifikat: '.$cert_no.', berlaku sampai: '.($expired_at != '' && $expired_at != '0000-00-00' ? date('d-m-Y', strtotime($expired_at)) : '-').'.';
+			$data['obj'] = 'app_t_usulan_pegawai_cnip';
+			return $data;
+		}
 
 		return $data;
 	}
@@ -731,11 +860,11 @@ class T_usulan_daftar2 extends MX_Controller {
 					$data['msg'] = "Ada pengajuan jabatan ".$this->getrow('', 'app_m_jabatan', 'ckode', array('id'=>$value))->ckode." dengan no. usulan 
 									{$row->cnousul}, tgl. {$row->dtglusul} yang belum proses SK. Cek kembali isian anda.";
 				} else {
-				  return $this->check_nip_old($post);
+				  return $this->check_required_pegawai($post);
 				}
 			}
 		} else {
-		  return $this->check_nip_old($post);
+		  return $this->check_required_pegawai($post);
 		}
 		return $data;
 	}
@@ -961,8 +1090,9 @@ class T_usulan_daftar2 extends MX_Controller {
 	}
 	
 	function manipulate_list_button($buttons) {
+		$opener = ($this->url_opener == 't_usulan_satker2') ? 't_usulan_satker2' : 't_usulan_satker';
     $buttons['add'] = "<button type='button' id='btn_new' class='btn btn-primary' data-toggle='modal' data-target='#".strtolower($this->router->class)."_form-modal'
-						onclick='edit(\"".base_url().$this->router->fetch_module()."/".$this->router->class."/edit/0/\"+$(\"#t_usulan_satker_form-edit #app_t_usulan_ijnsprubhnid\").val(), \"".strtolower($this->router->class)."\");'>
+						onclick='var perubahan=$(\"#{$opener}_form-edit #app_t_usulan_ijnsprubhnid\").val() || 0; edit(\"".base_url().$this->router->fetch_module()."/".$this->router->class."/edit/0/\"+perubahan, \"".strtolower($this->router->class)."\");'>
 						<i class='glyphicon glyphicon-plus'></i>&nbsp;Tambah {$this->title}
 					</button>";
 					
@@ -1015,6 +1145,7 @@ class T_usulan_daftar2 extends MX_Controller {
 		$filter2   = $this->input->post('filter2');
 		
 		$add_filter = "";
+		$add_filter2 = "";
 		if ( $filter != '' ) 
 		$add_filter = " and (
 		( select kode_satker from kepeg_m_unor where kode = c.ckduker) = '{$filter}' 
@@ -1025,8 +1156,8 @@ class T_usulan_daftar2 extends MX_Controller {
 		    from kepeg_m_pegawai a, app_t_usulan_pegawai c 
   			where a.cnip = c.cnip and c.inoskid != 0 and c.inoskid IS NOT NULL and c.isnonaktif = 0 {$add_filter} {$add_filter2}";
 		$line = $this->db->query($sql)->row();
-		$data['name']  = ucwords(trim(strtolower($line->nama)));
-		$data['nip']   = trim($line->nip);
+		$data['name']  = $line ? ucwords(trim(strtolower($line->nama))) : '';
+		$data['nip']   = $line ? trim($line->nip) : '';
 		echo json_encode($data);
 	}
 
@@ -1040,6 +1171,7 @@ class T_usulan_daftar2 extends MX_Controller {
 		$filter2   = $this->input->post('filter2');
 		
 		$add_filter = "";
+		$add_filter2 = "";
 		if ( $filter != '' ) 
 		$add_filter = " and (
 		( select kode_satker from kepeg_m_unor where kode = c.ckduker) = '{$filter}' 

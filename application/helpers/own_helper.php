@@ -418,7 +418,7 @@ if (!function_exists('get_perbend_menu_badge_counts')) {
 
         $counts = array('Verifikator I' => 0, 'Verifikator II' => 0, 'Approval' => 0, 'Penerbitan SK' => 0);
         $status_to_menu = array(1 => 'Verifikator I', 2 => 'Verifikator II', 3 => 'Approval', 4 => 'Penerbitan SK', 6 => 'Penerbitan SK');
-        $sql = "SELECT istatus, COUNT(*) AS total FROM app_t_usulan WHERE ctahun = ? AND ijns = 1 AND istatus IN (1,2,3,4,6) {$q_satker} GROUP BY istatus";
+        $sql = "SELECT istatus, COUNT(*) AS total FROM app_t_usulan WHERE ctahun = ? AND istatus IN (1,2,3,4,6) {$q_satker} GROUP BY istatus";
         $rows = $CI->db->query($sql, array($tahun))->result();
         foreach ($rows as $row) {
             $status = (int)$row->istatus;
@@ -436,7 +436,8 @@ if (!function_exists('inject_perbend_menu_badges')) {
         foreach ($counts as $label => $count) {
             $safe_label = htmlspecialchars($label, ENT_QUOTES, 'UTF-8');
             $badge = $count > 0 ? " <small class='label pull-right bg-yellow' style='font-size:10px; margin-left:6px;'>" . number_format($count) . "</small>" : '';
-            $menu_html = str_replace("<span>{$safe_label}</span>", "<span>{$safe_label}</span>{$badge}", $menu_html);
+            $pattern = '#(<span>\s*' . preg_quote($safe_label, '#') . '\s*</span>)(?!\s*<small\b)#i';
+            $menu_html = preg_replace($pattern, '$1' . $badge, $menu_html);
         }
         return $menu_html;
     }

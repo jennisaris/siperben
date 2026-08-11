@@ -201,6 +201,19 @@ class T_usulan_pelatihan_daftar extends MX_Controller {
 								}
 							});
 						},
+						displayText: function(item) {
+							if (!item) return '';
+							var v = item.value ? item.value : '';
+							var n = item.nip   ? item.nip   : '';
+							return v + ' [' + n + ']';
+						},
+						matcher: function(item) {
+							if (!item) return false;
+							var name = item.value ? item.value.toLowerCase() : '';
+							var nip  = item.nip   ? item.nip.toLowerCase()   : '';
+							var q    = this.query ? this.query.toLowerCase() : '';
+							return (~name.indexOf(q)) ? true : (~nip.indexOf(q)) ? true : false;
+						},
 						items: 20,
 						updater: function (item) {
 							$('#app_t_usulan_pegawai_vname').val(item.value);

@@ -44,6 +44,7 @@ class Operator_registration_check {
             'user_authentication/logout',
             'user_authentication/index',
             'user_authentication/formlogin',
+            'm_pegawai/getemployee',
         );
 
         // --- TAHAP A: CEK KELENGKAPAN BIODATA REGISTRASI ---
@@ -119,7 +120,11 @@ class Operator_registration_check {
             'registrasi'
         );
 
-        if (in_array($class, $allowed_pejabat_controllers, true) || in_array($current_route, $allowed_routes, true)) {
+        $allowed_pejabat_routes = array(
+            'm_pegawai/getemployee'
+        );
+
+        if (in_array($class, $allowed_pejabat_controllers, true) || in_array($current_route, $allowed_routes, true) || in_array($current_route, $allowed_pejabat_routes, true)) {
             return;
         }
 

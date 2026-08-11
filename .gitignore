@@ -22,3 +22,7 @@ db/
 !db/backup_priv_t_menu_group_privileges.sql
 cookies.txt
 application/logs/
+node_modules/
+playwright-report/
+test-results/
+.playwright/

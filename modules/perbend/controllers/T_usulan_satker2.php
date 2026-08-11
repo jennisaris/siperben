@@ -873,11 +873,16 @@ class T_usulan_satker2 extends MX_Controller {
 						var o = jQuery.parseJSON(output);
 						$('div').removeClass('has-error');
 						if ( o.status == true ) {
-							if ( $('#'+table_id+'_form-edit #app_t_usulan_istatus').val() == 3 ) { 
-								$('#'+table_id+'-panel-default-form').hide(); 
-							} else edit(url+'/edit/'+o.id, table_id, _ismodal, _modals);
+							var successMessage = (o.msg != '' && typeof(o.msg) != 'undefined') ? o.msg : 'Simpan berhasil';
+							bootbox_alert('', '', successMessage, true);
 
-							reload_grid(url+'/lists', table_id, '', table_id+'-panel-default-form');
+							setTimeout(function() {
+								if ( $('#'+table_id+'_form-edit #app_t_usulan_istatus').val() == 3 ) { 
+									$('#'+table_id+'-panel-default-form').hide(); 
+								} else edit(url+'/edit/'+o.id, table_id, _ismodal, _modals);
+
+								reload_grid(url+'/lists', table_id, '', table_id+'-panel-default-form');
+							}, 300);
 						} else {
 							if ( o.msg != undefined) bootbox_alert('', '', o.msg, true, false);
 							$('.'+o.obj).focus();
