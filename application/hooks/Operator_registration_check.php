@@ -132,13 +132,13 @@ class Operator_registration_check {
         if ($CI->input->is_ajax_request()) {
             header('Content-Type: application/json');
             echo json_encode(array(
-                'html' => array('html' => '<tr><td colspan="12"><div class="alert alert-warning" style="margin:10px;"><i class="fa fa-warning"></i> Mohon lengkapi dan kirim data Usulan Pejabat Perbendaharaan Lainnya (PPK/PPSPM/BPP/PPABP) Tahun ' . $tahun . ' sampai disetujui Admin.</div></td></tr>'),
-                'pagination' => ''
+                'status' => false,
+                'msg' => 'Akses dibatasi. Selesaikan usulan pejabat perbendaharaan lainnya terlebih dahulu.'
             ));
             exit;
         }
 
-        $CI->session->set_flashdata('pejabat_warning', 'Mohon lengkapi dan kirim data Usulan Pejabat Perbendaharaan Lainnya (PPK/PPSPM/BPP/PPABP) Tahun ' . $tahun . ' terlebih dahulu sampai disetujui oleh Admin.');
+        $CI->session->set_flashdata('pejabat_warning', 'Akses dibatasi. Selesaikan usulan pejabat perbendaharaan lainnya terlebih dahulu.');
         redirect(base_url() . 'perbend/t_usulan_satker2');
         exit;
     }

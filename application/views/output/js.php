@@ -589,7 +589,7 @@
     }
 
     function bootbox_alert(milliseconds='', title='', message='', timeout=false, isok=true){
-        if (milliseconds=='') milliseconds=2000;
+        if (milliseconds=='') milliseconds=1200;
 
         var _successmessage = '<div style="text-align:center;">';
             _successmessage += '<span style="vertical-align:4px;font-size: 48px; color: ___color___;">';
