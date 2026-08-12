@@ -15,9 +15,28 @@ class Operator_registration_check {
         $isadmin = $CI->session->userdata('isadmin');
         $superuser = $CI->session->userdata('superuser');
         $username = trim((string)$CI->session->userdata('username'));
+        $groupid = (string)$CI->session->userdata('groupid');
 
         if (!empty($isadmin) || !empty($superuser)) {
             return;
+        }
+
+        $groupids = array_filter(array_map('intval', explode(',', $groupid)));
+        if (!empty($groupids)) {
+            $eselon_i_group = $CI->db
+                ->from('priv_t_group')
+                ->where_in('id', $groupids)
+                ->where('ldeleted', 0)
+                ->group_start()
+                    ->where('vname', 'Eselon I')
+                    ->or_where('vdesc', 'Eselon I')
+                ->group_end()
+                ->get()
+                ->row();
+
+            if ($eselon_i_group) {
+                return;
+            }
         }
 
         // Fast-Path: Jika kedua tahap registrasi & usulan pejabat sudah tuntas di session, langsung return (0 ms overhead)
@@ -118,6 +137,7 @@ class Operator_registration_check {
 
         // Controller / Route yang diperbolehkan saat diisi Usulan Pejabat Perbendaharaan Lainnya
         $allowed_pejabat_controllers = array(
+            'm_pegawai',
             't_usulan_satker2',
             't_usulan_daftar2',
             'user_authentication',

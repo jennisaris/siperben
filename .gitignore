@@ -18,6 +18,11 @@ vendor/
 **/config/config.php
 **/config/properties.php
 db/
+!db/
+db/*
+!db/migrations/
+db/migrations/*
+!db/migrations/*.sql
 !db/migration_approval_registrasi.sql
 !db/backup_priv_t_menu_group_privileges.sql
 cookies.txt
