@@ -677,6 +677,12 @@ class M_pegawai extends MX_Controller {
 	}
 
 	function manipulate_list_button($buttons) {
+		if (isset($buttons['add'])) {
+			$buttons['add'] = "<button type='button' id='btn_new' class='btn btn-primary'
+				onclick='edit(\"".base_url()."kepegawaian/m_pegawai/edit/0\", \"m_pegawai\");'>
+				<i class='glyphicon glyphicon-plus'></i>&nbsp;Tambah {$this->title}
+			</button>";
+		}
 
 		if (!$this->session->superuser) {
 			$buttons['pindah_unit_kerja'] = "<button type='button' class='btn_tarik_pegawai btn btn-warning' 
