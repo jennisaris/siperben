@@ -17,25 +17,24 @@
         statusDisplay.textContent = result ? "Online" : "OFFline";
     }, 3000); // probably too often, try 30000 for every 30 seconds*/
 
-    function parse_clean_html_response(responseText) {
-        if (typeof responseText === 'string' && responseText.trim().startsWith('{')) {
-            try {
-                var o = JSON.parse(responseText);
-                if (o && typeof o === 'object') {
-                    if (o.html) {
-                        if (typeof o.html === 'object' && o.html.html !== undefined) {
-                            return o.html.html;
-                        } else if (typeof o.html === 'string') {
-                            return o.html;
+    function safe_parse_json(input) {
+        if (typeof input === 'object' && input !== null) return input;
+        if (typeof input === 'string') {
+            var trimmed = input.trim();
+            if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+                try {
+                    var parsed = JSON.parse(trimmed);
+                    if (parsed && typeof parsed === 'object') {
+                        if (parsed.html && typeof parsed.html === 'object' && parsed.html.html !== undefined) {
+                            parsed.html = parsed.html.html;
                         }
+                        return parsed;
                     }
-                    if (o.msg) {
-                        return '<div class="alert alert-warning" style="margin:10px;"><i class="fa fa-warning"></i> ' + o.msg + '</div>';
-                    }
-                }
-            } catch(e) {}
+                } catch(e) {}
+            }
+            return { html: input, status: true };
         }
-        return responseText;
+        return { html: '', status: false };
     }
 
     function getHTML2(url_, kriteria, page) {
@@ -57,7 +56,7 @@
         } catch (e) {
             console.error("XMLHttpRequest failed: ", e);
         }
-        return parse_clean_html_response(xhr.responseText);
+        return xhr.responseText;
     }
 
     function getHTML3(url_, kriteria, page) {
@@ -87,7 +86,7 @@
         } catch (e) {
             console.error("XMLHttpRequest failed: ", e);
         }
-        var hasil = parse_clean_html_response(xhr.responseText);
+        var hasil = xhr.responseText;
         if (hasil == '') {
             bootbox.alert('Sesi anda sudah habis. Silahkan login kembali. ');
             if (typeof debug !== 'undefined' && !debug) {
@@ -131,7 +130,7 @@
         } catch (e) {
             console.error("XMLHttpRequest failed: ", e);
         }
-        var hasil = parse_clean_html_response(xhr.responseText);
+        var hasil = xhr.responseText;
         if (hasil == '') {
             bootbox.alert('Sesi anda sudah habis. Silahkan login kembali. ');
             if (typeof debug !== 'undefined' && !debug) {
@@ -504,7 +503,7 @@
 
     function showDivConfirm(url) {
         var a_href = (location.href).split('/');
-        var o = jQuery.parseJSON(getHTML(url));
+        var o = safe_parse_json(getHTML(url));
 
         if ( o.total > 0 && jQuery.inArray(a_href[5], o.url) == -1 ) {
             $('#myModal_confirm #modal-isi').html(o.html);
@@ -513,7 +512,7 @@
     }
 
     function edit(url, table_id, _ismodal=false, _modals='') {
-        var data = jQuery.parseJSON(getHTML(url));
+        var data = safe_parse_json(getHTML(url));
         if ( !_ismodal ) {
             $('#'+table_id+'-panel-default-form').show();
             //$('#panel-default-view').hide();
@@ -526,13 +525,16 @@
                 scrollTop: $("#"+table_id+"-panel-default-form").offset().top
             },'slow');
         } else {
+            if (!_modals) _modals = table_id + '_form-modal';
             $('#'+table_id+'-panel-default-form').html(data['html']);
-            $('#'+_modals).modal('toggle');
+            if ($('#'+_modals).length > 0) {
+                $('#'+_modals).modal('show');
+            }
         }
     }
 
     function view(url, table_id, _ismodal=false, _modals='') {
-        var data = jQuery.parseJSON(getHTML(url));
+        var data = safe_parse_json(getHTML(url));
         if (!_modals) _modals = table_id + '_form-modal';
 
         $('#'+table_id+'-panel-default-form').show();
