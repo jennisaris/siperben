@@ -166,7 +166,7 @@ class T_usulan_approval extends MX_Controller {
 							<i class='fas fa-search' title='Lihat'></i>
 						</span>";
       } else {
-        $buttons['lihat'] = "<span style='text-align: center;cursor:pointer;' onclick=\"view('".base_url().$this->router->fetch_module()."/t_usulan_satker2/view/".$datas->app_t_usulan_id."', '".strtolower($this->router->class)."');\" data-toggle='modal' data-target='#t_usulan_satker2_form-modal'>
+        $buttons['lihat'] = "<span style='text-align: center;cursor:pointer;' onclick=\"view('".base_url().$this->router->fetch_module()."/t_usulan_satker2/view/".$datas->app_t_usulan_id."', '".strtolower($this->router->class)."');\" data-toggle='modal' data-target='#".strtolower($this->router->class)."_form-modal'>
 							<i class='fas fa-search' title='Lihat'></i>
 						</span>";
       }
