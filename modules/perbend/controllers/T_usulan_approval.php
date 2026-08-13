@@ -162,11 +162,11 @@ class T_usulan_approval extends MX_Controller {
 	  if ( $datas->app_t_usulan_istatus > 0 ) unset($buttons['ubah']);
     
       if ( $datas->app_t_usulan_ijns == 1 ) {
-        $buttons['lihat'] = "<span style='text-align: center;cursor:pointer;' onclick=\"view('".base_url().$this->router->fetch_module()."/t_usulan_satker/view/".$datas->app_t_usulan_id."', '".strtolower($this->router->class)."');\">
+        $buttons['lihat'] = "<span style='text-align: center;cursor:pointer;' onclick=\"view('".base_url().$this->router->fetch_module()."/t_usulan_satker/view/".$datas->app_t_usulan_id."', '".strtolower($this->router->class)."', true, '".strtolower($this->router->class)."_form-modal');\" data-toggle='modal' data-target='#".strtolower($this->router->class)."_form-modal'>
 							<i class='fas fa-search' title='Lihat'></i>
 						</span>";
       } else {
-        $buttons['lihat'] = "<span style='text-align: center;cursor:pointer;' onclick=\"view('".base_url().$this->router->fetch_module()."/t_usulan_satker2/view/".$datas->app_t_usulan_id."', '".strtolower($this->router->class)."');\">
+        $buttons['lihat'] = "<span style='text-align: center;cursor:pointer;' onclick=\"view('".base_url().$this->router->fetch_module()."/t_usulan_satker2/view/".$datas->app_t_usulan_id."', '".strtolower($this->router->class)."', true, '".strtolower($this->router->class)."_form-modal');\" data-toggle='modal' data-target='#".strtolower($this->router->class)."_form-modal'>
 							<i class='fas fa-search' title='Lihat'></i>
 						</span>";
       }

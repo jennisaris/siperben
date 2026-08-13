@@ -531,13 +531,18 @@
         }
     }
 
-    function view(url, table_id) {
+    function view(url, table_id, _ismodal=false, _modals='') {
         var data = jQuery.parseJSON(getHTML(url));
-        $('#'+table_id+'-panel-default-form').show();
+        if (!_modals) _modals = table_id + '_form-modal';
 
+        $('#'+table_id+'-panel-default-form').show();
         $('#'+table_id+'-panel-default-form').html(data['html']);
 
         if ( $('#'+table_id+'-panel-body-form').is(':hidden') ) $('#'+table_id+'-panel-body-form').toggle();
+
+        if ($('#'+_modals).length > 0) {
+            $('#'+_modals).modal('show');
+        }
 
         $('html,body').animate({
             scrollTop: $("#"+table_id+"-panel-default-form").offset().top
