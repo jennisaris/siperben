@@ -179,19 +179,22 @@ class Index extends MX_Controller {
 
 		$results = array();
 
+		// 1. Batch collect all excel satkers to avoid running N queries against kepeg_m_unor
+		$all_excel_satkers = array();
+		$unit_mapping = array();
+
 		foreach ($kodeunitutamas as $unit) {
 			$unit_id = trim($unit->id);
 			$unit_kode = trim($unit->kode);
 			$unit_ksat = !empty($unit->kode_satker) ? trim($unit->kode_satker) : '';
 			$abbrv = !empty($unit->abbrv) ? trim($unit->abbrv) : trim($unit->nama);
 
-			// Cek apakah $unit ini merupakan Unit Utama Eselon I (13801..13812 atau nama Eselon I)
-			$excel_satkers = get_excel_satkers_by_eselon($abbrv);
+			$excel_satkers = function_exists('get_excel_satkers_by_eselon') ? get_excel_satkers_by_eselon($abbrv) : array();
 			if (empty($excel_satkers) && !empty($unit_ksat)) {
-				$excel_satkers = get_excel_satkers_by_eselon($unit_ksat);
+				$excel_satkers = function_exists('get_excel_satkers_by_eselon') ? get_excel_satkers_by_eselon($unit_ksat) : array();
 			}
 
-			$active_satkers = get_active_excel_satker_codes();
+			$active_satkers = function_exists('get_active_excel_satker_codes') ? get_active_excel_satker_codes() : array();
 			if (!empty($active_satkers) && !empty($excel_satkers)) {
 				$active_lookup = array_flip(array_map('trim', $active_satkers));
 				$excel_satkers = array_values(array_unique(array_filter($excel_satkers, function($code) use ($active_lookup) {
@@ -199,24 +202,49 @@ class Index extends MX_Controller {
 				})));
 			}
 
+			$unit_mapping[$abbrv] = array(
+				'unit' => $unit,
+				'excel_satkers' => $excel_satkers
+			);
+
+			foreach ($excel_satkers as $code) {
+				$all_excel_satkers[trim($code)] = trim($code);
+			}
+		}
+
+		// Single batch lookup query for all active satkers in kepeg_m_unor
+		$unor_by_code = array();
+		if (!empty($all_excel_satkers)) {
+			$str_all = implode(',', array_map(array($this->db, 'escape'), $all_excel_satkers));
+			$unor_rows = $this->db->query("SELECT id, kode, kode_satker FROM kepeg_m_unor WHERE kode_satker IN ({$str_all}) OR kode IN ({$str_all})")->result_array();
+			foreach ($unor_rows as $u) {
+				if (!empty($u['kode_satker'])) $unor_by_code[trim($u['kode_satker'])][] = $u;
+				if (!empty($u['kode'])) $unor_by_code[trim($u['kode'])][] = $u;
+			}
+		}
+
+		foreach ($unit_mapping as $abbrv => $info) {
+			$unit = $info['unit'];
+			$excel_satkers = $info['excel_satkers'];
+			$unit_id = trim($unit->id);
+			$unit_kode = trim($unit->kode);
+			$unit_ksat = !empty($unit->kode_satker) ? trim($unit->kode_satker) : '';
+
 			$ids = array();
 			$kodes = array();
 
 			if (!empty($excel_satkers)) {
-				// CASE A: Top-level Unit Utama Eselon I (Tampilan Superuser)
-				$str_satkers = implode(',', array_map(array($this->db, 'escape'), $excel_satkers));
-				$unor_rows = $this->db->query("SELECT id, kode, kode_satker FROM kepeg_m_unor WHERE kode_satker IN ({$str_satkers}) OR kode IN ({$str_satkers})")->result_array();
-
-				foreach ($unor_rows as $u) {
-					if (!empty($u['id'])) $ids[trim($u['id'])] = $this->db->escape(trim($u['id']));
-					if (!empty($u['kode'])) $kodes[trim($u['kode'])] = $this->db->escape(trim($u['kode']));
-					if (!empty($u['kode_satker'])) $kodes[trim($u['kode_satker'])] = $this->db->escape(trim($u['kode_satker']));
-				}
 				foreach ($excel_satkers as $code) {
 					$kodes[trim($code)] = $this->db->escape(trim($code));
+					if (isset($unor_by_code[trim($code)])) {
+						foreach ($unor_by_code[trim($code)] as $u) {
+							if (!empty($u['id'])) $ids[trim($u['id'])] = $this->db->escape(trim($u['id']));
+							if (!empty($u['kode'])) $kodes[trim($u['kode'])] = $this->db->escape(trim($u['kode']));
+							if (!empty($u['kode_satker'])) $kodes[trim($u['kode_satker'])] = $this->db->escape(trim($u['kode_satker']));
+						}
+					}
 				}
 			} else {
-				// CASE B: Satuan Kerja Perorangan (Tampilan User Eselon I)
 				if (!empty($unit_id)) $ids[$unit_id] = $this->db->escape($unit_id);
 				if (!empty($unit_kode)) $kodes[$unit_kode] = $this->db->escape($unit_kode);
 				if (!empty($unit_ksat)) $kodes[$unit_ksat] = $this->db->escape($unit_ksat);
