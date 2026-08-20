@@ -212,8 +212,6 @@ $total_notifs = count($app_notifs);
                 $ar_tahun[$r->ctahun] = $r->ctahun;
               }
 
-              if ( !in_array($year, $ar_tahun)) array_push($ar_tahun);
-              
               ksort($ar_tahun);
               foreach ($ar_tahun as $k) {
                 if ( $k == $CI->session->settahun ) $selected = ' selected ';

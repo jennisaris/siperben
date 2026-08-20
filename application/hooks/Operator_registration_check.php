@@ -54,11 +54,13 @@ class Operator_registration_check {
         $method = strtolower((string)$CI->router->fetch_method());
         $current_route = $class . '/' . $method;
 
-        // Route / controller dasar yang selalu diperbolehkan (auth, logout, registrasi, password)
+        // Route / controller dasar yang selalu diperbolehkan (auth, logout, registrasi, password, set_tahun, m_pegawai)
         $allowed_controllers = array(
             'user_authentication',
             'change_password',
-            'registrasi'
+            'registrasi',
+            'set_tahun',
+            'm_pegawai'
         );
 
         $allowed_routes = array(
@@ -142,7 +144,8 @@ class Operator_registration_check {
             't_usulan_daftar2',
             'user_authentication',
             'change_password',
-            'registrasi'
+            'registrasi',
+            'set_tahun'
         );
 
         $allowed_pejabat_routes = array(

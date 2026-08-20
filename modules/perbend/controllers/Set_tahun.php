@@ -39,6 +39,7 @@ class Set_tahun extends MX_Controller {
 		//print_r($this->db->last_query());
 
 		$this->session->set_userdata(array('settahun'=>$post->ganti_periode));
+		$this->session->unset_userdata('pejabat_lainnya_completed');
 		$datas['status'] = true;
 		echo json_encode($datas);
 	}
