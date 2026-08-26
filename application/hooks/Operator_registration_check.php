@@ -89,8 +89,11 @@ class Operator_registration_check {
                 ->get()
                 ->row();
 
+            // Pangkat/Golongan wajib hanya untuk NIP (18 digit), opsional untuk NIK (16 digit)
+            $is_nik_reg = ($reg && strlen(trim($reg->nip)) === 16);
+            $pangkat_missing = !$is_nik_reg && empty($reg->pangkat_golongan);
             // Jika biodata registrasi belum lengkap
-            if (!$reg || empty($reg->nip) || empty($reg->nama_lengkap) || empty($reg->satuan_kerja) || empty($reg->pangkat_golongan) || empty($reg->no_hp) || empty($reg->email)) {
+            if (!$reg || empty($reg->nip) || empty($reg->nama_lengkap) || empty($reg->satuan_kerja) || $pangkat_missing || empty($reg->no_hp) || empty($reg->email)) {
                 if (in_array($current_route, $allowed_routes, true) || in_array($class, $allowed_controllers, true)) {
                     return;
                 }

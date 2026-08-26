@@ -428,7 +428,9 @@ if ($row->count == 0) {
 							->get()
 							->row();
 
-						$sess_data['registration_completed'] = ($reg && !empty($reg->nip) && !empty($reg->nama_lengkap) && !empty($reg->satuan_kerja) && !empty($reg->pangkat_golongan) && !empty($reg->no_hp) && !empty($reg->email));
+						// Pangkat/Golongan wajib hanya untuk NIP (18 digit), opsional untuk NIK (16 digit)
+						$is_nik = (strlen(trim($reg->nip)) === 16);
+						$sess_data['registration_completed'] = ($reg && !empty($reg->nip) && !empty($reg->nama_lengkap) && !empty($reg->satuan_kerja) && ($is_nik || !empty($reg->pangkat_golongan)) && !empty($reg->no_hp) && !empty($reg->email));
 
 						//get menu
 						if ( $this->theme == 'sb-admin-2' ) {

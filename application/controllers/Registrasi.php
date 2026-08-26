@@ -11,6 +11,31 @@ class Registrasi extends CI_Controller {
         $this->load->library(array('upload','session'));
     }
 
+    // --- CSRF helpers (manual, karena CSRF global dimatikan untuk AJAX) ---
+    private function generate_csrf_token() {
+        $token = bin2hex(random_bytes(32));
+        $this->session->set_userdata('csrf_reg_token', $token);
+        return $token;
+    }
+
+    private function verify_csrf_token($token) {
+        $stored = $this->session->userdata('csrf_reg_token');
+        if (empty($stored) || empty($token) || !hash_equals($stored, $token)) {
+            return false;
+        }
+        $this->session->unset_userdata('csrf_reg_token');
+        return true;
+    }
+
+    // --- PDF magic bytes validation ---
+    private function is_valid_pdf_magic($file_path) {
+        $handle = @fopen($file_path, 'rb');
+        if (!$handle) return false;
+        $header = fread($handle, 5);
+        fclose($handle);
+        return ($header === '%PDF-');
+    }
+
     public function index() {
         $data = array(
             'errors' => array(),
@@ -22,6 +47,14 @@ class Registrasi extends CI_Controller {
         );
 
         if ($this->input->method(TRUE) === 'POST') {
+            // CSRF validation
+            $csrf_token = $this->input->post('csrf_token', TRUE);
+            if (!$this->verify_csrf_token($csrf_token)) {
+                $data['errors'][] = 'Token keamanan tidak valid. Silakan muat ulang halaman dan coba lagi.';
+                $data['csrf_token'] = $this->generate_csrf_token();
+                $this->load->view('registrasi/form', $data);
+                return;
+            }
             $result = $this->handle_submit();
             if (!empty($result['success'])) {
                 log_activity('SUBMIT_REGISTRASI', 'Registrasi', 'Registrasi operator baru dikirim ID #' . $result['registration_id']);
@@ -32,6 +65,7 @@ class Registrasi extends CI_Controller {
             $data = array_merge($data, $result);
         }
 
+        $data['csrf_token'] = $this->generate_csrf_token();
         $this->load->view('registrasi/form', $data);
     }
 
@@ -61,6 +95,7 @@ class Registrasi extends CI_Controller {
     private function handle_submit() {
         $old = array(
             'nip' => trim((string)$this->input->post('nip', TRUE)),
+            'nip_type' => trim((string)$this->input->post('nip_type', TRUE)),
             'nama_lengkap' => trim((string)$this->input->post('nama_lengkap', TRUE)),
             'satuan_kerja' => trim((string)$this->input->post('satuan_kerja', TRUE)),
             'pangkat_golongan' => trim((string)$this->input->post('pangkat_golongan', TRUE)),
@@ -68,9 +103,16 @@ class Registrasi extends CI_Controller {
             'email' => trim((string)$this->input->post('email', TRUE)),
         );
 
+        $nip_type = $old['nip_type'] === 'NIK' ? 'NIK' : 'NIP';
         $errors = array();
-        if (!preg_match('/^[0-9]{18}$/', $old['nip'])) {
-            $errors[] = 'NIP wajib 18 digit angka.';
+        if ($nip_type === 'NIK') {
+            if (!preg_match('/^[0-9]{16}$/', $old['nip'])) {
+                $errors[] = 'NIK wajib 16 digit angka.';
+            }
+        } else {
+            if (!preg_match('/^[0-9]{18}$/', $old['nip'])) {
+                $errors[] = 'NIP wajib 18 digit angka.';
+            }
         }
         if ($old['nama_lengkap'] === '') $errors[] = 'Nama Lengkap wajib diisi.';
         if (!$this->satker_exists($old['satuan_kerja'])) $errors[] = 'Satuan Kerja wajib dipilih dari daftar.';
@@ -81,7 +123,7 @@ class Registrasi extends CI_Controller {
         if ($satker_kode && $this->pending_registration_exists($satker_kode, $old['nip'])) {
             $errors[] = 'Masih ada registrasi operator untuk satker ini yang menunggu approval.';
         }
-        if (!$this->golongan_exists($old['pangkat_golongan'])) $errors[] = 'Pangkat/Golongan wajib dipilih dari daftar.';
+        if ($nip_type === 'NIP' && !$this->golongan_exists($old['pangkat_golongan'])) $errors[] = 'Pangkat/Golongan wajib dipilih dari daftar.';
         if (!preg_match('/^[0-9+ .()-]{8,30}$/', $old['no_hp'])) {
             $errors[] = 'No.Hp tidak valid.';
         }
@@ -120,6 +162,13 @@ class Registrasi extends CI_Controller {
         $stored_path = $this->upload_dir . $stored_name;
         rename($file['full_path'], $stored_path);
 
+        // PDF magic bytes validation (defense-in-depth)
+        if (!$this->is_valid_pdf_magic($stored_path)) {
+            @unlink($stored_path);
+            $errors[] = 'File yang diunggah bukan PDF yang valid.';
+            return array('errors' => $errors, 'old' => $old, 'success' => false, 'registration_id' => null);
+        }
+
         $insert = array(
             'nip' => $old['nip'],
             'nama_lengkap' => $old['nama_lengkap'],
@@ -151,17 +200,24 @@ class Registrasi extends CI_Controller {
         $userid = $this->session->userdata('userid');
         $username = $this->session->userdata('username');
 
-        // Cari data registrasi yang sudah ada jika ada
+        // Cari data registrasi yang sudah ada — hanya berdasarkan ownership
         $reg = $this->db
             ->from('app_t_registrasi')
             ->group_start()
                 ->where('approved_user_id', $userid)
                 ->or_where('satker_kode', $username)
-                ->or_where('nip', $username)
             ->group_end()
+            ->where('status', 'disetujui')
             ->order_by('id', 'DESC')
             ->get()
             ->row();
+
+        // Jika tidak ada registrasi yang disetujui, redirect
+        if (empty($reg)) {
+            $this->session->set_flashdata('registrasi_warning', 'Tidak ada data registrasi yang disetujui untuk akun Anda.');
+            redirect('privileges/user_authentication');
+            return;
+        }
 
         // Data default dari session / user
         $user = $this->db->where('id', $userid)->get('priv_t_user')->row();
@@ -193,6 +249,14 @@ class Registrasi extends CI_Controller {
         );
 
         if ($this->input->method(TRUE) === 'POST') {
+            // CSRF validation
+            $csrf_token = $this->input->post('csrf_token', TRUE);
+            if (!$this->verify_csrf_token($csrf_token)) {
+                $data['errors'][] = 'Token keamanan tidak valid. Silakan muat ulang halaman dan coba lagi.';
+                $data['csrf_token'] = $this->generate_csrf_token();
+                $this->load->view('registrasi/form_lengkapi', $data);
+                return;
+            }
             $result = $this->handle_submit_lengkapi($reg);
             if (!empty($result['success'])) {
                 log_activity('LENGKAPI_REGISTRASI', 'Registrasi', 'Operator melengkapi biodata registrasi Satker #' . $username);
@@ -204,6 +268,7 @@ class Registrasi extends CI_Controller {
             $data = array_merge($data, $result);
         }
 
+        $data['csrf_token'] = $this->generate_csrf_token();
         $this->load->view('registrasi/form_lengkapi', $data);
     }
 
@@ -213,6 +278,7 @@ class Registrasi extends CI_Controller {
 
         $old = array(
             'nip' => trim((string)$this->input->post('nip', TRUE)),
+            'nip_type' => trim((string)$this->input->post('nip_type', TRUE)),
             'nama_lengkap' => trim((string)$this->input->post('nama_lengkap', TRUE)),
             'satuan_kerja' => trim((string)$this->input->post('satuan_kerja', TRUE)),
             'pangkat_golongan' => trim((string)$this->input->post('pangkat_golongan', TRUE)),
@@ -220,14 +286,21 @@ class Registrasi extends CI_Controller {
             'email' => trim((string)$this->input->post('email', TRUE)),
         );
 
+        $nip_type = $old['nip_type'] === 'NIK' ? 'NIK' : 'NIP';
         $errors = array();
-        if (!preg_match('/^[0-9]{18}$/', $old['nip'])) {
-            $errors[] = 'NIP wajib 18 digit angka.';
+        if ($nip_type === 'NIK') {
+            if (!preg_match('/^[0-9]{16}$/', $old['nip'])) {
+                $errors[] = 'NIK wajib 16 digit angka.';
+            }
+        } else {
+            if (!preg_match('/^[0-9]{18}$/', $old['nip'])) {
+                $errors[] = 'NIP wajib 18 digit angka.';
+            }
         }
         if ($old['nama_lengkap'] === '') $errors[] = 'Nama Lengkap wajib diisi.';
         if (!$this->satker_exists($old['satuan_kerja'])) $errors[] = 'Satuan Kerja wajib dipilih dari daftar.';
         $satker_kode = $this->extract_satker_code($old['satuan_kerja']);
-        if (!$this->golongan_exists($old['pangkat_golongan'])) $errors[] = 'Pangkat/Golongan wajib dipilih dari daftar.';
+        if ($nip_type === 'NIP' && !$this->golongan_exists($old['pangkat_golongan'])) $errors[] = 'Pangkat/Golongan wajib dipilih dari daftar.';
         if (!preg_match('/^[0-9+ .()-]{8,30}$/', $old['no_hp'])) {
             $errors[] = 'No.Hp tidak valid.';
         }
@@ -268,6 +341,13 @@ class Registrasi extends CI_Controller {
             $stored_name = $safe_nip . '_' . date('YmdHis') . '_' . $file['file_name'];
             $stored_path = $this->upload_dir . $stored_name;
             rename($file['full_path'], $stored_path);
+
+            // PDF magic bytes validation (defense-in-depth)
+            if (!$this->is_valid_pdf_magic($stored_path)) {
+                @unlink($stored_path);
+                $errors[] = 'File yang diunggah bukan PDF yang valid.';
+                return array('errors' => $errors, 'old' => $old, 'success' => false);
+            }
 
             $stored_file_path = 'uploads/registrasi_kpa/' . $stored_name;
             $stored_orig_name = $file['orig_name'];

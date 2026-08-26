@@ -267,6 +267,34 @@
       color: var(--muted)
     }
 
+    .idtype-toggle {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 8px;
+      background: #fff;
+    }
+    .idtype-toggle button {
+      flex: 1;
+      padding: 10px 16px;
+      border: 0;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #f8fafc;
+      color: var(--muted);
+      transition: .15s;
+    }
+    .idtype-toggle button.active {
+      background: linear-gradient(135deg, #2563eb, #0f766e);
+      color: #fff;
+    }
+    .idtype-toggle button:not(.active):hover {
+      background: #e2e8f0;
+    }
+
     .alert {
       border-radius: 14px;
       padding: 14px 16px;
@@ -395,12 +423,18 @@
         <?php endif; ?>
 
         <form method="post" enctype="multipart/form-data" autocomplete="off">
+          <input type="hidden" name="csrf_token" value="<?php echo html_escape($csrf_token); ?>">
           <div class="grid">
             <div class="field">
-              <label for="nip">NIP <span class="req">*</span></label>
+              <label for="nip">NIP / NIK <span class="req">*</span></label>
+              <div class="idtype-toggle" id="nip_type_toggle">
+                <button type="button" class="active" data-type="NIP" onclick="setIdType('NIP')">NIP (18 digit)</button>
+                <button type="button" data-type="NIK" onclick="setIdType('NIK')">NIK (16 digit)</button>
+              </div>
               <input id="nip" name="nip" type="text" inputmode="numeric" maxlength="18" pattern="[0-9]{18}" required
                 value="<?php echo html_escape(isset($old['nip']) ? $old['nip'] : ''); ?>" placeholder="18 digit NIP">
-              <div class="help">Contoh: 199504142019031009</div>
+              <input type="hidden" id="nip_type" name="nip_type" value="NIP">
+              <div class="help" id="nip_help">Contoh: 199504142019031009</div>
             </div>
             <div class="field">
               <label for="nama_lengkap">Nama Lengkap <span class="req">*</span></label>
@@ -420,9 +454,9 @@
               </datalist>
               <div class="help">Data satuan kerja diambil dari app_m_unor dan ditampilkan dengan kode satker.</div>
             </div>
-            <div class="field">
-              <label for="pangkat_golongan">Pangkat/Golongan <span class="req">*</span></label>
-              <select id="pangkat_golongan" name="pangkat_golongan" required>
+            <div class="field" id="pangkat_golongan_wrapper">
+              <label for="pangkat_golongan">Pangkat/Golongan <span class="req" id="pangkat_req">*</span></label>
+              <select id="pangkat_golongan" name="pangkat_golongan">
                 <option value="">Pilih pangkat/golongan</option>
                 <?php foreach ($golongan_options as $gol): ?>
                   <?php $label = trim($gol['pangkat']) !== '' ? trim($gol['pangkat']) . ' (' . trim($gol['nama']) . ')' : trim($gol['nama']); ?>
@@ -459,6 +493,47 @@
       </main>
     </div>
   </div>
+  <script>
+  var currentIdType = '<?php echo html_escape(isset($old['nip_type']) ? $old['nip_type'] : 'NIP'); ?>';
+
+  function setIdType(type) {
+    currentIdType = type;
+    document.getElementById('nip_type').value = type;
+
+    // Update toggle buttons
+    var buttons = document.querySelectorAll('#nip_type_toggle button');
+    buttons.forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-type') === type);
+    });
+
+    // Update input constraints
+    var nipInput = document.getElementById('nip');
+    var helpText = document.getElementById('nip_help');
+    var pangkatReq = document.getElementById('pangkat_req');
+    var pangkatSelect = document.getElementById('pangkat_golongan');
+
+    if (type === 'NIK') {
+      nipInput.setAttribute('maxlength', '16');
+      nipInput.setAttribute('pattern', '[0-9]{16}');
+      nipInput.setAttribute('placeholder', '16 digit NIK');
+      helpText.textContent = 'Contoh: 3201234567890001';
+      pangkatSelect.removeAttribute('required');
+      pangkatReq.style.display = 'none';
+    } else {
+      nipInput.setAttribute('maxlength', '18');
+      nipInput.setAttribute('pattern', '[0-9]{18}');
+      nipInput.setAttribute('placeholder', '18 digit NIP');
+      helpText.textContent = 'Contoh: 199504142019031009';
+      pangkatSelect.setAttribute('required', 'required');
+      pangkatReq.style.display = '';
+    }
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', function() {
+    setIdType(currentIdType);
+  });
+  </script>
 </body>
 
 </html>

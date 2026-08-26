@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lengkapi Data Operator - Siperben</title>
   <style>
-    :root{--blue:#1d4ed8;--blue2:#0f766e;--ink:#0f172a;--muted:#64748b;--line:#dbe3ef;--soft:#f8fafc;--ok:#047857;--err:#b91c1c}*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;color:var(--ink);min-height:100vh;background:radial-gradient(circle at top left,#dbeafe 0,#eef6ff 28%,#f8fafc 62%,#f1f5f9 100%)}.hero{max-width:1040px;margin:34px auto;padding:0 18px}.shell{display:grid;grid-template-columns:340px 1fr;background:rgba(255,255,255,.95);border:1px solid rgba(219,227,239,.9);border-radius:24px;box-shadow:0 24px 70px rgba(15,23,42,.13);overflow:hidden}.side{position:relative;padding:34px;color:#fff;background:linear-gradient(145deg,#1d4ed8,#0f766e)}.side:after{content:"";position:absolute;inset:auto -80px -110px auto;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.16)}.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.28);padding:8px 12px;border-radius:999px;font-size:13px}.side h1{font-size:28px;line-height:1.15;margin:28px 0 12px}.side p{margin:0;color:#dbeafe;line-height:1.6}.steps{margin-top:30px;display:grid;gap:14px}.step{display:flex;gap:12px;align-items:flex-start}.num{flex:0 0 28px;height:28px;border-radius:50%;background:#fff;color:#1d4ed8;display:grid;place-items:center;font-weight:800;font-size:13px}.step span{font-size:14px;color:#eff6ff;line-height:1.45}.formwrap{padding:34px}.head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}.head h2{margin:0;font-size:24px}.head p{margin:7px 0 0;color:var(--muted);font-size:14px}.pill{white-space:nowrap;background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc;border-radius:999px;padding:8px 12px;font-weight:700;font-size:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{margin-bottom:16px}.field.full{grid-column:1/-1}label{display:flex;align-items:center;gap:6px;font-weight:750;margin-bottom:7px;font-size:14px}.req{color:#ef4444}.opt{color:var(--muted);font-weight:normal;font-size:12px}input,select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:14px;transition:.15s}input:focus,select:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 4px rgba(37,99,235,.12)}select{appearance:auto}.help{font-size:12px;color:var(--muted);margin-top:6px}.upload{border:1.5px dashed #adc3de;border-radius:16px;padding:16px;background:#f8fbff}.upload input{border:0;padding:0;border-radius:0}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}.btn{border:0;border-radius:10px;background:linear-gradient(135deg,#2563eb,#0f766e);color:#fff;font-size:13px;font-weight:700;padding:12px 20px;cursor:pointer;white-space:nowrap;box-shadow:0 8px 20px rgba(37,99,235,.2);transition:.15s}.btn:hover{filter:brightness(.95)}.btn-danger{border:1px solid #fecaca;border-radius:10px;background:#fef2f2;color:#991b1b;font-size:13px;font-weight:700;padding:12px 18px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;transition:.15s}.btn-danger:hover{background:#fee2e2}.alert{border-radius:14px;padding:14px 16px;margin-bottom:18px}.alert-warning{background:#fffbeb;color:#92400e;border:1px solid #fde68a}.alert-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}.alert ul{margin:6px 0 0;padding-left:20px}.footer{margin-top:18px;padding-top:16px;border-top:1px solid #edf2f7;font-size:12px;color:var(--muted)}@media(max-width:860px){.shell{grid-template-columns:1fr}.side{padding:26px}.formwrap{padding:24px}.head{display:block}.pill{display:inline-block;margin-top:12px}.grid{grid-template-columns:1fr}}@media(max-width:520px){.hero{margin:14px auto;padding:0}.shell{border-radius:0;border-left:0;border-right:0}.actions{display:block}.btn,.btn-danger{width:100%;margin-bottom:8px;text-align:center}}
+    :root{--blue:#1d4ed8;--blue2:#0f766e;--ink:#0f172a;--muted:#64748b;--line:#dbe3ef;--soft:#f8fafc;--ok:#047857;--err:#b91c1c}*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;color:var(--ink);min-height:100vh;background:radial-gradient(circle at top left,#dbeafe 0,#eef6ff 28%,#f8fafc 62%,#f1f5f9 100%)}.hero{max-width:1040px;margin:34px auto;padding:0 18px}.shell{display:grid;grid-template-columns:340px 1fr;background:rgba(255,255,255,.95);border:1px solid rgba(219,227,239,.9);border-radius:24px;box-shadow:0 24px 70px rgba(15,23,42,.13);overflow:hidden}.side{position:relative;padding:34px;color:#fff;background:linear-gradient(145deg,#1d4ed8,#0f766e)}.side:after{content:"";position:absolute;inset:auto -80px -110px auto;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.16)}.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.28);padding:8px 12px;border-radius:999px;font-size:13px}.side h1{font-size:28px;line-height:1.15;margin:28px 0 12px}.side p{margin:0;color:#dbeafe;line-height:1.6}.steps{margin-top:30px;display:grid;gap:14px}.step{display:flex;gap:12px;align-items:flex-start}.num{flex:0 0 28px;height:28px;border-radius:50%;background:#fff;color:#1d4ed8;display:grid;place-items:center;font-weight:800;font-size:13px}.step span{font-size:14px;color:#eff6ff;line-height:1.45}.formwrap{padding:34px}.head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}.head h2{margin:0;font-size:24px}.head p{margin:7px 0 0;color:var(--muted);font-size:14px}.pill{white-space:nowrap;background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc;border-radius:999px;padding:8px 12px;font-weight:700;font-size:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{margin-bottom:16px}.field.full{grid-column:1/-1}label{display:flex;align-items:center;gap:6px;font-weight:750;margin-bottom:7px;font-size:14px}.req{color:#ef4444}    .opt{color:var(--muted);font-weight:normal;font-size:12px}.idtype-toggle{display:flex;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:8px;background:#fff}.idtype-toggle button{flex:1;padding:10px 16px;border:0;font-size:13px;font-weight:700;cursor:pointer;background:#f8fafc;color:var(--muted);transition:.15s}.idtype-toggle button.active{background:linear-gradient(135deg,#2563eb,#0f766e);color:#fff}.idtype-toggle button:not(.active):hover{background:#e2e8f0}input,select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:14px;transition:.15s}input:focus,select:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 4px rgba(37,99,235,.12)}select{appearance:auto}.help{font-size:12px;color:var(--muted);margin-top:6px}.upload{border:1.5px dashed #adc3de;border-radius:16px;padding:16px;background:#f8fbff}.upload input{border:0;padding:0;border-radius:0}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}.btn{border:0;border-radius:10px;background:linear-gradient(135deg,#2563eb,#0f766e);color:#fff;font-size:13px;font-weight:700;padding:12px 20px;cursor:pointer;white-space:nowrap;box-shadow:0 8px 20px rgba(37,99,235,.2);transition:.15s}.btn:hover{filter:brightness(.95)}.btn-danger{border:1px solid #fecaca;border-radius:10px;background:#fef2f2;color:#991b1b;font-size:13px;font-weight:700;padding:12px 18px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;transition:.15s}.btn-danger:hover{background:#fee2e2}.alert{border-radius:14px;padding:14px 16px;margin-bottom:18px}.alert-warning{background:#fffbeb;color:#92400e;border:1px solid #fde68a}.alert-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}.alert ul{margin:6px 0 0;padding-left:20px}.footer{margin-top:18px;padding-top:16px;border-top:1px solid #edf2f7;font-size:12px;color:var(--muted)}@media(max-width:860px){.shell{grid-template-columns:1fr}.side{padding:26px}.formwrap{padding:24px}.head{display:block}.pill{display:inline-block;margin-top:12px}.grid{grid-template-columns:1fr}}@media(max-width:520px){.hero{margin:14px auto;padding:0}.shell{border-radius:0;border-left:0;border-right:0}.actions{display:block}.btn,.btn-danger{width:100%;margin-bottom:8px;text-align:center}}
   </style>
 </head>
 <body>
@@ -53,11 +53,17 @@
       <?php endif; ?>
 
       <form method="post" action="<?php echo base_url(); ?>registrasi/lengkapi_data" enctype="multipart/form-data" autocomplete="off">
+        <input type="hidden" name="csrf_token" value="<?php echo html_escape($csrf_token); ?>">
         <div class="grid">
           <div class="field">
-            <label for="nip">NIP <span class="req">*</span></label>
+            <label for="nip">NIP / NIK <span class="req">*</span></label>
+            <div class="idtype-toggle" id="nip_type_toggle">
+              <button type="button" class="active" data-type="NIP" onclick="setIdType('NIP')">NIP (18 digit)</button>
+              <button type="button" data-type="NIK" onclick="setIdType('NIK')">NIK (16 digit)</button>
+            </div>
             <input id="nip" name="nip" type="text" inputmode="numeric" maxlength="18" pattern="[0-9]{18}" required value="<?php echo html_escape(isset($old['nip']) ? $old['nip'] : ''); ?>" placeholder="18 digit NIP">
-            <div class="help">Contoh: 199504142019031009</div>
+            <input type="hidden" id="nip_type" name="nip_type" value="NIP">
+            <div class="help" id="nip_help">Contoh: 199504142019031009</div>
           </div>
 
           <div class="field">
@@ -76,9 +82,9 @@
             <div class="help">Data satuan kerja diambil dari database resmi app_m_unor.</div>
           </div>
 
-          <div class="field">
-            <label for="pangkat_golongan">Pangkat/Golongan <span class="req">*</span></label>
-            <select id="pangkat_golongan" name="pangkat_golongan" required>
+          <div class="field" id="pangkat_golongan_wrapper">
+            <label for="pangkat_golongan">Pangkat/Golongan <span class="req" id="pangkat_req">*</span></label>
+            <select id="pangkat_golongan" name="pangkat_golongan">
               <option value="">Pilih pangkat/golongan</option>
               <?php foreach ($golongan_options as $gol): ?>
                 <?php $label = trim($gol['pangkat']) !== '' ? trim($gol['pangkat']).' ('.trim($gol['nama']).')' : trim($gol['nama']); ?>
@@ -117,7 +123,47 @@
 
       <div class="footer">Siperben &copy; <?php echo date('Y'); ?> - Sistem Informasi Perbendaharaan.</div>
     </main>
-  </div>
-</div>
+  </div>  </div>
+  <script>
+  var currentIdType = '<?php echo html_escape(isset($old['nip_type']) ? $old['nip_type'] : 'NIP'); ?>';
+
+  function setIdType(type) {
+    currentIdType = type;
+    document.getElementById('nip_type').value = type;
+
+    // Update toggle buttons
+    var buttons = document.querySelectorAll('#nip_type_toggle button');
+    buttons.forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-type') === type);
+    });
+
+    // Update input constraints
+    var nipInput = document.getElementById('nip');
+    var helpText = document.getElementById('nip_help');
+    var pangkatReq = document.getElementById('pangkat_req');
+    var pangkatSelect = document.getElementById('pangkat_golongan');
+
+    if (type === 'NIK') {
+      nipInput.setAttribute('maxlength', '16');
+      nipInput.setAttribute('pattern', '[0-9]{16}');
+      nipInput.setAttribute('placeholder', '16 digit NIK');
+      helpText.textContent = 'Contoh: 3201234567890001';
+      pangkatSelect.removeAttribute('required');
+      pangkatReq.style.display = 'none';
+    } else {
+      nipInput.setAttribute('maxlength', '18');
+      nipInput.setAttribute('pattern', '[0-9]{18}');
+      nipInput.setAttribute('placeholder', '18 digit NIP');
+      helpText.textContent = 'Contoh: 199504142019031009';
+      pangkatSelect.setAttribute('required', 'required');
+      pangkatReq.style.display = '';
+    }
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', function() {
+    setIdType(currentIdType);
+  });
+  </script>
 </body>
 </html>

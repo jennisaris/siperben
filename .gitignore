@@ -27,7 +27,14 @@ db/migrations/*
 !db/backup_priv_t_menu_group_privileges.sql
 cookies.txt
 application/logs/
+application/cache/*.cache
 node_modules/
 playwright-report/
 test-results/
 .playwright/
+.freebuff/
+.roomodes
+skills-lock.json
+graphify-out/
+application/graphify-out/
+.agents/skills/
