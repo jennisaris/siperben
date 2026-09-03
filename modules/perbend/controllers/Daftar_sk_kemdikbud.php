@@ -53,7 +53,7 @@ class Daftar_sk_kemdikbud extends MX_Controller {
 			//echo $ada;
 			if ( $ada > 0 ) {
 				$ar_unor = array();
-				foreach($this->getall('', 'app_m_unor', 'kode, nama') as $r) {
+				foreach($this->getall('', 'app_m_unor', 'kode, nama', ['deleted' => 0]) as $r) {
 					$ar_unor[$r->kode] = $r->nama; 
 				}
 			} else {

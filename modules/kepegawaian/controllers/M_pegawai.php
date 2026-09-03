@@ -26,6 +26,10 @@ class M_pegawai extends MX_Controller {
 		$this->_setController($controller);
 		$this->_init('default');
 
+		$this->session->unset_userdata('header_controller');
+		$header_controller = array('header_controller' => 'kepegawaian/m_pegawai');
+		$this->session->set_userdata($header_controller);
+
 		$this->_addTable($table);
 		$this->_addField($table, 'id', '', true, true);
 		$this->_addField($table, 'ifrom', 'Asal Instansi', true);
@@ -677,6 +681,9 @@ class M_pegawai extends MX_Controller {
 	}
 
 	function manipulate_list_button($buttons) {
+		if (!is_array($buttons)) {
+			$buttons = array();
+		}
 		if (isset($buttons['add'])) {
 			$buttons['add'] = "<button type='button' id='btn_new' class='btn btn-primary'
 				onclick='edit(\"".base_url()."kepegawaian/m_pegawai/edit/0\", \"m_pegawai\");'>
@@ -690,22 +697,6 @@ class M_pegawai extends MX_Controller {
 				<i class='fas fa-users'></i> Tarik Data Pegawai
 			</button>";
 		}
-
-		/* $start = 0;
-		$end = 200000;
-		$penambah = 1000;
-		$chkbox = "<select id='start' 
-			name='start' 
-			class='form-control start' style='width:120px;'>";
-		while($start<=$end) {
-			$chkbox .= "<option value='{$start}'>{$start}</option>";
-			$start +=$penambah;
-		}
-		$chkbox .= "</select>";
-		$buttons['impor'] = $chkbox."<button type='button' class='btn_save_sinkronisasi btn btn-primary' 
-					onclick='save_sinkronisasi(\"".base_url()."kepegawaian/m_pegawai\", \"m_pegawai\", \"Sinkronisasi Master Pegawai. Anda yakin ?\", false, \"\", false, true, false, false, \"Sinkronisasi berhasil\");'>
-							<i class='fas fa-users'></i> Sinkronisasi ke SIMPEG-DIKBUHR
-						</button>"; */
 
 		return $buttons;
 	}

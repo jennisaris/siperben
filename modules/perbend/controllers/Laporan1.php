@@ -278,7 +278,7 @@ class Laporan1 extends MX_Controller {
 	  if ($ijabid2 != '') {
 	    $ijabid2_ = "'".implode("','", $ijabid2)."'";
 	    $q_ijabid2 = " p.ijabid2 in (".$ijabid2_.")";
-	  } else $q_ijabid2 = "  p.ijabid2 in (2,3,6) ";
+	  } else $q_ijabid2 = "  p.ijabid2 in (1,2,3,6) ";
 	  
 	  if ($kd_satker !='') {
 	    $kd_satker_ = "'".implode("','", $kd_satker)."'";
@@ -292,7 +292,7 @@ class Laporan1 extends MX_Controller {
               where {$q_ijabid2} ";
     if ($q_kd_satker !='') $sql.= $q_kd_satker;
 	$sql .= " and case 
-		when p.ijabid2 not in (4,5,6,7) then p.inoskid IS NOT NULL and p.inoskid !=0 and p.isnonaktif = 0
+		when p.ijabid2 in (1,2,3) then p.inoskid IS NOT NULL and p.inoskid !=0 and p.isnonaktif = 0
 		else p.isnonaktif = 0
 		end ";
 
@@ -302,7 +302,13 @@ class Laporan1 extends MX_Controller {
               
     $rows = $this->db->query($sql)->result();
     foreach($rows as $r) {
-      $data['total_'.$r->ijabid2] = $r->total;//.' => '.$kd_satker_;
+      if ($r->ijabid2 == 6) {
+        $data['total_6'] = $r->total;
+      } else if ($r->ijabid2 == 1 && empty($data['total_6'])) {
+        $data['total_6'] = $r->total;
+      } else {
+        $data['total_'.$r->ijabid2] = $r->total;
+      }
     }
     
     return $data;

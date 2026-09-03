@@ -77,7 +77,7 @@ class Detail_laporan1 extends MX_Controller {
   		//$kodeunitutamas = $this->session->kodeunitutamas;
   		if (!$reports) $kodeatasan = $this->kriteria->{$this->table.'_iunorid'};
   		$sql = "Select kode, nama from app_m_unor 
-  		where kode_atasan = '{$kodeatasan}' and deleted=0";
+  		where kode_atasan = '{$kodeatasan}' and deleted=0 group by nama";
   		
     		$query = $this->db->query($sql);
     
@@ -335,7 +335,7 @@ class Detail_laporan1 extends MX_Controller {
 	  if ($ijabid2 != '') {
 	    $ijabid2_ = "'".implode("','", $ijabid2)."'";
 	    $q_ijabid2 = " ijabid2 in (".$ijabid2_.")";
-	  } else $q_ijabid2 = "  ijabid2 in (2,3,6) ";
+	  } else $q_ijabid2 = "  ijabid2 in (1,2,3,6) ";
 	  
 	  if ($kd_satker !='') {
 	    $kd_satker_ = "'".implode("','", $kd_satker)."'";
@@ -349,14 +349,20 @@ class Detail_laporan1 extends MX_Controller {
     //$sql .= " and inoskid IS NOT NULL and inoskid != 0 ";
 	//$sql .= " and isnonaktif = 0 ";
 	$sql .= " and case 
-		when ijabid2 not in (4,5,6,7) then inoskid IS NOT NULL and inoskid !=0 and isnonaktif = 0
+		when ijabid2 in (1,2,3) then inoskid IS NOT NULL and inoskid !=0 and isnonaktif = 0
 		else isnonaktif = 0
 		end and (select count(*) from app_m_unor where kode = ckduker and deleted=0) > 0 ";
     $sql .= " Group by ijabid2";
               
     $rows = $this->db->query($sql)->result();
     foreach($rows as $r) {
-      $data['total_'.$r->ijabid2] = $r->total;//.' => '.$kd_satker_;
+      if ($r->ijabid2 == 6) {
+        $data['total_6'] = $r->total;
+      } else if ($r->ijabid2 == 1 && empty($data['total_6'])) {
+        $data['total_6'] = $r->total;
+      } else {
+        $data['total_'.$r->ijabid2] = $r->total;
+      }
     }
     
     return $data;

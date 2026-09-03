@@ -54,13 +54,14 @@ class Operator_registration_check {
         $method = strtolower((string)$CI->router->fetch_method());
         $current_route = $class . '/' . $method;
 
-        // Route / controller dasar yang selalu diperbolehkan (auth, logout, registrasi, password, set_tahun, m_pegawai)
+        // Route / controller dasar yang selalu diperbolehkan (auth, logout, registrasi, password, set_tahun, m_pegawai, m_tarik_pegawai)
         $allowed_controllers = array(
             'user_authentication',
             'change_password',
             'registrasi',
             'set_tahun',
-            'm_pegawai'
+            'm_pegawai',
+            'm_tarik_pegawai'
         );
 
         $allowed_routes = array(
@@ -71,6 +72,9 @@ class Operator_registration_check {
             'user_authentication/index',
             'user_authentication/formlogin',
             'm_pegawai/getemployee',
+            'm_tarik_pegawai/edit',
+            'm_tarik_pegawai/get_pegawai_by_nip',
+            'm_tarik_pegawai/save'
         );
 
         // --- TAHAP A: CEK KELENGKAPAN BIODATA REGISTRASI ---
@@ -143,6 +147,7 @@ class Operator_registration_check {
         // Controller / Route yang diperbolehkan saat diisi Usulan Pejabat Perbendaharaan Lainnya
         $allowed_pejabat_controllers = array(
             'm_pegawai',
+            'm_tarik_pegawai',
             't_usulan_satker2',
             't_usulan_daftar2',
             'user_authentication',
@@ -152,7 +157,10 @@ class Operator_registration_check {
         );
 
         $allowed_pejabat_routes = array(
-            'm_pegawai/getemployee'
+            'm_pegawai/getemployee',
+            'm_tarik_pegawai/edit',
+            'm_tarik_pegawai/get_pegawai_by_nip',
+            'm_tarik_pegawai/save'
         );
 
         if (in_array($class, $allowed_pejabat_controllers, true) || in_array($current_route, $allowed_routes, true) || in_array($current_route, $allowed_pejabat_routes, true)) {

@@ -77,21 +77,18 @@ class Detail_rekap_pejabat extends MX_Controller {
   		
   		//$kodeunitutamas = $this->session->kodeunitutamas;
   		if ($reports!=1) $kodeatasan = $this->kriteria->{$this->table.'_iunorid'};
-  			$sql = "Select b.kode_atasan, (select nama from 
+   			$sql = "Select b.kode_atasan, (select nama from 
 				app_m_unor where kode=b.kode_atasan) as eselon1, 
-				COALESCE(k.kode_satker, b.kode) as kode, COALESCE(k.nama, b.nama) as nama from app_m_unor b
-				left join kepeg_m_unor k on k.kode_satker = b.kode and k.date_expired IS NULL
-				where b.kode_atasan = '{$kodeatasan}' and deleted=0";
+				b.kode as kode, b.nama as nama from app_m_unor b
+				where b.kode_atasan = '{$kodeatasan}' and deleted=0 order by b.kode asc";
 			
-  			//echo $sql;exit;
-    		$query = $this->db->query($sql);
-	  		$jum_rec = $query->num_rows();
+     		$query = $this->db->query($sql);
+ 	  		$jum_rec = $query->num_rows();
 			if( $jum_rec == 0 ) {
 				$sql = "Select b.kode_atasan, (select nama from 
 						app_m_unor where kode=b.kode_atasan) as eselon1, 
-						COALESCE(k.kode_satker, b.kode) as kode, COALESCE(k.nama, b.nama) as nama from app_m_unor b
-						left join kepeg_m_unor k on k.kode_satker = b.kode and k.date_expired IS NULL
-						where b.kode = '{$kodeatasan}' and deleted=0";
+						b.kode as kode, b.nama as nama from app_m_unor b
+						where b.kode = '{$kodeatasan}' and deleted=0 order by b.kode asc";
 
 				$query = $this->db->query($sql);
 				$jum_rec = $query->num_rows();
@@ -217,22 +214,22 @@ class Detail_rekap_pejabat extends MX_Controller {
     $detail .= "<th>Sudah Memiliki BNT</th>";
     $detail .= "<th>Belum Memiliki BNT</th>";
     $detail .= "</tr>";
-	  $sql = "Select x.id, x.ckode, x.vname, (select count(*) as total 
+	  $sql = "Select x.id, x.ckode, x.vname, (select count(distinct a.cnip) as total 
               From app_t_usulan_pegawai a, 
               app_t_usulan b
               Where a.iusulanid = b.id 
-              And a.ijabid2 = x.id and isnonaktif = 0 
+              And a.ijabid2 = x.id 
+              And (case when a.ijabid2 not in (4,5,6,7) then a.inoskid != 0 and a.inoskid IS NOT NULL and a.isnonaktif = 0 else a.isnonaktif = 0 end)
               And a.cnosertifikat != ''
-              and (a.inoskid != 0 or a.inoskid IS NOT NULL) 
-              and b.iunorid in ({$unor_id})) as tot_ada, 
-              (select count(*) as total 
+              and (b.iunorid in ({$unor_id}) or a.ckduker in ({$unor_id}))) as tot_ada, 
+              (select count(distinct a.cnip) as total 
               From app_t_usulan_pegawai a, 
               app_t_usulan b
               Where a.iusulanid = b.id 
-              And a.ijabid2 = x.id and isnonaktif = 0 
-              And a.cnosertifikat = ''
-              and (a.inoskid != 0 or a.inoskid IS NOT NULL)
-              and b.iunorid in ({$unor_id})) as tot_tdk_ada
+              And a.ijabid2 = x.id 
+              And (case when a.ijabid2 not in (4,5,6,7) then a.inoskid != 0 and a.inoskid IS NOT NULL and a.isnonaktif = 0 else a.isnonaktif = 0 end)
+              And (a.cnosertifikat = '' or a.cnosertifikat is null)
+              and (b.iunorid in ({$unor_id}) or a.ckduker in ({$unor_id}))) as tot_tdk_ada
               From app_m_jabatan x ";
       $cols = $this->db->query($sql)->result();
       
@@ -240,6 +237,14 @@ class Detail_rekap_pejabat extends MX_Controller {
       $tot_all_ada = 0;
       $tot_all_tada = 0;
       foreach($cols as $c) { 
+        $tot_ada = (int)$c->tot_ada;
+        $tot_tdk_ada = (int)$c->tot_tdk_ada;
+        if (in_array((int)$c->id, array(1, 2), true)) {
+          if ($tot_ada > 1) $tot_ada = 1;
+          if ($tot_ada == 1) $tot_tdk_ada = 0;
+          elseif ($tot_tdk_ada > 1) $tot_tdk_ada = 1;
+        }
+
         $detail .= "<tr>";
         $detail .= "<td>".$no2."</td>";
         $detail .= "<td>".$c->vname." (".$c->ckode.")</td>";
@@ -247,16 +252,16 @@ class Detail_rekap_pejabat extends MX_Controller {
         $(\"#detail_info #q_app_t_usulan_pegawai_cnosertifikat\").val(1);
         $(\"#detail_info #q_app_t_usulan_pegawai_ckduker\").val(\"{$kode}\");
         $(\"#detail_info #q_app_t_usulan_pegawai_ijabid2\").val(\"{$c->id}\");
-        '>".$c->tot_ada."</td>"; 
+        '>".$tot_ada."</td>"; 
         $detail .= "<td style='cursor:pointer;text-align:center;' data-toggle='modal' data-target='#myModal_browse' onclick='_browse(\"".base_url()."perbend/detail_info/index/0\");
         $(\"#detail_info #q_app_t_usulan_pegawai_cnosertifikat\").val(0);
         $(\"#detail_info #q_app_t_usulan_pegawai_ckduker\").val(\"{$kode}\");
         $(\"#detail_info #q_app_t_usulan_pegawai_ijabid2\").val(\"{$c->id}\");
-        '>".$c->tot_tdk_ada."</td>"; 
+        '>".$tot_tdk_ada."</td>"; 
         $detail .= "</tr>";
         
-        $tot_all_ada += $c->tot_ada;
-        $tot_all_tada += $c->tot_tdk_ada;
+        $tot_all_ada += $tot_ada;
+        $tot_all_tada += $tot_tdk_ada;
         $no2++;
       }
       
@@ -342,16 +347,14 @@ class Detail_rekap_pejabat extends MX_Controller {
 		//echo $sql;exit;
 				
 		$rows = $this->db->query($sql)->result();
-		//echo $q_kd_satker.' : ';
-		//print_r($rows);
-		//echo '<br/>';
 		foreach($rows as $r) {
-			$data['total_'.$r->ijabid2] = $r->total;//.' => '.$kd_satker_;
+			$val = (int)$r->total;
+			// Aturan: Setiap Satker hanya punya maksimal 1 KPA dan 1 BP
+			if (in_array((int)$r->ijabid2, array(1, 2), true) && $val > 1) {
+				$val = 1;
+			}
+			$data['total_'.$r->ijabid2] = $val;
 		}
-		
-		//echo $q_kd_satker.',';
-		//echo 'SQL : '.$sql.',';
-		//print_r($data);
 		return $data;
   }
   

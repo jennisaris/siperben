@@ -275,9 +275,9 @@
     "semantic_hash": "702022c3f13d3ae681c684a3ce19a324"
   },
   "application/helpers/own_helper.php": {
-    "mtime": 1786029803.812239,
-    "ast_hash": "5d0087e8768573b28b3ea2ef86521f4f",
-    "semantic_hash": "5d0087e8768573b28b3ea2ef86521f4f"
+    "mtime": 1786105514.0323503,
+    "ast_hash": "e57adbf6133bcf06c02ba92899dad1cc",
+    "semantic_hash": ""
   },
   "application/hooks/Operator_registration_check.php": {
     "mtime": 1786002068.2516148,
@@ -5470,8 +5470,8 @@
     "semantic_hash": "d6fada3fbf48b6c68fed4f508bf0bb96"
   },
   "modules/dashboard/controllers/Index.php": {
-    "mtime": 1786075897.1146746,
-    "ast_hash": "4d96b854646cc7c0d555e0bfdda1e178",
+    "mtime": 1786090427.7714226,
+    "ast_hash": "aedeb2c731fed4f9f14046ca739c7227",
     "semantic_hash": ""
   },
   "modules/dashboard/views/d/chart.php": {
@@ -5480,9 +5480,9 @@
     "semantic_hash": "a6c2e3020d3e9887401182bbaab782cc"
   },
   "modules/dashboard/views/d/index.php": {
-    "mtime": 1786031706.0014448,
-    "ast_hash": "40682280afaf032d0d51b8dc503a5cbe",
-    "semantic_hash": "40682280afaf032d0d51b8dc503a5cbe"
+    "mtime": 1786090427.790396,
+    "ast_hash": "2931800914bdab52506c462732d2f067",
+    "semantic_hash": ""
   },
   "modules/kepegawaian/controllers/Lookup_unor.php": {
     "mtime": 1786002072.1580253,
@@ -5510,9 +5510,9 @@
     "semantic_hash": "d149e6ce300f1e444d61932f710aa2d1"
   },
   "modules/kepegawaian/controllers/M_pegawai.php": {
-    "mtime": 1786002072.2361565,
-    "ast_hash": "97ba0b1cb399cf4ac226618aa4b529f4",
-    "semantic_hash": "97ba0b1cb399cf4ac226618aa4b529f4"
+    "mtime": 1786090427.8123755,
+    "ast_hash": "afe25cae921107147600d45bdd239226",
+    "semantic_hash": ""
   },
   "modules/kepegawaian/controllers/M_tarik_pegawai.php": {
     "mtime": 1786002072.2361565,
@@ -6275,9 +6275,9 @@
     "semantic_hash": "512dd572066a548d1b1becaa47c43941"
   },
   "modules/perbend/controllers/Ews.php": {
-    "mtime": 1786002073.3754687,
-    "ast_hash": "c43196f112e1d77dc099e850717d279e",
-    "semantic_hash": "c43196f112e1d77dc099e850717d279e"
+    "mtime": 1786090427.8273642,
+    "ast_hash": "c19ad162ac8456dc11fdd41ff85b7e54",
+    "semantic_hash": ""
   },
   "modules/perbend/controllers/History_pejabat_perbend.php": {
     "mtime": 1786002073.3754687,
@@ -6390,9 +6390,9 @@
     "semantic_hash": "0e6aa5ee1bd3ab2adbd474b4153aac76"
   },
   "modules/perbend/controllers/Progress_usulan_satker.php": {
-    "mtime": 1786002073.4379587,
-    "ast_hash": "37aa8021659fad93e413dc3674db035f",
-    "semantic_hash": "37aa8021659fad93e413dc3674db035f"
+    "mtime": 1786105649.0197186,
+    "ast_hash": "253e32936a191c7936990d0e50a60ad9",
+    "semantic_hash": ""
   },
   "modules/perbend/controllers/Rekap_pejabat.php": {
     "mtime": 1786002073.4535768,
@@ -6515,9 +6515,9 @@
     "semantic_hash": "5107272486317f6443e4fe015e4a6ec7"
   },
   "modules/perbend/views/laporan/list_progres_proses.php": {
-    "mtime": 1786002073.5160844,
-    "ast_hash": "de005fdac783890f62914c89421e3140",
-    "semantic_hash": "de005fdac783890f62914c89421e3140"
+    "mtime": 1786105658.578261,
+    "ast_hash": "16dce87f0020c6b6c54f254a1f2709cb",
+    "semantic_hash": ""
   },
   "modules/perbend/views/terbit_sk/form_modal.php": {
     "mtime": 1786002073.5160844,
@@ -7473,16 +7473,6 @@
     "mtime": 1786002075.5298924,
     "ast_hash": "669edeb7f02cca92bca291f16193b763",
     "semantic_hash": "669edeb7f02cca92bca291f16193b763"
-  },
-  "scratch/diagnose_gtk_diff.php": {
-    "mtime": 1786075027.9895618,
-    "ast_hash": "6786a83910a4c76fff8648a76650457c",
-    "semantic_hash": ""
-  },
-  "scratch/test_db.php": {
-    "mtime": 1786075230.7274935,
-    "ast_hash": "c2715be0f89e4bfba6ce4c780b880253",
-    "semantic_hash": ""
   },
   ".agents/AGENTS.md": {
     "mtime": 1786002067.9078512,
@@ -10852,6 +10842,11 @@
   "assets/jstree/themes/default/throbber.gif": {
     "mtime": 1786002071.7474773,
     "ast_hash": "9ed4669f524bec38319be63a2ee4ba26",
+    "semantic_hash": ""
+  },
+  "scratch/test_user_session.php": {
+    "mtime": 1786104916.242902,
+    "ast_hash": "5edec2f459d12453c3724e45e6280386",
     "semantic_hash": ""
   }
 }

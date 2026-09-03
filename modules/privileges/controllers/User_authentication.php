@@ -559,7 +559,7 @@ if ($row->count == 0) {
 								date_expired IS NULL 
 								AND id NOT IN (".$unor_not_in_.") 
 								{$qwhere} 
-								order by id asc";
+								order by kode_satker asc, id asc";
 						$kodeunitutamas = $this->db->query($sql)->result();
 
 						if (!$sess_data['superuser']) {

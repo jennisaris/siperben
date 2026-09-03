@@ -76,7 +76,7 @@ class Cetak_sk_satker extends MX_Controller {
 			if ( $ada > 0 ) {
 			//if ( in_array($this->session->sysparam->group_superuser[0], $groupids) ) {
 				$ar_unor = array();
-				foreach($this->getall('', 'app_m_unor', 'kode, nama') as $r) {
+				foreach($this->getall('', 'app_m_unor', 'kode, nama', ['deleted' => 0]) as $r) {
 					$ar_unor[$r->kode] = $r->nama; 
 				}
 			} else {

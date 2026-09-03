@@ -200,24 +200,18 @@ class Registrasi extends CI_Controller {
         $userid = $this->session->userdata('userid');
         $username = $this->session->userdata('username');
 
-        // Cari data registrasi yang sudah ada — hanya berdasarkan ownership
+        // Cari data registrasi yang sudah ada — berdasarkan ownership (id, satker_kode, atau NIP)
         $reg = $this->db
             ->from('app_t_registrasi')
             ->group_start()
                 ->where('approved_user_id', $userid)
                 ->or_where('satker_kode', $username)
+                ->or_where('nip', $username)
             ->group_end()
             ->where('status', 'disetujui')
             ->order_by('id', 'DESC')
             ->get()
             ->row();
-
-        // Jika tidak ada registrasi yang disetujui, redirect
-        if (empty($reg)) {
-            $this->session->set_flashdata('registrasi_warning', 'Tidak ada data registrasi yang disetujui untuk akun Anda.');
-            redirect('privileges/user_authentication');
-            return;
-        }
 
         // Data default dari session / user
         $user = $this->db->where('id', $userid)->get('priv_t_user')->row();

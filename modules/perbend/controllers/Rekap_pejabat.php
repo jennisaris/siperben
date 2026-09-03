@@ -294,7 +294,11 @@ class Rekap_pejabat extends MX_Controller {
 	    $q_kd_satker = " ckduker in (".$kd_satker_.")";
 	  } else $q_kd_satker = "";
 	  
-	  $sql = "Select ijabid2, count(distinct concat(ckduker,'',cnip)) as total 
+	  $sql = "Select ijabid2, 
+	          case 
+	              when ijabid2 in (1, 2) then count(distinct ckduker)
+	              else count(distinct cnip)
+	          end as total 
               From app_t_usulan_pegawai 
               where {$q_ijabid2} ";
     if ($q_kd_satker !='') $sql.= $q_kd_satker;
@@ -302,12 +306,11 @@ class Rekap_pejabat extends MX_Controller {
 				 when ijabid2 not in (4,5,6,7) then inoskid != 0 and inoskid IS NOT NULL and isnonaktif =0
 				 else isnonaktif=0
 				end ";
-    //$sql .= " and inoskid IS NOT NULL and inoskid !=0 ";
     $sql .= " Group by ijabid2";
               
     $rows = $this->db->query($sql)->result();
     foreach($rows as $r) {
-      $data['total_'.$r->ijabid2] = $r->total;//.' => '.$kd_satker_;
+      $data['total_'.$r->ijabid2] = $r->total;
     }
     
     return $data;

@@ -178,7 +178,7 @@ class Detail_sk_kemdikbud extends MX_Controller {
 				where kode = a.iunorid) as nama_satker,
 				a.ijnsprubhnid, (select vdesc from app_m_perubahan 
 				where id = a.ijnsprubhnid) as jenis_perubahan, 
-				(select cnosk from app_t_usulan_sk 
+				(select case when cnosk != '' and cnosk is not null and cnosk != '.' then cnosk else '-' end from app_t_usulan_sk 
 				where id = b.inoskid) as no_sk,
 				(select dtglsk from app_t_usulan_sk 
 				where id = b.inoskid) as tgl_sk,
@@ -186,12 +186,12 @@ class Detail_sk_kemdikbud extends MX_Controller {
 				(select  concat(cnip, ' - ', vname) from app_t_usulan_pegawai 
 				where ckduker = a.iunorid and isnonaktif = 0 
 				and inoskid !=0 and ((inoskid IS NOT NULL 
-				and ijabid2 = 1)) order by (select ctahun from app_t_usulan where id = iusulanid) desc limit 1) as kpa, 
+				and ijabid2 = 1)) order by (select ctahun from app_t_usulan where id = iusulanid) desc, id desc limit 1) as kpa, 
 
 				(SELECT nama FROM kepeg_m_jabatan, kepeg_m_pegawai WHERE kepeg_m_jabatan.id = kepeg_m_pegawai.ijabid 
 				AND kepeg_m_pegawai.cnip = (SELECT cnip FROM app_t_usulan_pegawai 
 				WHERE ckduker = a.iunorid AND isnonaktif = 0 AND inoskid !=0 AND ((inoskid IS NOT NULL AND ijabid2 = 1) 
-				) ORDER BY (select ctahun from app_t_usulan where id = iusulanid) DESC LIMIT 1)) AS kpa_jab_def, 
+				) ORDER BY (select ctahun from app_t_usulan where id = iusulanid) DESC, id desc LIMIT 1)) AS kpa_jab_def, 
 
 				(select case 
 						when (select cnobnt from kepeg_m_pegawai where cnip = app_t_usulan_pegawai.cnip) != '' then concat(cnip, ' - ', vname, ' ( ', (select cnobnt from kepeg_m_pegawai where cnip = app_t_usulan_pegawai.cnip), ' )')
@@ -199,7 +199,7 @@ class Detail_sk_kemdikbud extends MX_Controller {
 					end from app_t_usulan_pegawai 
 				where ckduker = a.iunorid and isnonaktif = 0 
 				and inoskid !=0 and ((inoskid IS NOT NULL 
-				and ijabid2 = 2)) order by (select ctahun from app_t_usulan where id = iusulanid) desc limit 1) as bp,
+				and ijabid2 = 2)) order by (select ctahun from app_t_usulan where id = iusulanid) desc, id desc limit 1) as bp,
 
 				(select case 
 						when (select cnobnt from kepeg_m_pegawai where cnip = app_t_usulan_pegawai.cnip) != '' then concat(cnip, ' - ', vname, ' ( ', (select cnobnt from kepeg_m_pegawai where cnip = app_t_usulan_pegawai.cnip), ' )')
@@ -207,15 +207,23 @@ class Detail_sk_kemdikbud extends MX_Controller {
 					end from app_t_usulan_pegawai 
 				where ckduker = a.iunorid and isnonaktif = 0 
 				and ((inoskid IS NOT NULL 
-				and ijabid2 = 3) ) order by (select ctahun from app_t_usulan where id = iusulanid) desc limit 1) as bpn
+				and ijabid2 = 3) ) order by (select ctahun from app_t_usulan where id = iusulanid) desc, id desc limit 1) as bpn
 
-				from app_t_usulan a left join 
-				app_t_usulan_pegawai b on a.id = b.iusulanid
+				from app_t_usulan a 
+				join (
+					SELECT MAX(u_sub.id) as max_id, u_sub.iunorid
+					FROM app_t_usulan u_sub
+					JOIN app_t_usulan_pegawai p_sub ON u_sub.id = p_sub.iusulanid
+					WHERE u_sub.istatus = '7' AND u_sub.ijns = 1 
+					  AND p_sub.isnonaktif = 0 
+					  AND p_sub.inoskid != 0 AND p_sub.inoskid IS NOT NULL
+					GROUP BY u_sub.iunorid
+				) latest_u ON a.id = latest_u.max_id
+				left join 
+				app_t_usulan_pegawai b on a.id = b.iusulanid and b.isnonaktif = 0 and b.inoskid != 0 and b.inoskid is not null
 				where a.istatus = '7' 
 				and a.ijns = 1  
-				AND (SELECT cnosk FROM app_t_usulan_sk WHERE id = b.inoskid) IS NOT NULL 
-				AND (SELECT COUNT(*) FROM app_m_unor where kode = a.iunorid and deleted=0) > 0 
-				AND b.isnonaktif = 0 ";
+				AND (SELECT COUNT(*) FROM app_m_unor where kode = a.iunorid and deleted=0) > 0 ";
 				
 		
 			
@@ -264,9 +272,8 @@ class Detail_sk_kemdikbud extends MX_Controller {
 			}
 		}
 		
-		//$sql .= " group by a.id, a.cnousul, a.dtglusul";
-		$sql .= " group by a.ctahun, a.iunorid";
-		$sql .= " order by a.ctahun DESC, a.iunorid";
+		$sql .= " group by a.iunorid";
+		$sql .= " order by a.iunorid ASC";
   		
 		$query = $this->db->query($sql);
 
@@ -342,7 +349,7 @@ class Detail_sk_kemdikbud extends MX_Controller {
 	
 	function get_nama($nama='', $where) {
 		if (empty(trim($nama))) {
-			$sql = "SELECT vname from app_t_usulan_pegawai where {$where} limit 1";
+			$sql = "SELECT vname from app_t_usulan_pegawai where {$where} order by id desc limit 1";
 			$nama = $this->db->query($sql)->row()->vname;
 		}
 		

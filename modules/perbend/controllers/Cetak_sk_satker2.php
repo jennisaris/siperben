@@ -81,7 +81,7 @@ class Cetak_sk_satker2 extends MX_Controller {
 			$this->_addQuery($table, $table.'.iunorid = '.trim($this->session->username), 'and', '', true);
 		} else {
 			$ar_unor = array();
-			foreach($this->getall('', 'app_m_unor', 'kode, nama') as $r) {
+			foreach($this->getall('', 'app_m_unor', 'kode, nama', ['deleted' => 0]) as $r) {
 				$ar_unor[$r->kode] = $r->nama; 
 			}
 			
@@ -106,7 +106,7 @@ class Cetak_sk_satker2 extends MX_Controller {
 	
 			if ( $ada > 0 ) {
 				$ar_unor = array();
-				foreach($this->getall('', 'app_m_unor', 'kode, nama') as $r) {
+				foreach($this->getall('', 'app_m_unor', 'kode, nama', ['deleted' => 0]) as $r) {
 					$ar_unor[$r->kode] = $r->nama; 
 				}
 			} else {

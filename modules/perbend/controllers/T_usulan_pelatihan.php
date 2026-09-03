@@ -148,7 +148,7 @@ class T_usulan_pelatihan extends MX_Controller {
 	  }
 	  $this->_changeType($table, 'golid', 'combobox', $this->ar_golongan);
 	  
-	  foreach($this->getall('', 'app_m_unor', 'kode, nama', array('kode_atasan !=' => '00')) as $r) {
+	  foreach($this->getall('', 'app_m_unor', 'kode, nama', array('kode_atasan !=' => '00', 'deleted' => 0)) as $r) {
 	    $this->ar_unor[$r->kode] = $r->nama;
 	  }
 	  $this->_changeType($table, 'unorid', 'combobox', $this->ar_unor);

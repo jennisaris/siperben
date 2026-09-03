@@ -38,3 +38,8 @@ skills-lock.json
 graphify-out/
 application/graphify-out/
 .agents/skills/
+scratch/
+*.bak*
+*.REMOVED_SECURITY
+*.MALWARE_BACKUP
+*.ps1

@@ -65,7 +65,7 @@ class T_terbit_sk extends MX_Controller {
 		$this->_changeType($this->table, 'dtglusul', 'date', 'd-m-Y');
 
 		$ar_unor = array();
-		foreach($this->getall('', 'app_m_unor', 'kode, nama') as $r) {
+		foreach($this->getall('', 'app_m_unor', 'kode, nama', ['deleted' => 0]) as $r) {
 			$ar_unor[$r->kode] = $r->nama;
 		}
 
@@ -891,7 +891,7 @@ class T_terbit_sk extends MX_Controller {
 
 		$ar_pegawai_sk_baru = implode(",", $pegawai_sk_baru);
 		//$sql = "UPDATE {$this->table}_pegawai SET isnonaktif = 1 where id not in ({$ar_pegawai_sk_baru}) and ckduker='{$pegawai_unorid}' and ijabid2 in (1,2,3)";
-		$sql = "UPDATE {$this->table}_pegawai SET isnonaktif = 1 where cnip in ({$nipold}) and ckduker='{$pegawai_unorid}' and ijabid2 in (1,2,3)";
+		$sql = "UPDATE {$this->table}_pegawai SET isnonaktif = 1 where cnip in ({$nipold}) and id not in ({$ar_pegawai_sk_baru}) and ckduker='{$pegawai_unorid}' and ijabid2 in (1,2,3)";
 		$this->db->query($sql);
 
 		foreach($usulan as $k=>$v) {

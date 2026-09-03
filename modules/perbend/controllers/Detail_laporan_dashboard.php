@@ -77,7 +77,7 @@ class Detail_laporan_dashboard extends MX_Controller {
   		//$kodeunitutamas = $this->session->kodeunitutamas;
   		if (!$reports) $kodeatasan = $this->kriteria->{$this->table.'_iunorid'};
   		$sql = "Select kode, nama from app_m_unor 
-  		where kode_atasan = '{$kodeatasan}' and deleted=0";
+  		where kode_atasan = '{$kodeatasan}' and deleted=0 group by nama";
   		
     		$query = $this->db->query($sql);
     
