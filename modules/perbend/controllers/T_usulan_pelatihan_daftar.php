@@ -203,12 +203,19 @@ class T_usulan_pelatihan_daftar extends MX_Controller {
 						},
 						displayText: function(item) {
 							if (!item) return '';
+							if (typeof item === 'string') return item;
 							var v = item.value ? item.value : '';
 							var n = item.nip   ? item.nip   : '';
-							return v + ' [' + n + ']';
+							if (!v && !n) return '';
+							if (v && n) return v + ' [' + n + ']';
+							return v || n;
 						},
 						matcher: function(item) {
 							if (!item) return false;
+							if (typeof item === 'string') {
+								var q = this.query ? this.query.toLowerCase() : '';
+								return (~item.toLowerCase().indexOf(q)) ? true : false;
+							}
 							var name = item.value ? item.value.toLowerCase() : '';
 							var nip  = item.nip   ? item.nip.toLowerCase()   : '';
 							var q    = this.query ? this.query.toLowerCase() : '';
@@ -216,6 +223,8 @@ class T_usulan_pelatihan_daftar extends MX_Controller {
 						},
 						items: 20,
 						updater: function (item) {
+							if (!item) return '';
+							if (typeof item === 'string') return item;
 							$('#app_t_usulan_pegawai_vname').val(item.value);
 							$('#app_t_usulan_pegawai_vname').attr('readonly', true);
 
@@ -233,7 +242,7 @@ class T_usulan_pelatihan_daftar extends MX_Controller {
 							$('button').removeAttr('disabled');
 				    		$('.btn_save').html(\"<i class='fa fa-save' aria-hidden='true'> </i> Simpan\");
 
-							return  item.nip;
+							return item.nip ? item.nip : (item.value ? item.value : item);
 						},
 					});
 				});

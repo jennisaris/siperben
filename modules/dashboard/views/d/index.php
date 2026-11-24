@@ -864,6 +864,7 @@ $controller = 'index';
             </div>
       </div>
       <div class='box-body'>
+          <form id='<?=$controller4;?>_form_search' onsubmit='return false;'>
           <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
               <div>
                 <select onChange="apply_pub_filter();" name='pub_bulan' id='pub_bulan' class='form-control' style='width:200px;'>
@@ -893,12 +894,13 @@ $controller = 'index';
                 </select>
               </div>
           </div>
+          </form>
           <script type="text/javascript">
             function apply_pub_filter() {
                 var bulan = $('#pub_bulan').val() || '0';
                 var status = $('#pub_status').val() || 'all';
                 var url = '<?=base_url();?>perbend/<?=$controller4;?>/lists/1/' + bulan + '/0/0/' + status;
-                reload_grid(url, '<?=$controller4;?>');
+                reload_grid(url, '<?=$controller4;?>', 1);
             }
           </script>
           <hr style="margin-top: 8px; margin-bottom: 12px;"/>

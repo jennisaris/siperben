@@ -5434,16 +5434,6 @@
     "ast_hash": "d540029e03c205ac7decd10483eca7f5",
     "semantic_hash": "d540029e03c205ac7decd10483eca7f5"
   },
-  "check_apache.ps1": {
-    "mtime": 1786003099.0322332,
-    "ast_hash": "47e78235cee5549193061ede85340b2f",
-    "semantic_hash": "47e78235cee5549193061ede85340b2f"
-  },
-  "check_siperben_rule_update.ps1": {
-    "mtime": 1786028210.007067,
-    "ast_hash": "ca857f1afc9f386836e529aaedefb5c8",
-    "semantic_hash": "ca857f1afc9f386836e529aaedefb5c8"
-  },
   "composer.json": {
     "mtime": 1786002071.9705243,
     "ast_hash": "978f982f9c15fc09f7d5e39431c82af3",
@@ -5458,11 +5448,6 @@
     "mtime": 1786203604.6756613,
     "ast_hash": "1d3121bcc84b51264954ac1c4cf78efb",
     "semantic_hash": ""
-  },
-  "fix_apache_ssl_siperben.ps1": {
-    "mtime": 1786003616.4556577,
-    "ast_hash": "29fe5f56863d9031c5415f767e053335",
-    "semantic_hash": "29fe5f56863d9031c5415f767e053335"
   },
   "index.php": {
     "mtime": 1786002072.142402,
@@ -5480,8 +5465,8 @@
     "semantic_hash": "a6c2e3020d3e9887401182bbaab782cc"
   },
   "modules/dashboard/views/d/index.php": {
-    "mtime": 1786202815.5916224,
-    "ast_hash": "7492e5b8a38a262354ba9c131179e472",
+    "mtime": 1792654635.83404,
+    "ast_hash": "48ce3d5a57e4b46ed9d11e16a057fd27",
     "semantic_hash": ""
   },
   "modules/kepegawaian/controllers/Lookup_unor.php": {
@@ -6390,8 +6375,8 @@
     "semantic_hash": "0e6aa5ee1bd3ab2adbd474b4153aac76"
   },
   "modules/perbend/controllers/Progress_usulan_satker.php": {
-    "mtime": 1786204461.8200476,
-    "ast_hash": "9076e83f0f46f19b2167e8797ff199ee",
+    "mtime": 1792654597.5896282,
+    "ast_hash": "26fd728917f01c7786986a49af922315",
     "semantic_hash": ""
   },
   "modules/perbend/controllers/Rekap_pejabat.php": {
@@ -6450,8 +6435,8 @@
     "semantic_hash": ""
   },
   "modules/perbend/controllers/T_usulan_daftar.php": {
-    "mtime": 1786431514.663982,
-    "ast_hash": "6fcbd8146de935fbb2c45ac2ebe7c2cf",
+    "mtime": 1792641743.7630372,
+    "ast_hash": "a025c449b0299b158e80d851c65dc464",
     "semantic_hash": ""
   },
   "modules/perbend/controllers/T_usulan_daftar2.php": {
@@ -6470,13 +6455,13 @@
     "semantic_hash": ""
   },
   "modules/perbend/controllers/T_usulan_pelatihan_daftar.php": {
-    "mtime": 1786431514.7033606,
-    "ast_hash": "75ec4705af1a66d89c022b1c81106b21",
+    "mtime": 1792641750.4080818,
+    "ast_hash": "d21337ebf4dec0cc9ba57ce09bd99ebf",
     "semantic_hash": ""
   },
   "modules/perbend/controllers/T_usulan_satker.php": {
-    "mtime": 1787716963.2799914,
-    "ast_hash": "56c43f4872031288d1754540d8245974",
+    "mtime": 1792661551.7296207,
+    "ast_hash": "43fdc729ee21569be45236b60009fac1",
     "semantic_hash": ""
   },
   "modules/perbend/controllers/T_usulan_satker2.php": {
@@ -10839,11 +10824,6 @@
     "ast_hash": "9ed4669f524bec38319be63a2ee4ba26",
     "semantic_hash": ""
   },
-  "scratch/test_user_session.php": {
-    "mtime": 1786104916.242902,
-    "ast_hash": "5edec2f459d12453c3724e45e6280386",
-    "semantic_hash": ""
-  },
   "AGENTS.md": {
     "mtime": 1786202944.464419,
     "ast_hash": "7026027d5dbb4d72833b33782a237456",
@@ -10954,411 +10934,6 @@
     "ast_hash": "d52d786ed4542e80f55ec1d791710ac9",
     "semantic_hash": ""
   },
-  "scratch/add_satker_695420.php": {
-    "mtime": 1787720854.7501538,
-    "ast_hash": "9c3807d9b143dddfbedcebea4b2cb05b",
-    "semantic_hash": ""
-  },
-  "scratch/analyze_mapping_gap.php": {
-    "mtime": 1787714617.2278786,
-    "ast_hash": "1b3bcc61def35ff441fd5d1f4d4204d4",
-    "semantic_hash": ""
-  },
-  "scratch/apply_db_index.php": {
-    "mtime": 1786440642.646461,
-    "ast_hash": "b100c3f19a5801559bb73f5edbde62eb",
-    "semantic_hash": ""
-  },
-  "scratch/apply_nonaktif_fix.php": {
-    "mtime": 1787714896.5907793,
-    "ast_hash": "287e2ec05ff67907ee5be05f319bf39e",
-    "semantic_hash": ""
-  },
-  "scratch/apply_satker_dedupe.php": {
-    "mtime": 1787714247.261024,
-    "ast_hash": "6d429f634c50e8b94aeda539f95820d5",
-    "semantic_hash": ""
-  },
-  "scratch/apply_tarik_privileges.php": {
-    "mtime": 1788168714.6477816,
-    "ast_hash": "f9640b278743be7c3e2207d45417bfbf",
-    "semantic_hash": ""
-  },
-  "scratch/apply_user_requested_fixes.php": {
-    "mtime": 1787716078.7770948,
-    "ast_hash": "dedd37358d5e65e4fb1a56571073fbef",
-    "semantic_hash": ""
-  },
-  "scratch/check_all_dups_in_unor.php": {
-    "mtime": 1787714214.5152874,
-    "ast_hash": "ad936975dea3a064da7739c72f63e3a2",
-    "semantic_hash": ""
-  },
-  "scratch/check_all_laporan_queries.php": {
-    "mtime": 1787714173.2037685,
-    "ast_hash": "438210326d04dc6e6e5ac81bc60dfab6",
-    "semantic_hash": ""
-  },
-  "scratch/check_all_report_controllers_kpa.php": {
-    "mtime": 1787716637.4864018,
-    "ast_hash": "cc24cec593cc470b6fe84c3fcfef270e",
-    "semantic_hash": ""
-  },
-  "scratch/check_all_satkers_under_sekjen.php": {
-    "mtime": 1787718119.3504791,
-    "ast_hash": "1a51d157eede088e940b5bb63a68755c",
-    "semantic_hash": ""
-  },
-  "scratch/check_duplicate_satkers.php": {
-    "mtime": 1787714123.2711453,
-    "ast_hash": "7f76b5950e048f19af40044bd511918f",
-    "semantic_hash": ""
-  },
-  "scratch/check_duplicate_usage.php": {
-    "mtime": 1787714190.0136364,
-    "ast_hash": "8b9ce0604a4f83978c60090e9dba4e10",
-    "semantic_hash": ""
-  },
-  "scratch/check_menu_satker.php": {
-    "mtime": 1787202152.168251,
-    "ast_hash": "78dae14cb1d8ffa04930c2bcb7abcf04",
-    "semantic_hash": ""
-  },
-  "scratch/check_missing_registrasi.php": {
-    "mtime": 1788167355.0889888,
-    "ast_hash": "692680a1700b9d6bd5559e7e4d773e57",
-    "semantic_hash": ""
-  },
-  "scratch/check_multiple_active_per_satker.php": {
-    "mtime": 1787715371.7821763,
-    "ast_hash": "250bd413c48d7cce335dd43f1d01bf23",
-    "semantic_hash": ""
-  },
-  "scratch/check_new_satker_695420.php": {
-    "mtime": 1787720823.8288338,
-    "ast_hash": "b01e0f9a1e2039e18ede87fddf8fdf45",
-    "semantic_hash": ""
-  },
-  "scratch/check_pegawai_details.php": {
-    "mtime": 1787714582.4390936,
-    "ast_hash": "7878fd1db5b2113b246f46da706b714e",
-    "semantic_hash": ""
-  },
-  "scratch/check_pegawai_unor_codes.php": {
-    "mtime": 1787718153.8902895,
-    "ast_hash": "791a6160bdc1f373ca99686ad1ba49b3",
-    "semantic_hash": ""
-  },
-  "scratch/check_perf_db.php": {
-    "mtime": 1786440505.6665306,
-    "ast_hash": "77ea0d0e0fc5142d4f2e3aa494ae940c",
-    "semantic_hash": ""
-  },
-  "scratch/check_satker_groups.php": {
-    "mtime": 1787202175.3531897,
-    "ast_hash": "011b6275e91781c788b5edaaa871f788",
-    "semantic_hash": ""
-  },
-  "scratch/check_sumsel_kpa.php": {
-    "mtime": 1787715036.5011544,
-    "ast_hash": "0af98f0426393e9e392f0e0f6a7d5df1",
-    "semantic_hash": ""
-  },
-  "scratch/check_tarik_data.php": {
-    "mtime": 1788168528.0485487,
-    "ast_hash": "cccc3d1ee9d41e5f270e92e3a13d9297",
-    "semantic_hash": ""
-  },
-  "scratch/check_years.php": {
-    "mtime": 1787201686.1318853,
-    "ast_hash": "3d56b6c125917461f2764ab1d698b9ae",
-    "semantic_hash": ""
-  },
-  "scratch/debug_laporan_query.php": {
-    "mtime": 1787714690.8143103,
-    "ast_hash": "40f3f272238eb1579a05b01454ed0637",
-    "semantic_hash": ""
-  },
-  "scratch/deduplicate_active_positions.php": {
-    "mtime": 1787715389.3416774,
-    "ast_hash": "012417d695b9f26610678ca7fde02629",
-    "semantic_hash": ""
-  },
-  "scratch/diagnose_693189_kpa.php": {
-    "mtime": 1787716237.8963637,
-    "ast_hash": "fa534298e7a673e765369182105c4154",
-    "semantic_hash": ""
-  },
-  "scratch/diagnose_all_incorrect_nonaktif.php": {
-    "mtime": 1787714805.0872037,
-    "ast_hash": "4148e45e80d8fdc48905fcdf72e60d55",
-    "semantic_hash": ""
-  },
-  "scratch/diagnose_eselon.php": {
-    "mtime": 1786204284.3989139,
-    "ast_hash": "b83210c1492add326e6026571e7d6614",
-    "semantic_hash": ""
-  },
-  "scratch/diagnose_eselon2.php": {
-    "mtime": 1786204392.2834496,
-    "ast_hash": "1dfbcc87fc738aa1ae5845e994affe2a",
-    "semantic_hash": ""
-  },
-  "scratch/diagnose_laporan1_satkers.php": {
-    "mtime": 1787717081.0866425,
-    "ast_hash": "e93637d719e6810ac58bfec436691099",
-    "semantic_hash": ""
-  },
-  "scratch/diagnose_satker_zero.php": {
-    "mtime": 1787714549.1849978,
-    "ast_hash": "4b77ab8b688ca01a1bf3d7387046c1d6",
-    "semantic_hash": ""
-  },
-  "scratch/diagnose_unor_codes.php": {
-    "mtime": 1787714567.1839545,
-    "ast_hash": "e4c2a2bcdaa857dfb979c77a634d0489",
-    "semantic_hash": ""
-  },
-  "scratch/diagnose_user_specific_satkers.php": {
-    "mtime": 1787715690.386161,
-    "ast_hash": "ee7420800a2cea55774bf2079b68322f",
-    "semantic_hash": ""
-  },
-  "scratch/find_all_satkers_zero.php": {
-    "mtime": 1787714598.9168167,
-    "ast_hash": "d343ba28d5860846126a8d545fd83e55",
-    "semantic_hash": ""
-  },
-  "scratch/find_ortal_sdm_in_lists.php": {
-    "mtime": 1787716896.030953,
-    "ast_hash": "c59657b4dd00317606b67bedab35e567",
-    "semantic_hash": ""
-  },
-  "scratch/fix_all_duplicate_unor.php": {
-    "mtime": 1787714922.7721183,
-    "ast_hash": "46c9e719f5cb5bf6ec3edf9ab0bc425b",
-    "semantic_hash": ""
-  },
-  "scratch/fix_kepeg_m_unor_expired.php": {
-    "mtime": 1787719860.995248,
-    "ast_hash": "a323fad414873a8ecc3e9b712f6788da",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_abdullah_faqih.php": {
-    "mtime": 1787716744.8865087,
-    "ast_hash": "602256afd458281b50e4132d9cbcce7a",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_biro_ortal_sdm.php": {
-    "mtime": 1787716062.063358,
-    "ast_hash": "cf2b620e22c9432acd8ddd93ec97b7ea",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_ditjen_paudasmen.php": {
-    "mtime": 1787720284.1966093,
-    "ast_hash": "0b33b06a8f86fdc13051029db6f2bacf",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_duplicate_unor.php": {
-    "mtime": 1787714144.4833329,
-    "ast_hash": "625eacc64ef8e4b7de1de94637de69ef",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_eselon1_list.php": {
-    "mtime": 1787720725.6625533,
-    "ast_hash": "9ee9c3423f0804e1c54cb395c8626d2c",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_isnonaktif_reason.php": {
-    "mtime": 1787714711.4603539,
-    "ast_hash": "fd0624ed75293f666689b648ec393775",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_kepeg_m_unor.php": {
-    "mtime": 1787719737.8585994,
-    "ast_hash": "3509177262463fd00278bb64e1847c6a",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_master_menu.php": {
-    "mtime": 1787202016.249386,
-    "ast_hash": "d1e3f88ff5e4a501bd2f7d9720c4ee9b",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_menus.php": {
-    "mtime": 1787201999.0038476,
-    "ast_hash": "e8f56383b347efc1d9fdb56cc9202fa3",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_paudasmen_subunits.php": {
-    "mtime": 1787720766.9042866,
-    "ast_hash": "0dc2a93ca331c4d553564568df8bf418",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_priv_t_user_columns.php": {
-    "mtime": 1787716921.3928752,
-    "ast_hash": "2dbd9ebf529427b603fdb86d7d2871ef",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_privileges.php": {
-    "mtime": 1787202040.597717,
-    "ast_hash": "db69c56473cfecb6095bbc9e3ac15adb",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_privileges2.php": {
-    "mtime": 1787202099.364081,
-    "ast_hash": "d81aace0f7126f75bf56e24112c8e074",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_puspeka_bp.php": {
-    "mtime": 1787716009.8969467,
-    "ast_hash": "03f4e5b423971fced950512102809b51",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_rekening_tables.php": {
-    "mtime": 1787718106.6737916,
-    "ast_hash": "171a3b7aaf17c009e37d2688b558171f",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_sma_bp.php": {
-    "mtime": 1787715982.045102,
-    "ast_hash": "4a9233fec00b5a52e144066534e12110",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_unor_insert_schema.php": {
-    "mtime": 1787720837.136223,
-    "ast_hash": "24cffb83c6c77753f2d18a43f3190bd7",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_unor_structure.php": {
-    "mtime": 1788341765.4188592,
-    "ast_hash": "aaf34dcb965f4e5c8a75c60f73a17cd8",
-    "semantic_hash": ""
-  },
-  "scratch/migrate_ortal_sdm_to_693189.php": {
-    "mtime": 1787719005.6037126,
-    "ast_hash": "cfc5e1a34b7088aa956b7defa312bede",
-    "semantic_hash": ""
-  },
-  "scratch/run_migration_20260814.php": {
-    "mtime": 1786692287.4371095,
-    "ast_hash": "8cf69d68683f45d17366fd526cc82aec",
-    "semantic_hash": ""
-  },
-  "scratch/search_all_tables_for_ortal_sdm.php": {
-    "mtime": 1787718087.2796125,
-    "ast_hash": "fb2f589dd275324a0cf8cea2f461f3b0",
-    "semantic_hash": ""
-  },
-  "scratch/search_sumsel_kpa_kepeg.php": {
-    "mtime": 1787715067.9974205,
-    "ast_hash": "4d9d916b274d4ff29c0fcbdae93afc12",
-    "semantic_hash": ""
-  },
-  "scratch/set_abdullah_faqih_kpa.php": {
-    "mtime": 1787716759.555695,
-    "ast_hash": "6baad7961a687ff0ba00ba681b2ce430",
-    "semantic_hash": ""
-  },
-  "scratch/test_all_eselon1.php": {
-    "mtime": 1787714988.5491607,
-    "ast_hash": "de16c5c5ebfbee4852e5bf3794b8e36b",
-    "semantic_hash": ""
-  },
-  "scratch/test_all_reports_for_693189.php": {
-    "mtime": 1787716625.8409407,
-    "ast_hash": "790d42fbf622dbf848f736cee892944b",
-    "semantic_hash": ""
-  },
-  "scratch/test_ci_db_conn.php": {
-    "mtime": 1786440678.248647,
-    "ast_hash": "039bb6c749affb4734b1a20e9cad13bd",
-    "semantic_hash": ""
-  },
-  "scratch/test_dedupe_unor.php": {
-    "mtime": 1787714232.586661,
-    "ast_hash": "cbf3ee0e3a2943bb54b78b90182985a0",
-    "semantic_hash": ""
-  },
-  "scratch/test_detail_laporan1_full.php": {
-    "mtime": 1787718139.9930506,
-    "ast_hash": "12647e2338527eeff4b3602ba725c7af",
-    "semantic_hash": ""
-  },
-  "scratch/test_fallback_kpa.php": {
-    "mtime": 1787715167.862744,
-    "ast_hash": "3d4f5f4645d1b72b72a28601df6f6551",
-    "semantic_hash": ""
-  },
-  "scratch/test_final_laporan_totals.php": {
-    "mtime": 1787714942.170278,
-    "ast_hash": "b9478c535f29c5ef200d0b1a34ec7873",
-    "semantic_hash": ""
-  },
-  "scratch/test_gtk_units.php": {
-    "mtime": 1787715022.2390392,
-    "ast_hash": "bf64b89981df3238257e0dba75278609",
-    "semantic_hash": ""
-  },
-  "scratch/test_tarik_ci.php": {
-    "mtime": 1788168479.7555592,
-    "ast_hash": "a1dcdc7606f46f8a8cbb109182c8bfdb",
-    "semantic_hash": ""
-  },
-  "scratch/test_view_btn.php": {
-    "mtime": 1786548605.1740983,
-    "ast_hash": "db7b450936c95e8e47231bbab5a1a422",
-    "semantic_hash": ""
-  },
-  "scratch/test_view_response.php": {
-    "mtime": 1786609831.9646769,
-    "ast_hash": "54f6a59a68386fcd3507ece264ed1c1b",
-    "semantic_hash": ""
-  },
-  "scratch/update_satker_pegawai_access.php": {
-    "mtime": 1787202353.181152,
-    "ast_hash": "f39b10ec7b9d69ad9fdd4a1952abb6a3",
-    "semantic_hash": ""
-  },
-  "scratch/verify_all_lists_clean.php": {
-    "mtime": 1787716997.563372,
-    "ast_hash": "abcd8c2863b8c680bdc0458d2af65384",
-    "semantic_hash": ""
-  },
-  "scratch/verify_eselon.php": {
-    "mtime": 1786204359.2913907,
-    "ast_hash": "232af6f9a8572da1b5c6bf1aa78343bf",
-    "semantic_hash": ""
-  },
-  "scratch/verify_new_satker_695420.php": {
-    "mtime": 1787720894.012293,
-    "ast_hash": "ca3cc754cf2fd1493d4b468c8ecf8332",
-    "semantic_hash": ""
-  },
-  "scratch/verify_pegawai_access.php": {
-    "mtime": 1787202760.8437808,
-    "ast_hash": "4575b51706952e3019619fa22d6c14a0",
-    "semantic_hash": ""
-  },
-  "scratch/verify_redirect_fix.php": {
-    "mtime": 1788167459.2425337,
-    "ast_hash": "5b719e07a2dcdc20973b8acc79edf870",
-    "semantic_hash": ""
-  },
-  "scratch/verify_rekap_pejabat_table.php": {
-    "mtime": 1787719879.2253225,
-    "ast_hash": "fc32988abe12a921eff4e98fab2e0cd1",
-    "semantic_hash": ""
-  },
-  "scratch/verify_tarik_pegawai.php": {
-    "mtime": 1788168737.7957304,
-    "ast_hash": "28a8599ce040316889a29b5b177f4f61",
-    "semantic_hash": ""
-  },
-  "scratch/verify_user_specific_fixes.php": {
-    "mtime": 1787716095.0517623,
-    "ast_hash": "65c19d88b5d347b729471e8cdd23de8d",
-    "semantic_hash": ""
-  },
   "tests/e2e/autocomplete-nip.spec.js": {
     "mtime": 1786435304.9492157,
     "ast_hash": "3b0045f1a6b3e51603bd29e3ac3cae11",
@@ -11367,16 +10942,6 @@
   "tests/e2e/save-auth-state.js": {
     "mtime": 1786435304.9542367,
     "ast_hash": "1f8e6c6256a8df999ad9770325b1952c",
-    "semantic_hash": ""
-  },
-  "scratch/_review_dq2.txt": {
-    "mtime": 1787721796.8079014,
-    "ast_hash": "d2a4a666bc01150a8a36d09188b98676",
-    "semantic_hash": ""
-  },
-  "scratch/test_hook_whitelist.php": {
-    "mtime": 1788169020.4522629,
-    "ast_hash": "d93bfbcca7d8cf037f2298ab9f6ce988",
     "semantic_hash": ""
   },
   "db/migrations/20260902_01_deactivate_old_kpa_bp_duplicates.sql": {
@@ -11399,389 +10964,9 @@
     "ast_hash": "fd854e62be0bcb62fd4a3190d9f69188",
     "semantic_hash": ""
   },
-  "scratch/audit_eselon1_totals.php": {
-    "mtime": 1788341751.6219678,
-    "ast_hash": "0dffc48cdfc00f2bd413679e3249d689",
-    "semantic_hash": ""
-  },
-  "scratch/check_active_duplicates.php": {
-    "mtime": 1788341493.1106088,
-    "ast_hash": "5067362732468855941b7be73bb4e360",
-    "semantic_hash": ""
-  },
-  "scratch/check_all_satker_issues.php": {
-    "mtime": 1788341584.154158,
-    "ast_hash": "a12f937b73b1643a15d99263a705f672",
-    "semantic_hash": ""
-  },
-  "scratch/check_empty_kode_satker.php": {
-    "mtime": 1788341992.9461358,
-    "ast_hash": "96d6c5a508c3e71e30d64b1bd69a5d7f",
-    "semantic_hash": ""
-  },
-  "scratch/check_latest_approved_records.php": {
-    "mtime": 1788342138.380768,
-    "ast_hash": "9905946351cf9b8b4fd205927a768595",
-    "semantic_hash": ""
-  },
-  "scratch/check_reciprocal_kode_lama.php": {
-    "mtime": 1788341918.4931803,
-    "ast_hash": "35d86b80eb45b2f41e8c1e8a4244115a",
-    "semantic_hash": ""
-  },
-  "scratch/check_satkers_count.php": {
-    "mtime": 1788341728.2048028,
-    "ast_hash": "44f31156b7eacc883848ef69cd0191fe",
-    "semantic_hash": ""
-  },
-  "scratch/create_deactivation_migration.php": {
-    "mtime": 1788341880.8688028,
-    "ast_hash": "370be60270cf76aa6fa3cc63f5692503",
-    "semantic_hash": ""
-  },
-  "scratch/final_verification.php": {
-    "mtime": 1788342266.6427112,
-    "ast_hash": "2e1848ca73e2c511477afbf9a6e0ac3f",
-    "semantic_hash": ""
-  },
-  "scratch/fix_lldikti_kepeg_unor.php": {
-    "mtime": 1788342152.1707587,
-    "ast_hash": "6dfc4a496482f9895392aabc4075004d",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_694778.php": {
-    "mtime": 1788341554.7078931,
-    "ast_hash": "ecaafb245767d2fd1bf9b36e61d3e37b",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_694778_query.php": {
-    "mtime": 1788341567.7718818,
-    "ast_hash": "8df627386887e50f1a8714a7f499b7e2",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_6_missing.php": {
-    "mtime": 1788342171.521328,
-    "ast_hash": "30b31541c2d7e947e0deab0d58fb0cd9",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_6_univs.php": {
-    "mtime": 1788342004.3586328,
-    "ast_hash": "146b8195f2424ec48b2f84aaf6729e6f",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_723018.php": {
-    "mtime": 1788341830.7447934,
-    "ast_hash": "32a2904de013d3e7bded3c21e327a5c2",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_all_duplicates.php": {
-    "mtime": 1788341613.5385804,
-    "ast_hash": "cdc6ee9b3d03b22234d42887ee40eb9a",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_deactivations.php": {
-    "mtime": 1788341869.7502627,
-    "ast_hash": "20de92a516b2322f930d1b75a9cd3ac5",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_lldikti10.php": {
-    "mtime": 1788341821.396343,
-    "ast_hash": "cffe5dea857cdf672c632b81c2c01813",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_lldikti_codes.php": {
-    "mtime": 1788341905.1843517,
-    "ast_hash": "2356b1a356bbacec7bc6a29fb1c1b5fd",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_rekap_pejabat.php": {
-    "mtime": 1788341526.4873827,
-    "ast_hash": "7b82b9d8f2591065b2b26233687f4efa",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_specific_records.php": {
-    "mtime": 1788342103.6929197,
-    "ast_hash": "589d75432e78a0a25e6aea424aad3113",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_unima_untad.php": {
-    "mtime": 1788342065.8623488,
-    "ast_hash": "0d37f8637e06cdd917ab101e66861bb5",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_unima_untad_2.php": {
-    "mtime": 1788342201.6518345,
-    "ast_hash": "f9c9b30a4a3743ee6dc8606708f87a6d",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_zero_kpa_bp.php": {
-    "mtime": 1788341967.931192,
-    "ast_hash": "0a6f9f9cacbb8f9cfaea37c129cf0118",
-    "semantic_hash": ""
-  },
-  "scratch/restore_6_sk_records.php": {
-    "mtime": 1788342184.741176,
-    "ast_hash": "2f030e5d24de8771f8cefd4e3f26bc19",
-    "semantic_hash": ""
-  },
-  "scratch/simulate_rekap_pejabat.php": {
-    "mtime": 1788341795.4979265,
-    "ast_hash": "9a47822783d0ab3dd4a0d6251e112a82",
-    "semantic_hash": ""
-  },
-  "scratch/sync_bidirectional_kode_lama.php": {
-    "mtime": 1788341933.189418,
-    "ast_hash": "608bfad7ea7661573e9b23d9373e9f9a",
-    "semantic_hash": ""
-  },
   "db/migrations/20260902_05_deactivate_pendidikan_tinggi_satkers.sql": {
     "mtime": 1788342742.1277933,
     "ast_hash": "602a043997141ced004dd5a767127b56",
-    "semantic_hash": ""
-  },
-  "scratch/check_14124_unor.php": {
-    "mtime": 1788342646.8815951,
-    "ast_hash": "fc2905fa4afc1d2c76a61976f068ba3f",
-    "semantic_hash": ""
-  },
-  "scratch/check_eselon1_mapping.php": {
-    "mtime": 1788342631.4177053,
-    "ast_hash": "7cdbbf2466c29b4571b2aaa315c2e831",
-    "semantic_hash": ""
-  },
-  "scratch/desc_priv_t_user.php": {
-    "mtime": 1788342718.009398,
-    "ast_hash": "6689c441a77e08f67b042f03610e117c",
-    "semantic_hash": ""
-  },
-  "scratch/execute_deactivation_dikti.php": {
-    "mtime": 1788342732.8228037,
-    "ast_hash": "0e184edfe959aab624ea2ca655d3b24c",
-    "semantic_hash": ""
-  },
-  "scratch/find_138.php": {
-    "mtime": 1788342450.4548047,
-    "ast_hash": "666d0264585286749f94e14732e73a06",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_138_vs_non138.php": {
-    "mtime": 1788342510.8357937,
-    "ast_hash": "a8756c6022be4915d0daf485b1933d1b",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_dikti_satkers.php": {
-    "mtime": 1788342521.9954765,
-    "ast_hash": "47567b93ec10342b94ecea39ebc1a80f",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_priv_user_satkers.php": {
-    "mtime": 1788342745.2774644,
-    "ast_hash": "2fc3472b1cc1954599a7767987820911",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_sysparam.php": {
-    "mtime": 1788342495.4236133,
-    "ast_hash": "d817bcb1613eea54a7a147ea20f9315e",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_unit_utama_hierarchy.php": {
-    "mtime": 1788342465.2156675,
-    "ast_hash": "807455104f162fa25b27b71caa6b9591",
-    "semantic_hash": ""
-  },
-  "scratch/investigate_dikti_138.php": {
-    "mtime": 1788342435.8659003,
-    "ast_hash": "7d3290fae2eb95591b39f859184fc8f8",
-    "semantic_hash": ""
-  },
-  "scratch/list_satkers_138.php": {
-    "mtime": 1788342535.460511,
-    "ast_hash": "083876c986f01682bdc9d4fa57b21877",
-    "semantic_hash": ""
-  },
-  "scratch/plan_deactivation.php": {
-    "mtime": 1788342705.111995,
-    "ast_hash": "a4325eb1e1851c023cf7497892cb6dcb",
-    "semantic_hash": ""
-  },
-  "scratch/simulate_rekap_138.php": {
-    "mtime": 1788342552.5184753,
-    "ast_hash": "78a1d2bc4f43214839de1b26495139a4",
-    "semantic_hash": ""
-  },
-  "scratch/test_kodeunitutamas.php": {
-    "mtime": 1788342772.5838454,
-    "ast_hash": "f34acbf61891f6512d87028347fd5b4f",
-    "semantic_hash": ""
-  },
-  "scratch/verify_final_138.php": {
-    "mtime": 1788342797.7747269,
-    "ast_hash": "0f0192e86a4600e0c0432cfccebc2f23",
-    "semantic_hash": ""
-  },
-  "scratch/check_app_unor_unique.php": {
-    "mtime": 1788343053.4535155,
-    "ast_hash": "cd1f3e028818b7bb1b6ae412e2fce66b",
-    "semantic_hash": ""
-  },
-  "scratch/check_detail_rekap_duplicates.php": {
-    "mtime": 1788343111.8556094,
-    "ast_hash": "94b4dd69dfa1a6fde31c4855b11b7f48",
-    "semantic_hash": ""
-  },
-  "scratch/test_detail_rekap_rendering.php": {
-    "mtime": 1788343151.0250318,
-    "ast_hash": "71ea6c0f365c0f3eb0dd201b0c8c57cd",
-    "semantic_hash": ""
-  },
-  "scratch/check_detail_sk_kemdikbud.php": {
-    "mtime": 1788404652.2726102,
-    "ast_hash": "26134da24704e86e23d62744d365809a",
-    "semantic_hash": ""
-  },
-  "scratch/check_detail_sk_kpa.php": {
-    "mtime": 1788404814.6107202,
-    "ast_hash": "1dc3e4e70961efd498ec1e1768aecd17",
-    "semantic_hash": ""
-  },
-  "scratch/check_empty_kodeatasan.php": {
-    "mtime": 1788404598.3264315,
-    "ast_hash": "6a8bd3fb305f88507dabdac879ee308d",
-    "semantic_hash": ""
-  },
-  "scratch/check_groups_users.php": {
-    "mtime": 1788404539.5505772,
-    "ast_hash": "b7e57988ea2c7de7f4e8be5b019d5809",
-    "semantic_hash": ""
-  },
-  "scratch/check_groups_users2.php": {
-    "mtime": 1788404560.0254688,
-    "ast_hash": "d7b5c4185aca51c93acb8639d7566bf8",
-    "semantic_hash": ""
-  },
-  "scratch/check_iunorid.php": {
-    "mtime": 1788404577.9071703,
-    "ast_hash": "02c7983a545e427962e83259411bf3f5",
-    "semantic_hash": ""
-  },
-  "scratch/find_dup_satkers.php": {
-    "mtime": 1788404193.1086352,
-    "ast_hash": "54dd87cd4b0d527d3f36d459e78fabfb",
-    "semantic_hash": ""
-  },
-  "scratch/simulate_satker_user_rekap.php": {
-    "mtime": 1788404515.9896805,
-    "ast_hash": "211c5c7186f6edeaaeb1f422089d8e4f",
-    "semantic_hash": ""
-  },
-  "scratch/test_latest_detail_sk_kemdikbud.php": {
-    "mtime": 1788404766.0290484,
-    "ast_hash": "070500f52308e0485ed851eb3dc16182",
-    "semantic_hash": ""
-  },
-  "scratch/verify_detail_sk_kemdikbud.php": {
-    "mtime": 1788405134.326798,
-    "ast_hash": "b9a1534245ea9fd33f846c62027726f8",
-    "semantic_hash": ""
-  },
-  "scratch/breakdown_6784.php": {
-    "mtime": 1788406477.5025709,
-    "ast_hash": "556cda9cf0bb2ee4515f8fd973a79e81",
-    "semantic_hash": ""
-  },
-  "scratch/check_693186_693189.php": {
-    "mtime": 1788406249.3206644,
-    "ast_hash": "6da36811c1b37bd0490736e689656303",
-    "semantic_hash": ""
-  },
-  "scratch/check_all_sk_missing.php": {
-    "mtime": 1788406596.5313504,
-    "ast_hash": "bff438bb555250bf62d5bfdcf023bd9b",
-    "semantic_hash": ""
-  },
-  "scratch/check_all_unit_utama.php": {
-    "mtime": 1788407128.270064,
-    "ast_hash": "127bb495b6c511f457eba61ae4e6eec5",
-    "semantic_hash": ""
-  },
-  "scratch/check_cnosk_1792.php": {
-    "mtime": 1788406541.8515172,
-    "ast_hash": "d94be6dc1cd8122baa41e31f84769439",
-    "semantic_hash": ""
-  },
-  "scratch/check_missing_sk.php": {
-    "mtime": 1788406114.6406732,
-    "ast_hash": "4ce5bb5ec5b966f3a12e3c8c29b27987",
-    "semantic_hash": ""
-  },
-  "scratch/check_setjen_12.php": {
-    "mtime": 1788406564.5587273,
-    "ast_hash": "aa0b6081e4b2616575cd1ff47919a525",
-    "semantic_hash": ""
-  },
-  "scratch/check_sk_simple.php": {
-    "mtime": 1788406338.3553753,
-    "ast_hash": "90ed0d571c6b4eb74e1dd4cf83de59bd",
-    "semantic_hash": ""
-  },
-  "scratch/check_sk_table.php": {
-    "mtime": 1788406286.1873975,
-    "ast_hash": "63654ddc552d46899db275865e4d393e",
-    "semantic_hash": ""
-  },
-  "scratch/debug_693189.php": {
-    "mtime": 1788406352.4965806,
-    "ast_hash": "498c602bc289f6d4c1f6afd70349e2f1",
-    "semantic_hash": ""
-  },
-  "scratch/diagnose_setjen_satkers.php": {
-    "mtime": 1788405694.9226432,
-    "ast_hash": "8b1bfa26f7cabb99d9d7f574ea0ecf59",
-    "semantic_hash": ""
-  },
-  "scratch/final_verification_all_units.php": {
-    "mtime": 1788415522.7776978,
-    "ast_hash": "0d1388d1b4f810fbe4f9fbf4fc318974",
-    "semantic_hash": ""
-  },
-  "scratch/print_setjen_rows.php": {
-    "mtime": 1788415561.3674207,
-    "ast_hash": "8d33a1a7e9155c70f6e79337053d06ba",
-    "semantic_hash": ""
-  },
-  "scratch/simulate_detail_setjen.php": {
-    "mtime": 1788406056.6949942,
-    "ast_hash": "681f86a531860c0bc5ba7ee4b70de620",
-    "semantic_hash": ""
-  },
-  "scratch/step_6784.php": {
-    "mtime": 1788406522.136302,
-    "ast_hash": "4f2be34a7ec2d5daec7b4e6970c09985",
-    "semantic_hash": ""
-  },
-  "scratch/test_without_cnosk.php": {
-    "mtime": 1788406629.5790513,
-    "ast_hash": "81282c9bf0e05150302113bbb6c5b5f9",
-    "semantic_hash": ""
-  },
-  "scratch/check_missing_kpa.php": {
-    "mtime": 1788415984.950269,
-    "ast_hash": "a3ddcdc78566d161a53d6caf4baf082f",
-    "semantic_hash": ""
-  },
-  "scratch/check_rekap_pejabat_current.php": {
-    "mtime": 1788415914.153891,
-    "ast_hash": "3c16af4c5566eb812647116ccf455067",
-    "semantic_hash": ""
-  },
-  "scratch/test_per_satker_kpa_bp.php": {
-    "mtime": 1788417841.8305528,
-    "ast_hash": "4c5a4b2eb3937984437de3fd799125b0",
-    "semantic_hash": ""
-  },
-  "scratch/verify_rekap_pejabat_final.php": {
-    "mtime": 1788417992.4422612,
-    "ast_hash": "0f5d58a7117ccb3d802c948c0297ee4e",
     "semantic_hash": ""
   },
   ".agents/rules/aturan_perbendaharaan_satker.md": {
@@ -11789,19 +10974,9 @@
     "ast_hash": "fb223968370828da34936d5b982818d2",
     "semantic_hash": ""
   },
-  "scratch/check_upload_history.php": {
-    "mtime": 1788422154.6138623,
-    "ast_hash": "b32df7552de303cfed47f621006f729f",
-    "semantic_hash": ""
-  },
-  "scratch/inspect_template.php": {
-    "mtime": 1788422089.1331136,
-    "ast_hash": "7b77e46dd22b1cce82e6229d9e127b6b",
-    "semantic_hash": ""
-  },
-  "scratch/test_upload_parsing.php": {
-    "mtime": 1788422479.362763,
-    "ast_hash": "00d7389417fcd2bc2acc666924f517d3",
+  "assets/images/alur_pembuatan_sk.jpg": {
+    "mtime": 1792660586.7417643,
+    "ast_hash": "4bab3686cd120b5037b2d6e34093c5f8",
     "semantic_hash": ""
   }
 }

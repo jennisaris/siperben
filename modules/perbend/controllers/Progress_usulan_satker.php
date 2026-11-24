@@ -59,21 +59,30 @@ class Progress_usulan_satker extends MX_Controller {
 		
   		$html = '';
   		
-  		// Detect active page accurately from last URI segment or parameters
-  		$uri_segments = $this->uri->segment_array();
-  		$last_segment = end($uri_segments);
-  		
+  		// Deteksi nomor halaman aktif secara presisi
   		$page = 1;
-  		if (is_numeric($last_segment) && (int)$last_segment > 0) {
-  			$page = (int)$last_segment;
-  		} else if (is_numeric($xx) && (int)$xx > 0) {
-  			$page = (int)$xx;
-  		} else if (is_numeric($page_ke) && (int)$page_ke > 0) {
-  			$page = (int)$page_ke;
+  		if (isset($_REQUEST['page']) && is_numeric($_REQUEST['page']) && (int)$_REQUEST['page'] > 0) {
+  			$page = (int)$_REQUEST['page'];
+  		} else {
+  			$uri_segments = $this->uri->segment_array();
+  			// Segment URL:
+  			// 1: perbend, 2: progress_usulan_satker, 3: lists
+  			// 4: xx, 5: q (bulan), 6: page_ke, 7: reports, 8: status, 9: page (dari reload_grid / get_paging)
+  			if (isset($uri_segments[9]) && is_numeric($uri_segments[9]) && (int)$uri_segments[9] > 0) {
+  				$page = (int)$uri_segments[9];
+  			} else if (isset($uri_segments[6]) && is_numeric($uri_segments[6]) && (int)$uri_segments[6] > 0) {
+  				$page = (int)$uri_segments[6];
+  			} else if (isset($uri_segments[4]) && count($uri_segments) <= 4 && is_numeric($uri_segments[4]) && (int)$uri_segments[4] > 0) {
+  				$page = (int)$uri_segments[4];
+  			} else if (is_numeric($page_ke) && (int)$page_ke > 0) {
+  				$page = (int)$page_ke;
+  			}
   		}
+  		if ($page < 1) $page = 1;
   		
   		$session_page_key = $this->table.'_page';
   		$this->session->set_userdata($session_page_key, $page);
+  		$this->session->{$session_page_key} = $page;
   		
   		$offset = ($page - 1) * $this->limit;
   		if ($offset < 0) $offset = 0;
@@ -129,7 +138,14 @@ class Progress_usulan_satker extends MX_Controller {
 
   		
   	
-		if ( !empty(trim($q)) && $q !== '0') { $q = (int)$q; $qq = " and month(dtglusul) = '{$q}'"; } else { $qq = ""; }
+		$q_val = (!empty(trim((string)$q)) && $q !== '0') ? (int)$q : 0;
+		if ($q_val > 0) {
+			$qq = " and month(dtglusul) = '{$q_val}'";
+			$q = sprintf('%02d', $q_val);
+		} else {
+			$qq = "";
+			$q = '0';
+		}
 		
 		$qstatus = "";
 		if ($status !== 'all' && $status !== '' && $status !== NULL) {
@@ -251,7 +267,7 @@ class Progress_usulan_satker extends MX_Controller {
 					  </script>";
 					
 			$base_paging_url = base_url()."perbend/progress_usulan_satker/lists/1/{$q}/0/0/{$status}";
-			$pagination = $this->_ajaxPagination($base_paging_url, $this->kriteria, 'progress_usulan_satker', $offset);
+			$pagination = $this->_ajaxPagination($base_paging_url, $this->kriteria, 'progress_usulan_satker', $offset, $this->limit);
 			$hasil['html'] = array('html'=>$html);
 			$hasil['pagination'] = $pagination;
 	  

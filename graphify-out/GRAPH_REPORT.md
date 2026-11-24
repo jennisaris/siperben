@@ -1,16 +1,16 @@
-# Graph Report - app01  (2026-09-03)
+# Graph Report - app01  (2026-10-22)
 
 ## Corpus Check
-- 1719 files · ~3,393,631 words
+- 1554 files · ~3,377,562 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 15304 nodes · 26724 edges · 1845 communities (1425 shown, 420 thin omitted)
+- 15136 nodes · 26721 edges · 1666 communities (1250 shown, 416 thin omitted)
 - Extraction: 88% EXTRACTED · 12% INFERRED · 0% AMBIGUOUS · INFERRED: 3194 edges (avg confidence: 0.65)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `cab7cb7e`
+- Built from commit: `ecd9b4e8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -36,7 +36,7 @@
 - jquery.dataTables.min.js
 - assets/ckeditor/ckeditor.js
 - CI_Form_validation
-- warn
+- WrappedRange
 - config_item
 - jquery/js/jquery-1.9.0.js
 - assets/js/jquery-1.9.0.js
@@ -48,7 +48,7 @@
 - sweetalert2.min.js
 - form_helper.php
 - fullcalendar.js
-- .wrapBodyInlineWithPara
+- .data
 - CI_DB_driver
 - CI_Email
 - d
@@ -74,7 +74,7 @@
 - T_usulan_satker
 - T_usulan_satker
 - jquery-ui.js
-- Dropdown
+- error
 - Editor
 - T_usulan_satker
 - T_usulan_satker
@@ -85,13 +85,14 @@
 - excanvas.js
 - js/jquery.js
 - .invoke
+- CI_Router
 - T_usulan_daftar
 - T_usulan_daftar
 - CI_URI
 - plugins/ckeditor/ckeditor.js
 - Editor
 - AstNode
-- .hide
+- HintPopover
 - find
 - T_usulan_daftar2
 - T_usulan_satker2
@@ -103,7 +104,7 @@
 - js/bootstrap3-wysihtml5.all.min.js
 - T_usulan_daftar
 - T_usulan_satker
-- .ensureBuffer
+- .getBytes
 - User
 - Editor
 - assets/tinymce/tinymce.min.js
@@ -118,7 +119,7 @@
 - .trigger
 - info
 - jquery/js/jquery-1.12.3.min.js
-- warn
+- shadow
 - is_php
 - select2.full.js
 - Node
@@ -127,14 +128,14 @@
 - parseCmap
 - T_usulan_pelatihan
 - FastClick
-- shadow
+- assert
 - T_usulan_satker2
 - T_usulan_satker2
 - log_message
 - CI_Loader
 - CI_DB_forge
 - la
-- CI_Output
+- CI_Cache_file
 - assets/ckeditor/CHANGES.md
 - pace.js
 - .get
@@ -150,7 +151,7 @@
 - CI_Image_lib
 - bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js
 - .apply
-- L
+- la
 - T_usulan_approval
 - url_helper.php
 - CI_User_agent
@@ -163,9 +164,8 @@
 - CI_DB_utility
 - CI_DB_postgre_driver
 - date_helper.php
-- HintPopover
 - Curl
-- .header
+- REST
 - configFromArray
 - getParsingFlags
 - ancestor
@@ -184,7 +184,8 @@
 - getDocument
 - User
 - sb-admin-2/js/plugins/flot/excanvas.min.js
-- error
+- mb_strlen
+- parseCmap
 - sidebar/template/assets/tinymce/plugins/paste/plugin.min.js
 - silver/theme.min.js
 - T_usulan_pelatihan
@@ -197,7 +198,8 @@
 - CI_DB_mssql_driver
 - assets/plugins/flot/excanvas.min.js
 - SelectAdapter
-- .ensureBuffer
+- .getBytes
+- CI_Input
 - plugins/ckeditor/CHANGES.md
 - Toolbar
 - T_usulan_pelatihan
@@ -240,7 +242,7 @@
 - CI_DB_cubrid_driver
 - CI_DB_ibase_driver
 - redirect
-- A
+- Common.php
 - x
 - .redraw
 - .redraw
@@ -252,7 +254,6 @@
 - CI_Xmlrpc
 - M_unor
 - M_unor_rekening
-- u
 - initFiguresGL
 - initFiguresGL
 - Menu
@@ -288,7 +289,7 @@
 - CI_Migration
 - CI_Cart
 - CI_Xmlrpcs
-- ga
+- CI_DB_odbc_driver
 - M_informasi
 - T_terbit_sk
 - T_terbit_sk
@@ -296,7 +297,7 @@
 - .slide
 - summernote-bs4.js
 - plugins/ckeditor/samples/old/htmlwriter/assets/outputforflash/swfobject.js
-- .data
+- u
 - .slide
 - template/assets/bootstrap/js/bloodhound.min.js
 - .slide
@@ -317,7 +318,7 @@
 - sb-admin/template/assets/tinymce/plugins/media/plugin.min.js
 - processBinaryCMap
 - sidebar/template/assets/tinymce/plugins/media/plugin.min.js
-- XML_RPC_Message
+- .current
 - ct
 - js/select2.full.min.js
 - js/select2.min.js
@@ -330,7 +331,7 @@
 - CI_Cache_memcached
 - CI_Cache_redis
 - q
-- dataTables.keyTable.min.js
+- CI_Output
 - Canvas
 - .data
 - sb-admin/template/assets/tinymce/plugins/importcss/plugin.min.js
@@ -345,7 +346,7 @@
 - CI_Cache_apc
 - Laporan_dashboard
 - CI_DB_pdo_sqlsrv_driver
-- CI_Session_database_driver
+- assert
 - Cetak_sk_satker2
 - Cetak_sk_satker
 - e
@@ -375,11 +376,11 @@
 - Detail_sk_kemdikbud
 - CI_DB_mysql_result
 - CI_DB_odbc_result
-- CI_DB_pdo_firebird_driver
+- assets/ckeditor/samples/old/htmlwriter/assets/outputforflash/swfobject.js
 - shadow
 - own_helper.php
 - ga
-- CI_DB_pdo_informix_driver
+- CI_Zip
 - Detail_sk_kemdikbud
 - Detail_sk_kpa
 - Rekap_pejabat
@@ -396,7 +397,7 @@
 - sidebar/template/assets/tinymce/plugins/autosave/plugin.min.js
 - sidebar/template/assets/tinymce/plugins/codesample/plugin.min.js
 - assets/bootstrap/js/bootstrap.js
-- CI_DB_pdo_odbc_driver
+- User_authentication
 - Detail_sk_kpa
 - Rekap_pejabat
 - T_terbit_sk_upload
@@ -407,7 +408,7 @@
 - M_ttd
 - Set_tahun
 - string_helper.php
-- convertToList
+- Detail_info3
 - Detail_sk_kemdikbud
 - Rekap_pejabat
 - T_terbit_sk_upload
@@ -420,22 +421,22 @@
 - CI_DB_mysqli_result
 - Konfirmasi
 - CI_DB_pdo_oci_driver
-- CI_DB_pdo_4d_driver
+- Per_jenis_jabatan2
 - CI_DB_postgre_result
 - CI_DB_sqlsrv_result
 - Detail_rekap_pejabat
 - Template
 - handleSelectionMousedown
-- Y
+- Per_jenis_jabatan2
 - jquery.flot.categories.js
 - placeSlotSegs
 - formatDateWithChunk
 - js/plugins/morris/morris.js
 - Detail_sk_kpa
-- CI_DB_pdo_cubrid_driver
+- Per_jenis_jabatan
 - assets/bootstrap/js/bloodhound.min.js
 - Laporan1
-- addFormatToken
+- e
 - BaseToolbarButtonSpec
 - M_golongan
 - M_jenis_jabatan
@@ -458,16 +459,17 @@
 - Detail_laporan3
 - Rekap_pejabat
 - Detail_laporan_dashboard
-- Detail_rekap_pejabat
+- .header
 - Mapping_unor
 - Prinsip & Workflow Vibe Coding — Agentic Rules
 - T_terbit_sk_upload
 - Per_jenis_jabatan
 - Detail_laporan_dashboard
 - Detail_laporan1
-- Per_jenis_jabatan2
+- Daftar_sk_kemdikbud
 - Detail_laporan3
 - Detail_info3
+- buildTextContentItem
 - Detail_rekap_pejabat
 - Detail_sk_kemdikbud
 - T_unggah
@@ -482,12 +484,12 @@
 - CI_DB_pdo_result
 - Rekap_pejabat2
 - Laporan_dashboard
-- CI_DB_pdo_sqlite_driver
+- v
 - CI_DB_pdo_sqlite_forge
 - CI_DB_sqlite3_forge
 - CI_DB_sqlite3_result
 - CI_DB_sqlite_result
-- Laporan_dashboard
+- CI_DB_odbc_utility
 - T_terbit_sk
 - T_terbit_sk
 - .prop
@@ -511,7 +513,7 @@
 - sidebar/template/assets/tinymce/plugins/textpattern/plugin.min.js
 - hash
 - createOS2Table
-- History
+- listAncestor
 - History
 - CommonMenuItemSpec
 - EventDispatcher
@@ -523,9 +525,9 @@
 - Detail_info2
 - T_unggah
 - Laporan1
-- Laporan2
+- Bb
 - Laporan3
-- create__createDuration
+- add_subtract__addSubtract
 - M_jabatan
 - Lookup_satker
 - Mapping_unor2
@@ -537,7 +539,7 @@
 - CI_DB_ibase_forge
 - CI_DB_ibase_result
 - CI_DB_pdo_firebird_forge
-- _checkAttributes
+- Te
 - CI_DB_sqlite_forge
 - ScrollSpy
 - Daftar_sk_kemdikbud
@@ -556,12 +558,10 @@
 - sidebar/template/assets/tinymce/plugins/template/plugin.min.js
 - warn
 - Metadata
-- History_pejabat_perbend2
 - summernote-ext-specialchars.js
 - BaseToolbarButtonInstanceApi
 - Prinsip & Workflow Vibe Coding — Agentic Rules
 - Daftar_sk_kemdikbud
-- buildTextContentItem
 - detail_info1a
 - Lookup_m_pelatihan
 - M_jabatan
@@ -576,9 +576,8 @@
 - Daftar_sk_kemdikbud
 - M_status
 - CI_Driver
-- _isLineBreak
 - CI_DB_pdo_4d_forge
-- Transform
+- processBinaryCMap
 - CI_Typography
 - T_unggah
 - ScrollSpy
@@ -610,7 +609,7 @@
 - removeElement
 - AdminLTE-2.3.11/template/assets/bootstrap/js/bootstrap.min.js
 - addContextCurrentTransform
-- Calendar
+- defaults
 - assets/plugins/morris/morris.min.js
 - d
 - sb-admin-2/js/plugins/flot/jquery.flot.resize.js
@@ -666,7 +665,6 @@
 - makeMoment
 - sb-admin/template/assets/tinymce/plugins/insertdatetime/plugin.min.js
 - sb-admin/template/assets/tinymce/plugins/visualchars/plugin.min.js
-- Detail_laporan1
 - ScrollSpy
 - sidebar/template/assets/tinymce/plugins/insertdatetime/plugin.min.js
 - sidebar/template/assets/tinymce/plugins/visualchars/plugin.min.js
@@ -680,7 +678,6 @@
 - T_unggah
 - playwright.config.js
 - save-auth-state.js
-- isAncestorOf
 - Detail_laporan2
 - c
 - ColReorder/Readme.md
@@ -695,7 +692,7 @@
 - IrreversibleTransform
 - ReversibleTransform
 - assets/ckeditor/build-config.js
-- as
+- create__createDuration
 - Lookup_m_pelatihan
 - ensureUint32ArrayViewProps
 - AstNode
@@ -730,16 +727,13 @@
 - workflows/graphify.md
 - plugins/ckeditor/plugins/scayt/CHANGELOG.md
 - assets/ckeditor/plugins/scayt/CHANGELOG.md
-- WrappedSelection
 - appendText
 - pf
 - autocomplete-nip.spec.js
 - CI_Pagination
 - Detail_laporan2
 - Laporan4
-- Per_jenis_jabatan
 - XML_RPC_Response
-- zf
 - detail_info1b
 - M_status
 - Aturan & Pengetahuan Bisnis Pejabat Perbendaharaan Satker (SIPERBEN)
@@ -747,13 +741,8 @@
 - K
 - CI_DB_cubrid_utility
 - CodeIgniter 3
-- .xml_from_result
 - CI_DB_ibase_utility
 - CI_DB_mssql_utility
-- CI_DB_mysql_utility
-- CI_DB_mysqli_utility
-- CI_DB_oci8_utility
-- CI_DB_postgre_utility
 
 ## God Nodes (most connected - your core abstractions)
 1. `MX_Controller` - 281 edges
@@ -782,7 +771,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (1845 total, 420 thin omitted)
+## Communities (1666 total, 416 thin omitted)
 
 ### Community 0 - "tinymce.d.ts"
 Cohesion: 0.00
@@ -790,19 +779,19 @@ Nodes (402): AddOnCallback, AddOnConstructor, AddOnManager, AddOnManagerNamespac
 
 ### Community 1 - "template/assets/js/pdf.worker.js"
 Cohesion: 0.01
-Nodes (56): adjustMapping(), AES128Cipher(), AES256Cipher(), bidi(), buildCodeblocks(), buildComponentData(), buildPackets(), buildPrecincts() (+48 more)
+Nodes (61): addFakeSpaces(), adjustMapping(), AES128Cipher(), AES256Cipher(), bidi(), buildCodeblocks(), buildComponentData(), buildPackets() (+53 more)
 
 ### Community 2 - "assets/js/pdf.worker.js"
 Cohesion: 0.01
-Nodes (61): addFakeSpaces(), adjustMapping(), AES128Cipher(), AES256Cipher(), bidi(), buildCodeblocks(), buildComponentData(), buildPackets() (+53 more)
+Nodes (56): adjustMapping(), AES128Cipher(), AES256Cipher(), bidi(), buildCodeblocks(), buildComponentData(), buildPackets(), buildPrecincts() (+48 more)
 
 ### Community 3 - "assets/js/jquery-1.12.3.min.js"
 Cohesion: 0.05
-Nodes (155): ca(), cb(), Da(), ea(), eb(), fa(), fb(), ga() (+147 more)
+Nodes (154): ca(), cb(), Da(), ea(), eb(), fa(), fb(), ga() (+146 more)
 
 ### Community 4 - "plugins/ckeditor/samples/toolbarconfigurator/lib/codemirror/codemirror.js"
-Cohesion: 0.05
-Nodes (91): Ac(), Ad(), af(), $b(), Ba(), Bb(), Bc(), Bd() (+83 more)
+Cohesion: 0.04
+Nodes (137): A(), Aa(), Ac(), Ad(), ae(), af(), $b(), Ba() (+129 more)
 
 ### Community 5 - "sb-admin/template/assets/tinymce/plugins/table/plugin.min.js"
 Cohesion: 0.10
@@ -822,71 +811,67 @@ Nodes (9): RFC-3986, TODO: This duplicates some of the logic in CanvasGraphics.s
 
 ### Community 9 - ".substr"
 Cohesion: 0.04
-Nodes (9): M_perubahan, M_perubahan, M_perubahan, hash_equals(), hash_pbkdf2(), create_captcha(), force_download(), CI_Encrypt (+1 more)
+Nodes (8): M_perubahan, M_perubahan, M_perubahan, hash_equals(), hash_pbkdf2(), CI_Log, create_captcha(), CI_Encrypt
 
 ### Community 10 - "jquery.dataTables.js"
 Cohesion: 0.05
 Nodes (89): _addNumericSort(), _fnAddColumn(), _fnAddData(), _fnAddOptionsHtml(), _fnAddTr(), _fnAdjustColumnSizing(), _fnAjaxDataSrc(), _fnAjaxParameters() (+81 more)
 
 ### Community 11 - "bootstrap3-wysihtml5.all.js"
-Cohesion: 0.03
-Nodes (34): actOnCachedSelection(), autoLink(), _changeLinks(), _convertUrlsToLinks(), copyComparisonConstants(), copyComparisonConstantsToObject(), createAncestorFinder(), createMultiplePropertyTest() (+26 more)
+Cohesion: 0.02
+Nodes (69): actOnCachedSelection(), addStyle(), _appendLineBreak(), _applySelectorRules(), areMatchingAllready(), autoLink(), _changeLinks(), _checkAttribute() (+61 more)
 
 ### Community 12 - ".wrapBodyInlineWithPara"
-Cohesion: 0.12
-Nodes (25): appendChildNodes(), Bullet(), clusterBy(), commonAncestor(), create(), eq(), from(), head() (+17 more)
+Cohesion: 0.16
+Nodes (19): and(), appendChildNodes(), Bullet(), clusterBy(), create(), from(), head(), insertAfter() (+11 more)
 
 ### Community 13 - "assets/ckeditor/samples/toolbarconfigurator/lib/codemirror/codemirror.js"
 Cohesion: 0.06
-Nodes (55): A(), Ac(), af(), $b(), Bb(), Bd(), Bf(), ce() (+47 more)
+Nodes (64): A(), Ac(), Ad(), af(), Bb(), Bc(), Bd(), Bf() (+56 more)
 
 ### Community 14 - "summernote.min.js"
 Cohesion: 0.05
 Nodes (65): a(), at(), bt(), c(), ct(), d(), dt(), e() (+57 more)
 
 ### Community 15 - "WrappedRange"
-Cohesion: 0.15
-Nodes (22): hasChildren(), isCharPoint(), isCustomStyleTag(), isEdgePoint(), isEmpty(), isLeftEdgePoint(), isLeftEdgePointOf(), isRightEdgeOf() (+14 more)
+Cohesion: 0.17
+Nodes (5): createText(), isCustomStyleTag(), isHeading(), Typing(), WrappedRange()
 
 ### Community 16 - "MX_Controller"
 Cohesion: 0.03
-Nodes (8): Daftar_sk_kemdikbud, T_sprint, write_log(), MX_Controller, M_unor_mapping, Croscek_data, Croscek_data, Progress_usulan_satker
+Nodes (8): T_sprint, write_log(), MX_Controller, M_unor_mapping, Croscek_data, History_pejabat_perbend2, Croscek_data, Progress_usulan_satker
 
 ### Community 17 - "summernote.js"
 Cohesion: 0.06
 Nodes (48): addCellInfoToVirtual(), adjustStartPoint(), and(), appendChildNodes(), Bullet(), Clipboard(), clusterBy(), commonAncestor() (+40 more)
 
 ### Community 18 - "jquery.dataTables.min.js"
-Cohesion: 0.09
-Nodes (36): Ab(), Bb(), ca(), Cb(), Db(), E(), ea(), eb() (+28 more)
+Cohesion: 0.07
+Nodes (65): aa(), Ab(), B(), Bb(), C(), ca(), Cb(), da() (+57 more)
 
 ### Community 19 - "assets/ckeditor/ckeditor.js"
-Cohesion: 0.16
-Nodes (51): a(), aa(), b(), ba(), c(), ca(), d(), da() (+43 more)
+Cohesion: 0.25
+Nodes (38): a(), aa(), b(), ba(), c(), ca(), d(), da() (+30 more)
 
-### Community 20 - "CI_Form_validation"
-Cohesion: 0.03
-Nodes (12): mb_strlen(), mb_strpos(), mb_substr(), hex2bin(), quoted_printable_encode(), ascii_to_entities(), character_limiter(), ellipsize() (+4 more)
-
-### Community 21 - "warn"
-Cohesion: 0.07
-Nodes (37): addDefaultProtocolToUrl(), addLinkAttributes(), attachments(), checkInvalidFunctions(), CipherTransformFactory(), content(), createEncryptionKey20(), decodeUserPassword() (+29 more)
+### Community 21 - "WrappedRange"
+Cohesion: 0.09
+Nodes (30): AutoLink(), contains(), hasChildren(), isCharPoint(), isCustomStyleTag(), isEdgePoint(), isEmpty$1(), isHeading() (+22 more)
 
 ### Community 22 - "config_item"
-Cohesion: 0.05
-Nodes (8): config_item(), is_cli(), CI_Exceptions, CI_Input, delete_cookie(), get_cookie(), set_cookie(), CI_Session
+Cohesion: 0.07
+Nodes (7): config_item(), is_cli(), CI_Exceptions, delete_cookie(), get_cookie(), set_cookie(), CI_Session
 
 ### Community 23 - "jquery/js/jquery-1.9.0.js"
 Cohesion: 0.05
-Nodes (34): actualDisplay(), addCombinator(), ajaxConvert(), ajaxHandleResponses(), Animation(), augmentWidthOrHeight(), condense(), createFxNow() (+26 more)
+Nodes (30): actualDisplay(), addCombinator(), ajaxConvert(), ajaxHandleResponses(), augmentWidthOrHeight(), condense(), createPositionalPseudo(), css_defaultDisplay() (+22 more)
 
 ### Community 24 - "assets/js/jquery-1.9.0.js"
 Cohesion: 0.05
-Nodes (36): actualDisplay(), addCombinator(), ajaxConvert(), ajaxHandleResponses(), Animation(), augmentWidthOrHeight(), buildParams(), condense() (+28 more)
+Nodes (35): actualDisplay(), addCombinator(), ajaxConvert(), ajaxHandleResponses(), Animation(), augmentWidthOrHeight(), condense(), createFxNow() (+27 more)
 
 ### Community 25 - "jquery-ui-1.9-default/jquery-1.9.0.js"
 Cohesion: 0.05
-Nodes (34): actualDisplay(), addCombinator(), ajaxConvert(), ajaxHandleResponses(), Animation(), augmentWidthOrHeight(), condense(), createFxNow() (+26 more)
+Nodes (35): actualDisplay(), addCombinator(), ajaxConvert(), ajaxHandleResponses(), Animation(), augmentWidthOrHeight(), condense(), createFxNow() (+27 more)
 
 ### Community 27 - "js/moment.min.js"
 Cohesion: 0.09
@@ -894,51 +879,51 @@ Nodes (54): at(), b(), be(), c(), ce(), cn(), d(), de() (+46 more)
 
 ### Community 28 - "summernote-lite.js"
 Cohesion: 0.06
-Nodes (53): addCellInfoToVirtual(), adjustStartPoint(), and(), appendChildNodes(), AutoLink(), commonAncestor(), compact(), contains() (+45 more)
+Nodes (48): addCellInfoToVirtual(), adjustStartPoint(), and(), appendChildNodes(), Bullet(), Clipboard(), clusterBy(), commonAncestor() (+40 more)
 
 ### Community 29 - "moment.js"
 Cohesion: 0.04
-Nodes (17): getISOWeeksInYear(), getSetISOWeek(), getSetISOWeekYear(), getSetWeekYear(), getWeeksInYear(), localeWeek(), makeFormatFunction(), TODO: We need to take the current isoWeekYear, but that depends on (+9 more)
+Nodes (19): absFloor(), as(), bubble(), daysToYears(), duration_humanize__relativeTime(), getSetDayOfWeek(), makeAs(), makeFormatFunction() (+11 more)
 
 ### Community 30 - "sweetalert2.min.js"
 Cohesion: 0.08
 Nodes (49): Y(), a(), ae(), b(), c(), ce(), ct(), d() (+41 more)
 
 ### Community 31 - "form_helper.php"
-Cohesion: 0.05
-Nodes (27): Detail_sk_kpa, Ews, Ews, User_authentication, html_escape(), _attributes_to_string(), form_button(), form_checkbox() (+19 more)
+Cohesion: 0.06
+Nodes (26): Detail_sk_kpa, Ews, Ews, html_escape(), _attributes_to_string(), form_button(), form_checkbox(), form_dropdown() (+18 more)
 
 ### Community 32 - "fullcalendar.js"
 Cohesion: 0.03
 Nodes (26): TODO: make it work with timezone offset, TODO: week maybe?, TODO: better code reuse for this. Repeat code, TODO: very useful to have a handler that gets called upon cellOut OR when…, TODO: document the structure and ordering of a FullCalendar lang file, TODO: rename everything "lang" to "locale", like what the moment project did, TODO: move to another class. not applicable to all Grids, NOTE: columns are ordered left-to-right (+18 more)
 
-### Community 33 - ".wrapBodyInlineWithPara"
-Cohesion: 0.13
-Nodes (20): Bullet(), clusterBy(), create(), createText(), head(), isBodyContainer(), isBodyInline(), isHeading() (+12 more)
+### Community 33 - ".data"
+Cohesion: 0.20
+Nodes (3): AllowClear(), InitSelection(), SelectOnClose()
 
 ### Community 38 - ".hide"
-Cohesion: 0.07
-Nodes (10): AirPopover(), Handle(), ImagePopover(), isCell(), isControlSizing(), LinkPopover(), Placeholder(), posFromPlaceholder() (+2 more)
+Cohesion: 0.05
+Nodes (14): AirPopover(), DropdownUI(), eq(), Handle(), ImagePopover(), isCell(), isControlSizing(), LinkPopover() (+6 more)
 
 ### Community 39 - "b"
 Cohesion: 0.18
-Nodes (50): aa(), $c(), $d(), Ja(), M(), N(), A(), Aa() (+42 more)
+Nodes (48): aa(), $d(), M(), N(), re(), A(), Aa(), b() (+40 more)
 
 ### Community 40 - "select2.js"
 Cohesion: 0.06
 Nodes (17): BaseAdapter(), callDep(), CloseOnSelect(), countResults(), DecoratedClass(), Dropdown(), hasProp(), HidePlaceholder() (+9 more)
 
 ### Community 41 - "b"
-Cohesion: 0.18
-Nodes (48): $d(), N(), re(), A(), Aa(), b(), Ba(), ca() (+40 more)
+Cohesion: 0.17
+Nodes (51): $c(), $d(), Ja(), M(), N(), re(), A(), Aa() (+43 more)
 
 ### Community 42 - ".invoke"
 Cohesion: 0.07
 Nodes (11): attachEvents(), AutoSync(), Context(), detachEvents(), fail(), HelpDialog(), ImageDialog(), LinkDialog() (+3 more)
 
 ### Community 43 - "CI_Security"
-Cohesion: 0.05
-Nodes (5): is_https(), remove_invisible_characters(), CI_Security, CI_Utf8, CI_DB_odbc_driver
+Cohesion: 0.09
+Nodes (4): is_https(), remove_invisible_characters(), CI_Security, CI_Utf8
 
 ### Community 45 - "colordialog.js"
 Cohesion: 0.07
@@ -953,20 +938,28 @@ Cohesion: 0.08
 Nodes (34): a(), ae(), b(), c(), ce(), d(), de(), ee() (+26 more)
 
 ### Community 50 - ".invoke"
-Cohesion: 0.11
-Nodes (9): attachEvents(), AutoSync(), Context(), detachEvents(), from(), HelpDialog(), namespaceToCamel(), Statusbar() (+1 more)
+Cohesion: 0.07
+Nodes (12): attachEvents(), AutoSync(), Context(), detachEvents(), fail(), ImageDialog(), LinkDialog(), namespaceToCamel() (+4 more)
 
 ### Community 51 - "MY_Controller.php"
-Cohesion: 0.05
-Nodes (6): Dashboard Index, M_jabatan (Kepegawaian), EWS (Early Warning System), M_Jabatan (Perbend), M_unor (Perbend), User (Privileges)
+Cohesion: 0.06
+Nodes (5): Dashboard Index, EWS (Early Warning System), M_Jabatan (Perbend), M_unor (Perbend), User (Privileges)
 
 ### Community 53 - "find"
-Cohesion: 0.08
-Nodes (10): Buttons(), fail(), find(), html(), ImageDialog(), invertObject(), LinkDialog(), Renderer() (+2 more)
+Cohesion: 0.09
+Nodes (10): Buttons(), createText(), find(), HelpDialog(), HintPopover(), html(), invertObject(), Renderer() (+2 more)
 
 ### Community 58 - "jquery-ui.js"
 Cohesion: 0.05
 Nodes (21): animComplete(), childComplete(), complete(), Datepicker(), datepicker_bindHover(), datepicker_handleMouseover(), focusable(), TODO: Still need to figure out a way to make relative sorting possible (+13 more)
+
+### Community 59 - "error"
+Cohesion: 0.08
+Nodes (25): Ascii85Stream(), AsciiHexStream(), backtrace(), buildCipherConstructor(), buildObjectKey(), ColorSpace(), decodeBitmap(), decodeBitmapTemplate0() (+17 more)
+
+### Community 60 - "Editor"
+Cohesion: 0.11
+Nodes (4): createImage(), debounce(), Editor(), readFileAsDataURL()
 
 ### Community 65 - "jquery-2.2.3.min.js"
 Cohesion: 0.09
@@ -981,12 +974,12 @@ Cohesion: 0.07
 Nodes (20): bb(), Eb(), fb(), fc(), hc(), I(), ic(), J() (+12 more)
 
 ### Community 69 - ".invoke"
-Cohesion: 0.06
-Nodes (14): filename(), attachEvents(), AutoSync(), Context(), detachEvents(), fail(), HelpDialog(), ImageDialog() (+6 more)
+Cohesion: 0.07
+Nodes (11): attachEvents(), AutoSync(), Context(), detachEvents(), fail(), HelpDialog(), ImageDialog(), LinkDialog() (+3 more)
 
-### Community 73 - "CI_URI"
-Cohesion: 0.06
-Nodes (13): Array, _error_handler(), _exception_handler(), get_config(), is_loaded(), load_class(), set_status_header(), show_404() (+5 more)
+### Community 70 - "CI_Router"
+Cohesion: 0.16
+Nodes (3): MY_Router, MX_Router, CI_Router
 
 ### Community 74 - "plugins/ckeditor/ckeditor.js"
 Cohesion: 0.31
@@ -1000,13 +993,13 @@ Nodes (4): createImage(), debounce(), Editor(), readFileAsDataURL()
 Cohesion: 0.05
 Nodes (13): AstArgument(), AstBinaryOperation(), AstLiteral(), AstMin(), AstVariable(), AstVariableDefinition(), AstArgument(), AstBinaryOperation() (+5 more)
 
-### Community 77 - ".hide"
-Cohesion: 0.07
-Nodes (10): AirPopover(), Handle(), ImagePopover(), isCell(), isControlSizing(), LinkPopover(), Placeholder(), posFromPlaceholder() (+2 more)
+### Community 77 - "HintPopover"
+Cohesion: 0.06
+Nodes (10): AirPopover(), Handle(), HintPopover(), ImagePopover(), isControlSizing(), LinkPopover(), Placeholder(), posFromPlaceholder() (+2 more)
 
 ### Community 78 - "find"
-Cohesion: 0.10
-Nodes (10): Buttons(), createText(), find(), HintPopover(), html(), invertObject(), Renderer(), textRangeToPoint() (+2 more)
+Cohesion: 0.11
+Nodes (10): AutoLink(), Buttons(), contains(), find(), html(), invertObject(), Renderer(), textRangeToPoint() (+2 more)
 
 ### Community 83 - "MX_Loader"
 Cohesion: 0.08
@@ -1024,29 +1017,25 @@ Nodes (4): BaseSelection(), CloseOnSelect(), EventRelay(), Search()
 Cohesion: 0.17
 Nodes (33): d(), e(), f(), g(), h(), i(), j(), k() (+25 more)
 
-### Community 89 - ".ensureBuffer"
-Cohesion: 0.09
-Nodes (13): Ascii85Stream(), AsciiHexStream(), decrypt(), decryptAscii(), DecryptStream(), isEmpty(), isHexDigit(), Jbig2Stream() (+5 more)
+### Community 89 - ".getBytes"
+Cohesion: 0.10
+Nodes (20): addDefaultProtocolToUrl(), bytesToString(), CFFParser(), decrypt(), decryptAscii(), DecryptStream(), isHexDigit(), isOpenTypeFile() (+12 more)
 
 ### Community 90 - "User"
 Cohesion: 0.04
 Nodes (7): Konfirmasi, User, Change_password, password_get_info(), password_hash(), password_needs_rehash(), password_verify()
 
-### Community 91 - "Editor"
-Cohesion: 0.09
-Nodes (4): createImage(), debounce(), Editor(), readFileAsDataURL()
-
 ### Community 92 - "assets/tinymce/tinymce.min.js"
 Cohesion: 0.11
-Nodes (21): a(), c(), Fa(), Fr(), g(), h(), i(), Ia() (+13 more)
+Nodes (20): a(), c(), Fr(), g(), h(), i(), Ia(), ja() (+12 more)
 
 ### Community 95 - "createPrototypeRange"
-Cohesion: 0.09
-Nodes (34): assertNodeNotReadOnly(), assertNoDocTypeNotationEntityAncestor(), assertRangeValid(), assertValidNodeType(), assertValidOffset(), comparePoints(), createIterator(), createPrototypeRange() (+26 more)
+Cohesion: 0.10
+Nodes (32): assertNodeNotReadOnly(), assertNoDocTypeNotationEntityAncestor(), assertRangeValid(), assertValidNodeType(), assertValidOffset(), comparePoints(), createPrototypeRange(), createRangeContentRemover() (+24 more)
 
 ### Community 96 - "dataTables.keyTable.js"
-Cohesion: 0.24
-Nodes (20): _fnBlur(), _fnCaptureKeys(), _fnCellFromCoords(), _fnClick(), _fnCoordsFromCell(), _fnEventAdd(), _fnEventAddTemplate(), _fnEventFire() (+12 more)
+Cohesion: 0.13
+Nodes (32): l(), p(), _fnBlur(), _fnCaptureKeys(), _fnCellFromCoords(), _fnClick(), _fnCoordsFromCell(), _fnEventAdd() (+24 more)
 
 ### Community 97 - "assets/js/jquery.tablesorter.min.js"
 Cohesion: 0.09
@@ -1065,56 +1054,56 @@ Cohesion: 0.12
 Nodes (3): BaseSelection(), EventRelay(), Search()
 
 ### Community 102 - "info"
-Cohesion: 0.27
-Nodes (8): CalGrayCS(), CalRGBCS(), CCITTFaxStream(), info(), LabCS(), linearization(), RadialAxial(), sanitizeMetrics()
+Cohesion: 0.21
+Nodes (11): CalGrayCS(), CalRGBCS(), CCITTFaxStream(), info(), int16(), int32(), LabCS(), linearization() (+3 more)
 
 ### Community 103 - "jquery/js/jquery-1.12.3.min.js"
 Cohesion: 0.07
 Nodes (14): Da(), eb(), fb(), ga(), lb(), nb(), ob(), pb() (+6 more)
 
-### Community 104 - "warn"
-Cohesion: 0.07
-Nodes (37): addDefaultProtocolToUrl(), addLinkAttributes(), attachments(), bytesToString(), CFFParser(), checkInvalidFunctions(), content(), deprecated() (+29 more)
+### Community 104 - "shadow"
+Cohesion: 0.06
+Nodes (41): addLinkAttributes(), annotations(), attachments(), checkInvalidFunctions(), cmyk(), content(), ContextCache(), decoder() (+33 more)
 
 ### Community 105 - "is_php"
-Cohesion: 0.06
+Cohesion: 0.07
 Nodes (3): is_php(), CI_DB_mysqli_driver, CI_DB_pdo_mysql_driver
 
 ### Community 106 - "select2.full.js"
-Cohesion: 0.08
-Nodes (13): callDep(), ContainerCSS(), countResults(), DropdownCSS(), handler(), hasProp(), makeNormalize(), MaximumSelectionLength() (+5 more)
+Cohesion: 0.07
+Nodes (14): callDep(), ContainerCSS(), countResults(), Dropdown(), DropdownCSS(), handler(), hasProp(), makeNormalize() (+6 more)
 
 ### Community 108 - "jquery.min.js"
 Cohesion: 0.09
 Nodes (17): na(), A(), b(), bb(), da(), db(), eb(), fb() (+9 more)
 
 ### Community 110 - "parseCmap"
-Cohesion: 0.13
-Nodes (30): CipherTransformFactory(), createEncryptionKey20(), decodeUserPassword(), entries(), expectInt(), expectString(), getInt(), getLong() (+22 more)
+Cohesion: 0.15
+Nodes (26): entries(), expectInt(), expectString(), getHints(), getInt(), getLong(), getUshort(), IndexedCS() (+18 more)
 
 ### Community 112 - "FastClick"
 Cohesion: 0.09
 Nodes (11): FastClick(), init(), init(), TODO: add extra shadow inside hole (with a mask) if the pie is tilted., TODO: perhaps do some mathmatical trickery here with the Y-coordinate to…, init(), TODO: add extra shadow inside hole (with a mask) if the pie is tilted., TODO: perhaps do some mathmatical trickery here with the Y-coordinate to… (+3 more)
 
-### Community 113 - "shadow"
-Cohesion: 0.06
-Nodes (50): addChildren(), Annotation(), annotations(), assert(), buildFigureFromPatch(), Catalog(), cmyk(), ContextCache() (+42 more)
+### Community 113 - "assert"
+Cohesion: 0.10
+Nodes (32): addChildren(), Annotation(), assert(), buildFigureFromPatch(), Catalog(), CipherTransformFactory(), createEncryptionKey20(), decodeType4Shading() (+24 more)
 
 ### Community 116 - "log_message"
-Cohesion: 0.06
-Nodes (8): SessionHandlerInterface, log_message(), CI_Lang, CI_Model, CI_Session_files_driver, CI_Session_memcached_driver, CI_Session_redis_driver, CI_Session_driver
+Cohesion: 0.05
+Nodes (9): SessionHandlerInterface, log_message(), CI_Lang, CI_Model, CI_Session_database_driver, CI_Session_files_driver, CI_Session_memcached_driver, CI_Session_redis_driver (+1 more)
 
 ### Community 118 - "CI_DB_forge"
 Cohesion: 0.11
 Nodes (3): CI_DB_forge, CI_DB_oci8_forge, CI_DB_odbc_forge
 
 ### Community 119 - "la"
-Cohesion: 0.11
-Nodes (38): Ad(), Bc(), Ca(), Cc(), da(), Dc(), Ec(), fa() (+30 more)
+Cohesion: 0.17
+Nodes (24): Ca(), Cc(), da(), Dc(), Ec(), fa(), Gd(), Hc() (+16 more)
 
-### Community 120 - "CI_Output"
-Cohesion: 0.06
-Nodes (11): get_mimes(), is_really_writable(), CI_Output, CI_DB_Cache, delete_files(), get_dir_file_info(), get_file_info(), get_mime_by_extension() (+3 more)
+### Community 120 - "CI_Cache_file"
+Cohesion: 0.08
+Nodes (9): get_mimes(), CI_DB_Cache, delete_files(), get_dir_file_info(), get_file_info(), get_mime_by_extension(), octal_permissions(), write_file() (+1 more)
 
 ### Community 121 - "assets/ckeditor/CHANGES.md"
 Cohesion: 0.04
@@ -1126,11 +1115,11 @@ Nodes (7): AjaxMonitor(), Bar(), ElementTracker(), Evented(), Events(), RequestI
 
 ### Community 123 - ".get"
 Cohesion: 0.08
-Nodes (9): AjaxAdapter(), Defaults(), MaximumInputLength(), MinimumInputLength(), Options(), Query(), Tags(), Tokenizer() (+1 more)
+Nodes (9): AjaxAdapter(), Defaults(), MaximumInputLength(), MaximumSelectionLength(), MinimumInputLength(), Options(), Tags(), Tokenizer() (+1 more)
 
 ### Community 124 - "error"
-Cohesion: 0.11
-Nodes (24): addHex(), backtrace(), buildCipherConstructor(), buildObjectKey(), ColorSpace(), decodeBitmap(), decodeBitmapTemplate0(), decodeIAID() (+16 more)
+Cohesion: 0.07
+Nodes (30): Ascii85Stream(), AsciiHexStream(), backtrace(), buildCipherConstructor(), buildObjectKey(), ColorSpace(), createBuiltInCMap(), decodeBitmap() (+22 more)
 
 ### Community 126 - "parse"
 Cohesion: 0.14
@@ -1148,17 +1137,13 @@ Nodes (26): a(), b(), c(), d(), e(), f(), g(), h() (+18 more)
 Cohesion: 0.11
 Nodes (6): DecoratedClass(), HidePlaceholder(), makeRequire(), MultipleSelection(), Placeholder(), SingleSelection()
 
-### Community 136 - "L"
-Cohesion: 0.10
-Nodes (31): c(), Aa(), de(), ee(), fd(), ff(), ge(), hg() (+23 more)
+### Community 136 - "la"
+Cohesion: 0.21
+Nodes (19): c(), $c(), Cc(), da(), Ec(), Hc(), jb(), Jd() (+11 more)
 
 ### Community 138 - "url_helper.php"
 Cohesion: 0.11
 Nodes (15): _stringify_attributes(), heading(), img(), _list(), ol(), ul(), lang(), anchor() (+7 more)
-
-### Community 139 - "CI_User_agent"
-Cohesion: 0.06
-Nodes (4): MY_Router, MX_Router, CI_Router, CI_User_agent
 
 ### Community 140 - "Results"
 Cohesion: 0.14
@@ -1181,31 +1166,23 @@ Cohesion: 0.25
 Nodes (24): a(), c(), d(), e(), f(), g(), h(), i() (+16 more)
 
 ### Community 146 - "CI_DB_utility"
-Cohesion: 0.09
-Nodes (6): CI_DB_utility, CI_DB_odbc_utility, CI_DB_pdo_utility, CI_DB_sqlite3_utility, CI_DB_sqlite_utility, CI_DB_sqlsrv_utility
+Cohesion: 0.06
+Nodes (10): CI_DB_utility, CI_DB_mysql_utility, CI_DB_mysqli_utility, CI_DB_oci8_utility, CI_DB_pdo_utility, CI_DB_postgre_utility, CI_DB_sqlite3_utility, CI_DB_sqlite_utility (+2 more)
 
 ### Community 148 - "date_helper.php"
 Cohesion: 0.11
 Nodes (11): date_range(), days_in_month(), gmt_to_local(), mdate(), mysql_to_unix(), nice_date(), now(), standard_date() (+3 more)
 
-### Community 149 - "HintPopover"
-Cohesion: 0.12
-Nodes (4): DropdownUI(), HintPopover(), ModalUI(), TooltipUI()
-
-### Community 151 - ".header"
-Cohesion: 0.03
-Nodes (7): REST, Ews, Per_jenis_jabatan2, Progress_usulan_satker, Detail_info3, Per_jenis_jabatan2, Per_jenis_jabatan
-
 ### Community 152 - "configFromArray"
-Cohesion: 0.21
-Nodes (12): configFromArray(), configFromObject(), createUTCDate(), currentDateArray(), dayOfYearFromWeekInfo(), dayOfYearFromWeeks(), daysInYear(), defaults() (+4 more)
+Cohesion: 0.14
+Nodes (16): configFromArray(), createUTCDate(), currentDateArray(), dayOfYearFromWeekInfo(), dayOfYearFromWeeks(), daysInYear(), getIsLeapYear(), getISOWeeksInYear() (+8 more)
 
 ### Community 153 - "getParsingFlags"
-Cohesion: 0.13
-Nodes (25): addTimeToArrayFromToken(), checkOverflow(), configFromInput(), configFromISO(), configFromString(), configFromStringAndArray(), configFromStringAndFormat(), copyConfig() (+17 more)
+Cohesion: 0.09
+Nodes (32): addTimeToArrayFromToken(), checkOverflow(), configFromInput(), configFromISO(), configFromObject(), configFromString(), configFromStringAndArray(), configFromStringAndFormat() (+24 more)
 
 ### Community 154 - "ancestor"
-Cohesion: 0.18
+Cohesion: 0.19
 Nodes (7): ancestor(), isElement(), isFontInstalled(), listDescendant(), remove(), Style(), Table()
 
 ### Community 158 - "local__createLocal"
@@ -1217,8 +1194,8 @@ Cohesion: 0.16
 Nodes (21): t(), a(), b(), c(), d(), e(), f(), h() (+13 more)
 
 ### Community 160 - "sf"
-Cohesion: 0.15
-Nodes (27): ae(), Ba(), be(), fd(), G(), ga(), H(), Hc() (+19 more)
+Cohesion: 0.19
+Nodes (22): ae(), be(), G(), ga(), H(), hd(), Hf(), Jf() (+14 more)
 
 ### Community 161 - "EditorManager"
 Cohesion: 0.08
@@ -1236,9 +1213,13 @@ Nodes (33): addRangeToControlSelection(), alertOrLog(), assertNodeInSameDocument
 Cohesion: 0.12
 Nodes (11): A(), C(), d(), H(), N(), Q(), r(), T() (+3 more)
 
-### Community 171 - "error"
-Cohesion: 0.11
-Nodes (33): backtrace(), buildCipherConstructor(), buildObjectKey(), ColorSpace(), createBuiltInCMap(), error(), expectInt(), expectString() (+25 more)
+### Community 170 - "mb_strlen"
+Cohesion: 0.10
+Nodes (11): mb_strlen(), mb_strpos(), mb_substr(), hex2bin(), quoted_printable_encode(), ascii_to_entities(), character_limiter(), ellipsize() (+3 more)
+
+### Community 171 - "parseCmap"
+Cohesion: 0.20
+Nodes (21): entries(), expectInt(), expectString(), getInt(), getLong(), getUshort(), IndexedCS(), isCmd() (+13 more)
 
 ### Community 172 - "sidebar/template/assets/tinymce/plugins/paste/plugin.min.js"
 Cohesion: 0.27
@@ -1256,21 +1237,17 @@ Nodes (15): aa(), B(), c(), D(), F(), g(), h(), I() (+7 more)
 Cohesion: 0.18
 Nodes (3): ArrayAdapter(), InputData(), SelectAdapter()
 
-### Community 184 - ".ensureBuffer"
-Cohesion: 0.08
-Nodes (22): Ascii85Stream(), AsciiHexStream(), bytesToString(), CFFParser(), decrypt(), decryptAscii(), DecryptStream(), isHexDigit() (+14 more)
+### Community 184 - ".getBytes"
+Cohesion: 0.12
+Nodes (15): bytesToString(), CFFParser(), decrypt(), decryptAscii(), DecryptStream(), isHexDigit(), isOpenTypeFile(), readCmapTable() (+7 more)
 
 ### Community 186 - "plugins/ckeditor/CHANGES.md"
 Cohesion: 0.05
 Nodes (39): CKEditor 4.0, CKEditor 4.0.1, CKEditor 4.0.1.1, CKEditor 4.0.2, CKEditor 4.0.3, CKEditor 4.1, CKEditor 4.1.1, CKEditor 4.1.2 (+31 more)
 
 ### Community 187 - "Toolbar"
-Cohesion: 0.13
-Nodes (6): CodeView(), Dropzone(), listPrev(), not(), pointToTextRange(), Toolbar()
-
-### Community 192 - "Index"
-Cohesion: 0.09
-Nodes (10): get_active_excel_satker_codes(), get_excel_eselon_satker_map(), get_excel_satker_name(), get_excel_satker_name_map(), get_excel_satkers_by_eselon(), get_nama_panjang_eselon(), siperben_file_cache_get(), siperben_file_cache_set() (+2 more)
+Cohesion: 0.16
+Nodes (4): CodeView(), Dropzone(), not(), Toolbar()
 
 ### Community 193 - "sb-admin/template/assets/js/func.js"
 Cohesion: 0.11
@@ -1289,12 +1266,12 @@ Cohesion: 0.18
 Nodes (12): ComponentPositionResolutionLayerIterator(), createPacket(), getPrecinctIndexIfExist(), getPrecinctSizesInImageScale(), InclusionTree(), LayerResolutionComponentPositionIterator(), log2(), parseTilePackets() (+4 more)
 
 ### Community 197 - "WrappedRange"
-Cohesion: 0.11
+Cohesion: 0.10
 Nodes (28): contains(), hasChildren(), isCharPoint(), isCustomStyleTag(), isEdgePoint(), isEmpty(), isHeading(), isLeftEdgePoint() (+20 more)
 
 ### Community 198 - "Toolbar"
-Cohesion: 0.11
-Nodes (8): Clipboard(), CodeView(), Dropzone(), indexOf(), next(), not(), prev(), Toolbar()
+Cohesion: 0.15
+Nodes (4): CodeView(), Dropzone(), not(), Toolbar()
 
 ### Community 199 - "mobile/theme.min.js"
 Cohesion: 0.20
@@ -1318,15 +1295,15 @@ Nodes (4): CodeView(), Dropzone(), not(), Toolbar()
 
 ### Community 209 - "ancestor"
 Cohesion: 0.18
-Nodes (8): ancestor(), isElement(), isFontInstalled(), listDescendant(), remove(), removeWhile(), Style(), Table()
+Nodes (7): ancestor(), isElement(), isFontInstalled(), listDescendant(), remove(), Style(), Table()
 
 ### Community 211 - "sb-admin/template/assets/tinymce/plugins/paste/plugin.min.js"
 Cohesion: 0.27
 Nodes (22): c(), d(), e(), f(), g(), h(), i(), j() (+14 more)
 
 ### Community 213 - "locale_locales__getLocale"
-Cohesion: 0.12
-Nodes (19): chooseLocale(), compareArrays(), create_utc__createUTC(), createLocalOrUTC(), defineLocale(), isArray(), isDaylightSavingTimeShifted(), min() (+11 more)
+Cohesion: 0.16
+Nodes (15): chooseLocale(), compareArrays(), create_utc__createUTC(), createLocalOrUTC(), defineLocale(), isDaylightSavingTimeShifted(), list(), lists__get() (+7 more)
 
 ### Community 215 - ".extend"
 Cohesion: 0.12
@@ -1342,7 +1319,7 @@ Nodes (13): autoCheck(), autoCode(), autoGroup(), AutoNumericHolder(), autoRound
 
 ### Community 220 - "info"
 Cohesion: 0.27
-Nodes (8): CalGrayCS(), CalRGBCS(), CCITTFaxStream(), info(), LabCS(), linearization(), RadialAxial(), sanitizeMetrics()
+Nodes (8): CalGrayCS(), CalRGBCS(), CCITTFaxStream(), info(), LabCS(), linearization(), PDFImage(), sanitizeMetrics()
 
 ### Community 221 - "assets/js/autoNumeric-1.8.2.js"
 Cohesion: 0.16
@@ -1356,9 +1333,9 @@ Nodes (17): adjustWidths(), Font(), getFontType(), isTrueTypeFile(), isType1File
 Cohesion: 0.15
 Nodes (3): User_authentication, Reset_password, redirect()
 
-### Community 229 - "A"
-Cohesion: 0.15
-Nodes (29): A(), ae(), be(), ce(), G(), ga(), H(), hd() (+21 more)
+### Community 229 - "Common.php"
+Cohesion: 0.17
+Nodes (11): Array, _error_handler(), _exception_handler(), get_config(), is_loaded(), load_class(), set_status_header(), show_404() (+3 more)
 
 ### Community 230 - "x"
 Cohesion: 0.16
@@ -1367,10 +1344,6 @@ Nodes (12): x(), y(), init(), init(), FIXME: LEGACY BROWSER FIX, init(), init(),
 ### Community 235 - "composer.json"
 Cohesion: 0.11
 Nodes (18): description, homepage, license, name, require, require-dev, mikey179/vfsstream, mpdf/mpdf (+10 more)
-
-### Community 241 - "u"
-Cohesion: 0.12
-Nodes (28): Cd(), Cf(), df(), ea(), Ef(), $f(), hg(), Jc() (+20 more)
 
 ### Community 245 - "initFiguresGL"
 Cohesion: 0.15
@@ -1389,12 +1362,16 @@ Cohesion: 0.17
 Nodes (14): hb(), nb(), P(), r(), ub(), vb(), xb(), u() (+6 more)
 
 ### Community 263 - "f"
-Cohesion: 0.40
-Nodes (9): a(), b(), d(), f(), k(), n(), p(), $c() (+1 more)
+Cohesion: 0.53
+Nodes (7): a(), b(), d(), f(), k(), n(), p()
 
 ### Community 265 - "FormComponentWithLabelSpec"
 Cohesion: 0.12
 Nodes (16): CollectionSpec, ColorInputSpec, ColorPickerSpec, CustomEditorNewSpec, CustomEditorOldSpec, DropZoneSpec, FormComponentSpec, FormComponentWithLabelSpec (+8 more)
+
+### Community 268 - "CI_DB_pdo_driver"
+Cohesion: 0.03
+Nodes (7): CI_DB_pdo_driver, CI_DB_pdo_4d_driver, CI_DB_pdo_cubrid_driver, CI_DB_pdo_firebird_driver, CI_DB_pdo_informix_driver, CI_DB_pdo_odbc_driver, CI_DB_pdo_sqlite_driver
 
 ### Community 272 - "Canvas"
 Cohesion: 0.18
@@ -1412,29 +1389,25 @@ Nodes (5): Canvas(), Plot(), FIXME: consider another form of shadow when filling
 Cohesion: 0.14
 Nodes (10): CFFFont(), compileCharString(), handleImageData(), isRelativeScheme(), JpegStream(), JpxStream(), parse(), parseCff() (+2 more)
 
-### Community 285 - "ga"
-Cohesion: 0.26
-Nodes (17): aa(), B(), C(), ga(), I(), kb(), lb(), M() (+9 more)
-
 ### Community 291 - "summernote-bs4.js"
 Cohesion: 0.06
-Nodes (29): addCellInfoToVirtual(), adjustStartPoint(), and(), AutoLink(), Clipboard(), compact(), contains(), createImage() (+21 more)
+Nodes (47): addCellInfoToVirtual(), adjustStartPoint(), Clipboard(), compact(), createVirtualTable(), hasChildren(), indexOf(), init() (+39 more)
 
 ### Community 292 - "plugins/ckeditor/samples/old/htmlwriter/assets/outputforflash/swfobject.js"
 Cohesion: 0.23
 Nodes (12): A(), E(), F(), G(), H(), J(), K(), N() (+4 more)
 
-### Community 293 - ".data"
-Cohesion: 0.20
-Nodes (3): AllowClear(), InitSelection(), SelectOnClose()
+### Community 293 - "u"
+Cohesion: 0.14
+Nodes (25): $b(), Ba(), Cf(), df(), Ef(), fd(), Fe(), he() (+17 more)
 
 ### Community 295 - "template/assets/bootstrap/js/bloodhound.min.js"
 Cohesion: 0.41
 Nodes (12): a(), b(), c(), d(), e(), f(), g(), h() (+4 more)
 
 ### Community 297 - "createPacket"
-Cohesion: 0.10
-Nodes (22): p(), ComponentPositionResolutionLayerIterator(), createPacket(), decodeBitmap(), decodeBitmapTemplate0(), decodeIAID(), decodeInteger(), decodeRefinement() (+14 more)
+Cohesion: 0.18
+Nodes (12): ComponentPositionResolutionLayerIterator(), createPacket(), getPrecinctIndexIfExist(), getPrecinctSizesInImageScale(), InclusionTree(), LayerResolutionComponentPositionIterator(), log2(), parseTilePackets() (+4 more)
 
 ### Community 298 - "error"
 Cohesion: 0.14
@@ -1488,10 +1461,6 @@ Nodes (13): BlockFormat, BlockStyleFormat, CommonApplyFormat, CommonFormat, Comm
 Cohesion: 0.23
 Nodes (7): q(), r(), v(), c(), e(), c(), l()
 
-### Community 327 - "dataTables.keyTable.min.js"
-Cohesion: 0.23
-Nodes (13): l(), p(), A(), B(), C(), E(), G(), H() (+5 more)
-
 ### Community 330 - "sb-admin/template/assets/tinymce/plugins/importcss/plugin.min.js"
 Cohesion: 0.24
 Nodes (8): b(), d(), e(), f(), h(), i(), j(), k()
@@ -1515,6 +1484,10 @@ Nodes (12): adjustToRange(), compensateBlackPoint(), convertToD65(), convertToFl
 ### Community 335 - "assets/tinymce/plugins/codesample/plugin.min.js"
 Cohesion: 0.27
 Nodes (7): a(), l(), q(), r(), s(), C(), Hd()
+
+### Community 342 - "assert"
+Cohesion: 0.06
+Nodes (49): addChildren(), addDefaultProtocolToUrl(), Annotation(), assert(), buildFigureFromPatch(), Catalog(), CipherTransformFactory(), createBuiltInCMap() (+41 more)
 
 ### Community 345 - "e"
 Cohesion: 0.20
@@ -1552,13 +1525,17 @@ Nodes (11): ChunkedStreamManager(), createPromiseCapability(), docId(), ensureHe
 Cohesion: 0.25
 Nodes (3): CI_DB_odbc_result, odbc_fetch_array(), odbc_fetch_object()
 
+### Community 372 - "assets/ckeditor/samples/old/htmlwriter/assets/outputforflash/swfobject.js"
+Cohesion: 0.22
+Nodes (13): A(), E(), F(), G(), H(), J(), K(), N() (+5 more)
+
 ### Community 373 - "shadow"
-Cohesion: 0.06
-Nodes (48): addChildren(), Annotation(), annotations(), assert(), buildFigureFromPatch(), Catalog(), cmyk(), ContextCache() (+40 more)
+Cohesion: 0.07
+Nodes (36): addLinkAttributes(), annotations(), attachments(), checkInvalidFunctions(), cmyk(), content(), ContextCache(), decoder() (+28 more)
 
 ### Community 374 - "own_helper.php"
-Cohesion: 0.19
-Nodes (8): AdminLTE 2.3.11 Theme, get_app_notifications(), get_perbend_menu_badge_counts(), inject_perbend_menu_badges(), siperben_session_cache_get(), siperben_session_cache_set(), Operator_registration_check, Template Library
+Cohesion: 0.11
+Nodes (15): AdminLTE 2.3.11 Theme, get_active_excel_satker_codes(), get_app_notifications(), get_excel_eselon_satker_map(), get_excel_satker_name_map(), get_nama_panjang_eselon(), get_perbend_menu_badge_counts(), inject_perbend_menu_badges() (+7 more)
 
 ### Community 375 - "ga"
 Cohesion: 0.18
@@ -1600,17 +1577,9 @@ Nodes (8): a(), b(), c(), d(), e(), f(), g(), h()
 Cohesion: 0.24
 Nodes (4): clearMenus(), getParent(), getTargetFromTrigger(), NOTE: POPOVER EXTENDS tooltip.js
 
-### Community 404 - "convertToList"
-Cohesion: 0.17
-Nodes (13): addStyle(), _applySelectorRules(), areMatchingAllready(), _convert(), convertToList(), _createList(), _createListItem(), getMatchingStyleRegexp() (+5 more)
-
 ### Community 424 - "handleSelectionMousedown"
 Cohesion: 0.36
 Nodes (9): addClass(), addSelections(), bindSideclick(), handleMouseMove(), handleMouseUp(), handleSelectionMousedown(), removeCellSelections(), removeClass() (+1 more)
-
-### Community 425 - "Y"
-Cohesion: 0.20
-Nodes (10): da(), G(), jb(), la(), qa(), tb(), U(), va() (+2 more)
 
 ### Community 426 - "jquery.flot.categories.js"
 Cohesion: 0.36
@@ -1628,10 +1597,6 @@ Nodes (9): chunkFormatString(), formatDate(), formatDateWithChunk(), formatDateW
 Cohesion: 0.72
 Nodes (8): a(), b(), c(), d(), e(), f(), g(), h()
 
-### Community 435 - "addFormatToken"
-Cohesion: 0.25
-Nodes (9): createStartOrEndSetter(), addFormatToken(), addWeekYearFormatToken(), meridiem(), millisecond__milliseconds(), offset(), ordinal(), zeroFill() (+1 more)
-
 ### Community 436 - "BaseToolbarButtonSpec"
 Cohesion: 0.22
 Nodes (9): BaseToolbarButtonSpec, BaseToolbarToggleButtonSpec, ContextFormButtonSpec, ContextFormLaunchButtonApi, ContextFormLaunchToggleButtonSpec, ContextFormToggleButtonSpec, GroupToolbarButtonSpec, ToolbarButtonSpec (+1 more)
@@ -1644,25 +1609,37 @@ Nodes (9): createPromiseCapability(), getWorkerSrc(), InternalRenderTask(), PDFD
 Cohesion: 0.18
 Nodes (10): devDependencies, @playwright/test, name, private, scripts, test:e2e, test:e2e:auth, test:e2e:headed (+2 more)
 
+### Community 459 - ".header"
+Cohesion: 0.04
+Nodes (8): Ews, Progress_usulan_satker, Detail_laporan1, Detail_rekap_pejabat, Laporan2, Laporan_dashboard, Per_jenis_jabatan, Per_jenis_jabatan2
+
 ### Community 461 - "Prinsip & Workflow Vibe Coding — Agentic Rules"
 Cohesion: 0.25
 Nodes (7): ATURAN TAMBAHAN, FASE 1 — KLARIFIKASI, FASE 2 — KRITIK & REKOMENDASI, FASE 3 — PLAN TERBAIK (efektif & efisien), FASE 4 — EKSEKUSI, FASE 5 — VERIFIKASI, Prinsip & Workflow Vibe Coding — Agentic Rules
+
+### Community 470 - "buildTextContentItem"
+Cohesion: 0.40
+Nodes (5): addFakeSpaces(), buildTextContentItem(), ensureTextContentItem(), isRTLRangeFor(), reverseIfRtl()
 
 ### Community 474 - "createPromiseCapability"
 Cohesion: 0.22
 Nodes (9): createPromiseCapability(), getWorkerSrc(), InternalRenderTask(), PDFDataRangeTransport(), PDFDocumentLoadingTask(), PDFWorker(), setupFakeWorkerGlobal(), TextLayerRenderTask() (+1 more)
 
+### Community 485 - "v"
+Cohesion: 0.67
+Nodes (3): buildParams(), buildParams(), v()
+
 ### Community 493 - ".prop"
-Cohesion: 0.25
-Nodes (4): createNewSlider(), _fnExtend(), createTweens(), createTweens()
+Cohesion: 0.20
+Nodes (7): createNewSlider(), _fnExtend(), Animation(), createFxNow(), createTweens(), propFilter(), Tween()
 
 ### Community 495 - "f"
-Cohesion: 0.18
-Nodes (16): a(), b(), d(), f(), k(), n(), p(), Bf() (+8 more)
+Cohesion: 0.19
+Nodes (16): a(), b(), d(), f(), k(), n(), p(), he() (+8 more)
 
 ### Community 496 - "localeData"
-Cohesion: 0.15
-Nodes (18): expandFormat(), format(), formatMoment(), from(), fromNow(), getSetDayOfWeek(), getSetLocaleDayOfWeek(), getSetWeek() (+10 more)
+Cohesion: 0.11
+Nodes (25): createStartOrEndSetter(), addFormatToken(), addWeekYearFormatToken(), expandFormat(), format(), formatMoment(), from(), fromNow() (+17 more)
 
 ### Community 497 - "jquery.flot.categories.min.js"
 Cohesion: 0.43
@@ -1732,17 +1709,17 @@ Nodes (8): ch(), hash(), littleSigma(), littleSigmaPrime(), maj(), rotr(), sigma
 Cohesion: 0.29
 Nodes (8): createCmapTable(), createNameTable(), createOS2Table(), createPostTable(), getRanges(), getUnicodeRangeFor(), string16(), string32()
 
+### Community 514 - "listAncestor"
+Cohesion: 0.20
+Nodes (7): commonAncestor(), eq(), History(), listAncestor(), makeOffsetPath(), splitPoint(), splitTree()
+
 ### Community 516 - "CommonMenuItemSpec"
 Cohesion: 0.25
 Nodes (8): ChoiceMenuItemSpec, CommonMenuItemSpec, ContextMenuItem, ContextSubMenu, DialogToggleMenuItemSpec, MenuItemSpec, NestedMenuItemSpec, ToggleMenuItemSpec
 
-### Community 528 - "create__createDuration"
-Cohesion: 0.09
-Nodes (25): add_subtract__addSubtract(), addParseToken(), addWeekParseToken(), create__createDuration(), createAdder(), deprecate(), deprecateSimple(), duration_add_subtract__add() (+17 more)
-
-### Community 540 - "_checkAttributes"
-Cohesion: 0.25
-Nodes (8): _checkAttribute(), _checkAttributes(), _getAttributesBeginningWith(), _handleAttributes(), _handleElement(), _handleStyles(), _testType(), _testTypes()
+### Community 528 - "add_subtract__addSubtract"
+Cohesion: 0.24
+Nodes (10): add_subtract__addSubtract(), createAdder(), deprecate(), deprecateSimple(), get_set__get(), get_set__set(), getSetMonth(), makeGetSet() (+2 more)
 
 ### Community 545 - "Guidelines"
 Cohesion: 0.20
@@ -1800,17 +1777,9 @@ Nodes (7): BaseToolbarButtonInstanceApi, BaseToolbarToggleButtonInstanceApi, Con
 Cohesion: 0.25
 Nodes (7): ATURAN TAMBAHAN, FASE 1 — KLARIFIKASI, FASE 2 — KRITIK & REKOMENDASI, FASE 3 — PLAN TERBAIK (efektif & efisien), FASE 4 — EKSEKUSI, FASE 5 — VERIFIKASI, Prinsip & Workflow Vibe Coding — Agentic Rules
 
-### Community 564 - "buildTextContentItem"
-Cohesion: 0.40
-Nodes (5): addFakeSpaces(), buildTextContentItem(), ensureTextContentItem(), isRTLRangeFor(), reverseIfRtl()
-
-### Community 581 - "_isLineBreak"
-Cohesion: 0.29
-Nodes (7): _appendLineBreak(), _isBlockElement(), _isLineBreak(), _isLineBreakOrBlockElement(), _removeLastChildIfLineBreak(), resolveList(), _selectionWrap()
-
-### Community 584 - "Transform"
-Cohesion: 0.38
-Nodes (4): copyCoefficients(), Transform(), transformComponents(), transformTile()
+### Community 584 - "processBinaryCMap"
+Cohesion: 0.18
+Nodes (10): addHex(), copyCoefficients(), fetchBinaryData(), hexToInt(), hexToStr(), incHex(), processBinaryCMap(), Transform() (+2 more)
 
 ### Community 589 - "jquery.flot.time.min.js"
 Cohesion: 0.60
@@ -1864,9 +1833,9 @@ Nodes (3): DIKBUD HR API, Curl Library, Rest Library
 Cohesion: 0.90
 Nodes (4): b(), c(), d(), f()
 
-### Community 618 - "Calendar"
+### Community 618 - "defaults"
 Cohesion: 0.40
-Nodes (5): Calendar(), createObject(), getMomentLocaleData(), mergeOptions(), setDefaults()
+Nodes (6): defaults(), Calendar(), createObject(), getMomentLocaleData(), mergeOptions(), setDefaults()
 
 ### Community 620 - "assets/plugins/morris/morris.min.js"
 Cohesion: 0.70
@@ -1977,8 +1946,8 @@ Cohesion: 0.67
 Nodes (3): isNativeDate(), makeMoment(), transferAmbigs()
 
 ### Community 704 - "zf"
-Cohesion: 0.38
-Nodes (6): he(), zf(), n(), p(), v(), w()
+Cohesion: 0.32
+Nodes (7): ce(), ie(), zf(), n(), p(), v(), w()
 
 ### Community 706 - "BaseEditorSettings"
 Cohesion: 0.67
@@ -1996,21 +1965,17 @@ Nodes (4): defaultStorageState, { defineConfig, devices }, fs, path
 Cohesion: 0.40
 Nodes (3): { chromium }, fs, path
 
-### Community 715 - "isAncestorOf"
-Cohesion: 0.50
-Nodes (4): isAncestorOf(), isNonTextPartiallySelected(), isOrIsAncestorOf(), rangeContainsSingleElement()
-
 ### Community 717 - "c"
-Cohesion: 0.15
-Nodes (13): c(), e(), Aa(), db(), ia(), If(), Kb(), ke() (+5 more)
+Cohesion: 0.11
+Nodes (24): c(), Aa(), Cd(), db(), ea(), ee(), $f(), ff() (+16 more)
 
 ### Community 719 - "ColReorder/Readme.md"
 Cohesion: 0.33
 Nodes (5): Basic usage, ColReorder, Documentation / support, GitHub, Installation
 
-### Community 785 - "as"
-Cohesion: 0.29
-Nodes (8): absFloor(), as(), bubble(), daysToYears(), duration_humanize__relativeTime(), makeAs(), weeks(), yearsToDays()
+### Community 785 - "create__createDuration"
+Cohesion: 0.14
+Nodes (15): addParseToken(), addWeekParseToken(), create__createDuration(), duration_add_subtract__add(), duration_add_subtract__addSubtract(), duration_add_subtract__subtract(), duration_as__valueOf(), getDateOffset() (+7 more)
 
 ### Community 787 - "ensureUint32ArrayViewProps"
 Cohesion: 0.67
@@ -2044,10 +2009,6 @@ Nodes (3): Checking Your Installation, Documentation, Installation
 Cohesion: 0.50
 Nodes (3): Checking Your Installation, Documentation, Installation
 
-### Community 1829 - "zf"
-Cohesion: 0.38
-Nodes (6): he(), zf(), n(), p(), v(), w()
-
 ### Community 1832 - "Aturan & Pengetahuan Bisnis Pejabat Perbendaharaan Satker (SIPERBEN)"
 Cohesion: 0.33
 Nodes (5): 1. Lingkup Satuan Kerja & Unit Utama Aktif, 2. Aturan Pejabat Perbendaharaan (KPA, BP, BPn), 3. Aturan Laporan Detil SK Kemdikbud (Per Satuan Kerja), 4. Penanganan Anomali Data yang Sering Terjadi, Aturan & Pengetahuan Bisnis Pejabat Perbendaharaan Satker (SIPERBEN)
@@ -2063,14 +2024,14 @@ Nodes (3): CodeIgniter 3, index.php (Front Controller), MX (Modular Extensions)
 ## Knowledge Gaps
 - **593 isolated node(s):** `RFC-3986`, `RFC-2616`, `RFC-3986`, `RFC-2898`, `RFC-3986` (+588 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **420 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **416 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `MX_Controller` connect `MX_Controller` to `Detail_info2`, `Lookup_satker`, `.substr`, `Mapping_unor2`, `T_unggah`, `T_unggah`, `Detail_info2`, `Laporan1`, `Laporan2`, `Laporan3`, `M_jabatan`, `Lookup_satker`, `Mapping_unor2`, `T_unggah`, `T_alasan_penolakan`, `Detail_info2`, `Lookup_satker`, `Mapping_unor2`, `Detail_laporan4`, `Daftar_sk_kemdikbud`, `Index`, `form_helper.php`, `History_pejabat_perbend2`, `T_usulan_satker`, `Daftar_sk_kemdikbud`, `T_usulan_satker`, `detail_info1a`, `Lookup_m_pelatihan`, `M_jabatan`, `M_status`, `Set_tahun`, `T_usulan_satker`, `T_usulan_satker`, `T_usulan_satker`, `T_usulan_satker`, `detail_info1a`, `detail_info1b`, `Detail_info`, `T_usulan_daftar`, `Lookup_m_pelatihan`, `M_status`, `Set_tahun`, `Daftar_sk_kemdikbud`, `T_usulan_daftar`, `Detail_laporan4`, `CI_URI`, `T_usulan_daftar`, `T_unggah`, `T_usulan_daftar2`, `T_usulan_satker2`, `T_usulan_daftar`, `T_usulan_daftar2`, `T_usulan_daftar`, `T_unggah`, `T_usulan_satker`, `User`, `Daftar_sk_kemdikbud`, `T_usulan_daftar2`, `T_usulan_satker2`, `T_unggah`, `T_usulan_satker2`, `T_usulan_pelatihan`, `T_usulan_satker2`, `T_usulan_satker2`, `T_usulan_approval`, `T_usulan_verifikator`, `T_usulan_approval`, `T_usulan_verifikator2`, `T_usulan_approval`, `M_kepegawaian_unor`, `.header`, `T_verifikasi_usulan_pelatihan`, `T_verifikasi_usulan_pelatihan`, `Croscek_data`, `M_upload_rekening`, `T_sprint`, `Detail_info`, `T_usulan_verifikator`, `T_verifikasi_usulan_pelatihan`, `M_unor`, `M_jabatan`, `T_usulan_verifikator`, `User`, `T_usulan_pelatihan`, `T_usulan_verifikator2`, `T_usulan_nosk`, `T_usulan_pelatihan`, `T_usulan_pelatihan`, `T_usulan_verifikator2`, `Detail_laporan1`, `T_usulan_pelatihan`, `Index`, `M_pegawai`, `T_usulan_pelatihan_daftar`, `M_unor`, `T_unggah`, `Detail_laporan2`, `T_usulan_pelatihan_daftar`, `T_usulan_pelatihan_daftar`, `T_usulan_pelatihan`, `T_usulan_nosk`, `redirect`, `T_usulan_nosk`, `Group`, `M_unor`, `M_unor_rekening`, `Menu`, `M_tarik_pegawai`, `M_unor_rekening`, `Detail_info3`, `Lookup_m_pelatihan`, `M_pelatihan`, `M_informasi`, `M_pelatihan`, `M_informasi`, `T_terbit_sk`, `T_terbit_sk`, `Detail_laporan2`, `Laporan4`, `Per_jenis_jabatan`, `detail_info1b`, `M_status`, `History_pejabat_perbend`, `M_jabatan`, `M_informasi`, `T_terbit_sk`, `M_pelatihan`, `M_informasi`, `T_terbit_sk`, `Laporan2`, `T_usulan_satker`, `M_unor`, `T_terbit_sk`, `M_unor`, `Sysparam`, `Croscek_data2`, `Lookup_unor`, `Laporan_dashboard`, `Cetak_sk_satker2`, `Cetak_sk_satker`, `Cetak_sk_satker`, `Cetak_sk_satker2`, `Cetak_sk_satker2`, `Cetak_sk_satker`, `Cetak_sk_satker2`, `M_ttd`, `Detail_sk_kemdikbud`, `Detail_sk_kemdikbud`, `Detail_sk_kpa`, `Rekap_pejabat`, `T_terbit_sk_upload`, `M_ttd`, `Detail_sk_kpa`, `Rekap_pejabat`, `T_terbit_sk_upload`, `Approval_pengguna`, `Cetak_sk_satker`, `M_ttd`, `Set_tahun`, `Detail_sk_kemdikbud`, `Rekap_pejabat`, `T_terbit_sk_upload`, `T_unggah`, `Laporan3`, `Konfirmasi`, `Detail_rekap_pejabat`, `Detail_sk_kpa`, `Laporan1`, `M_golongan`, `M_jenis_jabatan`, `Detail_laporan1`, `Detail_laporan3`, `Detail_laporan_dashboard`, `Detail_rekap_pejabat`, `Laporan1`, `Laporan2`, `Detail_laporan4`, `Laporan4`, `Mapping_unor`, `Rekap_pejabat2`, `T_alasan_penolakan`, `Laporan3`, `Detail_laporan2`, `Detail_laporan3`, `Rekap_pejabat`, `Detail_laporan_dashboard`, `Detail_rekap_pejabat`, `Mapping_unor`, `T_terbit_sk_upload`, `Per_jenis_jabatan`, `Detail_laporan_dashboard`, `Detail_laporan1`, `Per_jenis_jabatan2`, `Detail_laporan3`, `Detail_info3`, `Detail_rekap_pejabat`, `Detail_sk_kemdikbud`, `T_unggah`, `Laporan4`, `Mapping_unor`, `Rekap_pejabat2`, `T_alasan_penolakan`, `Rekap_pejabat2`, `Laporan_dashboard`, `Laporan_dashboard`, `T_terbit_sk`, `T_terbit_sk`, `Detail_info`?**
+- **Why does `MX_Controller` connect `MX_Controller` to `Detail_info2`, `Lookup_satker`, `.substr`, `Mapping_unor2`, `T_unggah`, `T_unggah`, `Detail_info2`, `Laporan1`, `Laporan3`, `M_jabatan`, `Lookup_satker`, `Mapping_unor2`, `T_unggah`, `T_alasan_penolakan`, `Detail_info2`, `Lookup_satker`, `Mapping_unor2`, `Detail_laporan4`, `Daftar_sk_kemdikbud`, `Index`, `form_helper.php`, `T_usulan_satker`, `Daftar_sk_kemdikbud`, `T_usulan_satker`, `detail_info1a`, `Lookup_m_pelatihan`, `M_jabatan`, `M_status`, `Set_tahun`, `T_usulan_satker`, `T_usulan_satker`, `T_usulan_satker`, `T_usulan_satker`, `detail_info1a`, `detail_info1b`, `Detail_info`, `T_usulan_daftar`, `Lookup_m_pelatihan`, `M_status`, `Set_tahun`, `Daftar_sk_kemdikbud`, `T_usulan_daftar`, `Detail_laporan4`, `T_usulan_daftar`, `T_unggah`, `T_usulan_daftar2`, `T_usulan_satker2`, `T_usulan_daftar`, `T_usulan_daftar2`, `T_usulan_daftar`, `T_unggah`, `T_usulan_satker`, `User`, `Daftar_sk_kemdikbud`, `T_usulan_daftar2`, `T_usulan_satker2`, `T_unggah`, `T_usulan_satker2`, `T_usulan_pelatihan`, `T_usulan_satker2`, `T_usulan_satker2`, `T_usulan_approval`, `T_usulan_verifikator`, `T_usulan_approval`, `T_usulan_verifikator2`, `T_usulan_approval`, `M_kepegawaian_unor`, `T_verifikasi_usulan_pelatihan`, `T_verifikasi_usulan_pelatihan`, `Croscek_data`, `M_upload_rekening`, `T_sprint`, `Detail_info`, `T_usulan_verifikator`, `T_verifikasi_usulan_pelatihan`, `M_unor`, `M_jabatan`, `T_usulan_verifikator`, `User`, `T_usulan_pelatihan`, `T_usulan_verifikator2`, `T_usulan_nosk`, `T_usulan_pelatihan`, `T_usulan_pelatihan`, `T_usulan_verifikator2`, `T_usulan_pelatihan`, `Index`, `M_pegawai`, `T_usulan_pelatihan_daftar`, `M_unor`, `T_unggah`, `Detail_laporan2`, `T_usulan_pelatihan_daftar`, `T_usulan_pelatihan_daftar`, `T_usulan_pelatihan`, `T_usulan_nosk`, `redirect`, `Common.php`, `T_usulan_nosk`, `Group`, `M_unor`, `M_unor_rekening`, `Menu`, `M_tarik_pegawai`, `M_unor_rekening`, `Detail_info3`, `Lookup_m_pelatihan`, `M_pelatihan`, `M_informasi`, `M_pelatihan`, `M_informasi`, `T_terbit_sk`, `T_terbit_sk`, `Detail_laporan2`, `Laporan4`, `detail_info1b`, `M_status`, `History_pejabat_perbend`, `M_jabatan`, `M_informasi`, `T_terbit_sk`, `M_pelatihan`, `M_informasi`, `T_terbit_sk`, `Laporan2`, `T_usulan_satker`, `M_unor`, `T_terbit_sk`, `M_unor`, `Sysparam`, `Croscek_data2`, `Lookup_unor`, `Laporan_dashboard`, `Cetak_sk_satker2`, `Cetak_sk_satker`, `Cetak_sk_satker`, `Cetak_sk_satker2`, `Cetak_sk_satker2`, `Cetak_sk_satker`, `Cetak_sk_satker2`, `M_ttd`, `Detail_sk_kemdikbud`, `own_helper.php`, `Detail_sk_kemdikbud`, `Detail_sk_kpa`, `Rekap_pejabat`, `T_terbit_sk_upload`, `M_ttd`, `User_authentication`, `Detail_sk_kpa`, `Rekap_pejabat`, `T_terbit_sk_upload`, `Approval_pengguna`, `Cetak_sk_satker`, `M_ttd`, `Set_tahun`, `Detail_info3`, `Detail_sk_kemdikbud`, `Rekap_pejabat`, `T_terbit_sk_upload`, `T_unggah`, `Laporan3`, `Konfirmasi`, `Per_jenis_jabatan2`, `Detail_rekap_pejabat`, `Per_jenis_jabatan2`, `Detail_sk_kpa`, `Per_jenis_jabatan`, `Laporan1`, `M_golongan`, `M_jenis_jabatan`, `Detail_laporan1`, `Detail_laporan3`, `Detail_laporan_dashboard`, `Detail_rekap_pejabat`, `Laporan1`, `Laporan2`, `Detail_laporan4`, `Laporan4`, `Mapping_unor`, `Rekap_pejabat2`, `T_alasan_penolakan`, `Laporan3`, `Detail_laporan2`, `Detail_laporan3`, `Rekap_pejabat`, `Detail_laporan_dashboard`, `.header`, `Mapping_unor`, `T_terbit_sk_upload`, `Per_jenis_jabatan`, `Detail_laporan_dashboard`, `Detail_laporan1`, `Daftar_sk_kemdikbud`, `Detail_laporan3`, `Detail_info3`, `Detail_rekap_pejabat`, `Detail_sk_kemdikbud`, `T_unggah`, `Laporan4`, `Mapping_unor`, `Rekap_pejabat2`, `T_alasan_penolakan`, `Rekap_pejabat2`, `Laporan_dashboard`, `T_terbit_sk`, `T_terbit_sk`, `Detail_info`?**
   _High betweenness centrality (0.097) - this node is a cross-community bridge._
-- **Why does `DomQuery` connect `DomQuery` to `tinymce.d.ts`, `Font`, `.wrapBodyInlineWithPara`, `.prop`, `Editor`?**
+- **Why does `DomQuery` connect `DomQuery` to `tinymce.d.ts`, `Font`, `listAncestor`, `.prop`?**
   _High betweenness centrality (0.042) - this node is a cross-community bridge._
 - **Why does `AstNode` connect `AstNode` to `tinymce.d.ts`?**
   _High betweenness centrality (0.042) - this node is a cross-community bridge._

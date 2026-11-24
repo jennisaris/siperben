@@ -1600,8 +1600,65 @@ class T_usulan_satker extends MX_Controller {
 					var o = jQuery.parseJSON(data);
 					$('#'+divid+' #html_telusuri').html(o.attachment);
 				}
-
 				</script>";
+
+		$img_url = base_url('assets/images/alur_pembuatan_sk.jpg?v=' . filemtime(FCPATH . 'assets/images/alur_pembuatan_sk.jpg'));
+		$js .= "
+		<style type='text/css'>
+		#modalAlurPembuatanSK {
+			z-index: 10600 !important;
+		}
+		#modalAlurPembuatanSK .modal-dialog {
+			z-index: 10601 !important;
+			width: 92% !important;
+			max-width: 1100px !important;
+			margin: 20px auto !important;
+		}
+		#modalAlurPembuatanSK .modal-content {
+			border-radius: 10px !important;
+			overflow: hidden !important;
+			box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+			border: 1px solid rgba(0,0,0,0.2) !important;
+		}
+		</style>
+		<!-- Modal Alur Pembuatan SK Pejabat Perbendaharaan -->
+		<div class='modal fade' id='modalAlurPembuatanSK' tabindex='-1' role='dialog' aria-labelledby='modalAlurPembuatanSKLabel' aria-hidden='true'>
+			<div class='modal-dialog modal-lg' role='document'>
+				<div class='modal-content'>
+					<div class='modal-header' style='background: #1e88e5; color: #ffffff; padding: 12px 20px;'>
+						<button type='button' class='close' data-dismiss='modal' aria-label='Close' onclick=\"$('#modalAlurPembuatanSK').modal('hide');\" style='color: #ffffff; opacity: 0.9; font-size: 28px; line-height: 1; margin-top: -2px;'>
+							<span aria-hidden='true'>&times;</span>
+						</button>
+						<h4 class='modal-title' id='modalAlurPembuatanSKLabel' style='font-weight: 600; font-size: 16px; margin: 0; color: #ffffff;'>
+							<i class='fa fa-info-circle'></i> Alur Pembuatan SK Pejabat Perbendaharaan
+						</h4>
+					</div>
+					<div class='modal-body' style='padding: 15px; text-align: center; background-color: #f1f5f9; max-height: calc(85vh - 120px); overflow-y: auto;'>
+						<img src='{$img_url}' class='img-responsive center-block' style='margin: 0 auto; display: block; border-radius: 8px; max-width: 100%; height: auto; box-shadow: 0 2px 12px rgba(0,0,0,0.12);' alt='Alur Pembuatan SK Pejabat Perbendaharaan'>
+					</div>
+					<div class='modal-footer' style='padding: 10px 20px; background: #ffffff; border-top: 1px solid #e2e8f0; text-align: right;'>
+						<button type='button' class='btn btn-primary' data-dismiss='modal' onclick=\"$('#modalAlurPembuatanSK').modal('hide');\" style='border-radius: 6px; padding: 6px 22px; font-weight: 600;'>
+							<i class='fa fa-times'></i> Tutup
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type='text/javascript'>
+		$(document).ready(function() {
+			setTimeout(function() {
+				if ($('#modalAlurPembuatanSK').length) {
+					$('body').append($('#modalAlurPembuatanSK'));
+					$('#modalAlurPembuatanSK').modal({
+						backdrop: true,
+						keyboard: true,
+						show: true
+					});
+				}
+			}, 350);
+		});
+		</script>
+		";
 
 		return $js;
 	}
@@ -2257,6 +2314,10 @@ class T_usulan_satker extends MX_Controller {
 
 	function manipulate_list_button($buttons) {
 		if ( $this->session->settahun != date('Y') ) unset($buttons);
+
+		$buttons['alur_sk'] = "<button type='button' class='btn btn-info' onclick=\"$('#modalAlurPembuatanSK').appendTo('body').modal('show');\" style='border-radius:4px;'>
+									<i class='fa fa-info-circle'></i>&nbsp;Alur Pembuatan SK
+							   </button>";
 
 		return $buttons;
 	}
